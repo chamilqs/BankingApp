@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application\BankingApp.Core.Application.csproj" />
+    <ProjectReference Include="..\BankingApp.Core.Domain\BankingApp.Core.Domain.csproj" />
+    <ProjectReference Include="..\BankingApp.Infrastructure.Identity\BankingApp.Infrastructure.Identity.csproj" />
+    <ProjectReference Include="..\BankingApp.Infrastructure.Shared\BankingApp.Infrastructure.Shared.csproj" />
+    <ProjectReference Include="..\BankingApp.Infrastucture.Persistence\BankingApp.Infrastucture.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Home\IconTabler.cshtml" />
+    <None Include="Views\Home\SamplePage.cshtml" />
+    <None Include="Views\Home\UIAlerts.cshtml" />
+    <None Include="Views\Home\UIButtons.cshtml" />
+    <None Include="Views\Home\UICard.cshtml" />
+    <None Include="Views\Home\UIForms.cshtml" />
+    <None Include="Views\Home\UITypography.cshtml" />
+  </ItemGroup>
+
+</Project>
