@@ -9,8 +9,8 @@ namespace BankingApp.Infrastructure.Identity.Seeds
         public static async Task SeedAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             ApplicationUser defaultUser = new();
-            defaultUser.UserName = "basicuser";
-            defaultUser.Email = "basicuser@email.com";
+            defaultUser.UserName = "clientuser";
+            defaultUser.Email = "clientuser@email.com";
             defaultUser.Name = "Heung Min";
             defaultUser.LastName = "Son";
             defaultUser.ProfilePicture = "https://leadership.civicaction.ca/wp-content/uploads/2016/11/Foundation-Website-Mark-Sam.png";
