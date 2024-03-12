@@ -8,8 +8,7 @@ using BankingApp.Core.Application.DTOs.Email;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.User;
 using BankingApp.Infrastructure.Identity.Entities;
-using BankingApp.Infrastructure.Identity.Enums;
-using System.Text;
+using BankingApp.Core.Application.Enums;
 
 namespace BankingApp.Infrastructure.Identity.Services
 {
@@ -17,18 +16,14 @@ namespace BankingApp.Infrastructure.Identity.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly AuthenticationResponse authViewModel;
         private readonly IEmailService _emailService;
 
         public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, 
-            IEmailService emailService, IHttpContextAccessor httpContextAccessor)
+            IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailService = emailService;
-            _httpContextAccessor = httpContextAccessor;
-            authViewModel = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
         }
 
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request)
@@ -39,7 +34,7 @@ namespace BankingApp.Infrastructure.Identity.Services
             if (user == null)
             {
                 response.HasError = true;
-                response.Error = $"No accounts registered with the email: {request.Email}";
+                response.Error = $"No accounts registered with the email: {request.Email}.";
                 return response;
             }
 
@@ -54,7 +49,7 @@ namespace BankingApp.Infrastructure.Identity.Services
             if (!user.EmailConfirmed)
             {
                 response.HasError = true;
-                response.Error = $"Account not confirmed for {request.Email}.";
+                response.Error = $"Account not confirmed for {request.Email}, please contact an administrator.";
                 return response;
             }
 
@@ -79,9 +74,10 @@ namespace BankingApp.Infrastructure.Identity.Services
             await _signInManager.SignOutAsync();
         }
 
-        public async Task<SaveIdentityUserViewModel> UpdateUserAsync(SaveIdentityUserViewModel vm)
+        public async Task<SaveUserViewModel> UpdateUserAsync(SaveUserViewModel vm)
         {
-            ApplicationUser userVm = await _userManager.FindByIdAsync(authViewModel.Id);
+            // needs to recieve the ID of the user by parameter
+            ApplicationUser userVm = await _userManager.FindByIdAsync("");
 
             if (userVm == null)
             {
@@ -120,7 +116,7 @@ namespace BankingApp.Infrastructure.Identity.Services
         }
 
 
-        public async Task<RegisterResponse> RegisterBasicUserAsync(RegisterRequest request, string origin)
+        public async Task<RegisterResponse> RegisterUserAsync(RegisterRequest request, string origin)
         {
             RegisterResponse response = new()
             {
@@ -151,20 +147,30 @@ namespace BankingApp.Infrastructure.Identity.Services
                 PhoneNumber = request.Phone,
                 ProfilePicture = request.ProfilePicture,
                 UserName = request.UserName
+                
             };
 
             var result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, Roles.Basic.ToString());
+                if (request.Role == Roles.Admin.ToString())
+                {
+                    await _userManager.AddToRoleAsync(user, Roles.Admin.ToString());
+                } 
+                else if(request.Role == Roles.Client.ToString())
+                {
+                    await _userManager.AddToRoleAsync(user, Roles.Client.ToString());
+                }
+                else
+                {
+                    await _userManager.AddToRoleAsync(user, Roles.Client.ToString());
+                }                
 
-                // enviar email de verificacion
-                var verificationUri = await SendVerificationEmailUri(user, origin);
                 await _emailService.SendAsync(new EmailRequest()
                 {
                     To = user.Email,
-                    Subject = "Confirm your registration at Birdtter.",
-                    Body = $"Please confirm your account by visiting this URL {verificationUri}"
+                    Subject = "Welcome to RoyalBank, your bank.",
+                    Body = $"Thanks for trust in us to be your bank."
 
                 });
             }
@@ -177,108 +183,7 @@ namespace BankingApp.Infrastructure.Identity.Services
             }
 
             return response;
-        }
-
-        public async Task<string> ConfirmAccountAsync(string userId, string token)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return $"No accounts registered with this user.";
-            }
-
-            token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
-            var result = await _userManager.ConfirmEmailAsync(user, token);
-            if (result.Succeeded)
-            {
-                return $"Account confirmed for {user.Email}. You can now use the app";
-            }
-            else
-            {
-                return $"An error occurred while trying to confirm the email: {user.Email}.";
-            }
-        }
-
-        public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordRequest request, string origin)
-        {
-            ForgotPasswordResponse response = new()
-            {
-                HasError = false
-            };
-
-            var user = await _userManager.FindByEmailAsync(request.Email);
-
-            if (user == null)
-            {
-                response.HasError = true;
-                response.Error = $"No Accounts registered with the email {request.Email}.";
-                return response;
-            }
-
-            var verificationUri = await SendForgotPasswordUri(user, origin);
-
-            await _emailService.SendAsync(new EmailRequest()
-            {
-                To = user.Email,
-                Body = $"Please reset your account by visiting this URL {verificationUri}.",
-                Subject = "Reset your Birdtter password"
-            });
-
-
-            return response;
-        }
-
-        public async Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordRequest request)
-        {
-            ResetPasswordResponse response = new()
-            {
-                HasError = false
-            };
-
-            var user = await _userManager.FindByEmailAsync(request.Email);
-
-            if (user == null)
-            {
-                response.HasError = true;
-                response.Error = $"No accounts registered with the email {request.Email}.";
-                return response;
-            }
-
-            request.Token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token));
-            var result = await _userManager.ResetPasswordAsync(user, request.Token, request.Password);
-
-            if (!result.Succeeded)
-            {
-                response.HasError = true;
-                response.Error = $"An error occurred while resetting your password.";
-                return response;
-            }
-
-            return response;
-        }
-        
-        private async Task<string> SendVerificationEmailUri(ApplicationUser user, string origin)
-        {
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var route = "UserIdentity/ConfirmEmail";
-            var Uri = new Uri(string.Concat($"{origin}/", route));
-            var verificationUri = QueryHelpers.AddQueryString(Uri.ToString(), "userId", user.Id);
-            verificationUri = QueryHelpers.AddQueryString(verificationUri, "token", code);
-
-            return verificationUri;
-        }
-        
-        private async Task<string> SendForgotPasswordUri(ApplicationUser user, string origin)
-        {
-            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var route = "User/ResetPassword";
-            var Uri = new Uri(string.Concat($"{origin}/", route));
-            var verificationUri = QueryHelpers.AddQueryString(Uri.ToString(), "token", code);
-
-            return verificationUri;
-        }
+        }        
     
     }
 

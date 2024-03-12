@@ -1,7 +1,7 @@
 ﻿@using BankingApp.Core.Application.ViewModels.User;
-@model SaveIdentityUserViewModel
+@model SaveUserViewModel
 @{    
-    ViewData["Title"] = "Registro";    
+    ViewData["Title"] = "New user";    
 }
 
 <div class="container-fluid">
@@ -19,56 +19,64 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     }
-                    <form method="post" asp-controller="UserIdentity" asp-action="Register" enctype="multipart/form-data">
+                    <form method="post" asp-controller="Admin" asp-action="Register" enctype="multipart/form-data">
 
                         <div class="mt-2 mb-2">
                             @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Name" class="form-label">Nombre: </label>
+                            <label asp-for="Name" class="form-label">Name: </label>
                             <input asp-for="Name" class="form-control" />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="LastName" class="form-label">Apellido: </label>
+                            <label asp-for="LastName" class="form-label">Last name: </label>
                             <input asp-for="LastName" class="form-control" />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Username" class="form-label">Nombre de usuario: </label>
+                            <label asp-for="Username" class="form-label">Username: </label>
                             <input asp-for="Username" class="form-control" />
                             <span asp-validation-for="Username" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Password" class="form-label">Contraseña: </label>
+                            <label asp-for="Password" class="form-label">Password: </label>
                             <input asp-for="Password" class="form-control" />
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="ConfirmPassword" class="form-label">Confirmar contraseña: </label>
+                            <label asp-for="ConfirmPassword" class="form-label">Confirm password: </label>
                             <input asp-for="ConfirmPassword" class="form-control" />
                             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Phone" class="form-label">Telefono: </label>
+                            <label asp-for="Phone" class="form-label">Phone: </label>
                             <input asp-for="Phone" class="form-control" />
                             <span asp-validation-for="Phone" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Email" class="form-label">Correo: </label>
+                            <label asp-for="Email" class="form-label">Email: </label>
                             <input asp-for="Email" class="form-control" />
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <h3>Foto</h3>
+                            <label asp-for="Role" class="form-label">User type: </label>
+                            <select required asp-for="Role" asp-items="@(IEnumerable<SelectListItem>)(ViewBag.Roles)" class="form-select">
+                                <option value="0">Seleccione una opcion</option>
+
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <h3>Picture</h3>
                             <label asp-for="File" class="form-label">Seleccione un archivo:</label>
                             <input required asp-for="File" class="form-control" />
                         </div>
@@ -82,18 +90,16 @@
             </div>
         </div>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    
     <script>
         $(document).ready(function () {
-            // Agrega el formato de teléfono de la República Dominicana al campo de teléfono
             $('#Phone').on('input', function () {
-                var phoneNumber = $(this).val().replace(/\D/g, ''); // Elimina caracteres no numéricos
+                var phoneNumber = $(this).val().replace(/\D/g, ''); 
                 var formattedPhoneNumber = formatPhoneNumber(phoneNumber);
                 $(this).val(formattedPhoneNumber);
             });
 
-            // Función para dar formato al número de teléfono (10 dígitos)
             function formatPhoneNumber(phoneNumber) {
                 var formattedNumber = phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
                 return formattedNumber;

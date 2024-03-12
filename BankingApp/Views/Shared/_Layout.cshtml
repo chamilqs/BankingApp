@@ -5,6 +5,8 @@
 @inject IHttpContextAccessor httpContextAccessor
 @{
     var User = httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
+    var isAdmin = User != null ? User.Roles.Any(r => r == "Admin") : false;
+    var isClient = User != null ? User.Roles.Any(r => r == "Client") : false;
 }
 
 <!doctype html>
@@ -27,123 +29,171 @@
          data-sidebar-position="fixed" data-header-position="fixed">
         @if (User != null)
         {
-        <aside class="left-sidebar">
-            <div>
-                <div class="brand-logo d-flex align-items-center justify-content-between">
-                    <a asp-controller="@(User!= null ? "Home" : "User")" asp-action="Index" class="text-nowrap logo-img">
-                        <img src="~/assets/images/logos/dark-logo.svg" width="180" alt="" />
-                    </a>
-                    <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
-                        <i class="ti ti-x fs-8"></i>
+
+            if (isClient)
+            {
+                <aside class="left-sidebar">
+                    <div>
+                        <div class="brand-logo d-flex align-items-center justify-content-between">
+                            <a asp-controller="@(User!= null ? "Home" : "User")" asp-action="Index" class="text-nowrap logo-img">
+                                <img src="~/assets/images/logos/dark-logo.svg" width="180" alt="" />
+                            </a>
+                            <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+                                <i class="ti ti-x fs-8"></i>
+                            </div>
+                        </div>
+                        <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+                            <ul id="sidebarnav">
+                                <li class="nav-small-cap">
+                                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                                    <span class="hide-menu">Home</span>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-controller="Home" asp-action="Index" aria-expanded="false">
+                                        <span>
+                                            <i class="ti ti-layout-dashboard"></i>
+                                        </span>
+                                        <span class="hide-menu">Dashboard</span>
+                                    </a>
+                                </li>
+                                <li class="nav-small-cap">
+                                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                                    <span class="hide-menu">UI COMPONENTS</span>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-controller="Home" asp-action="UIButtons" aria-expanded="false">
+                                        <span>
+                                            <i class="ti ti-article"></i>
+                                        </span>
+                                        <span class="hide-menu">Buttons</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+
                     </div>
-                </div>
-                    <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
-                        <ul id="sidebarnav">
-                            <li class="nav-small-cap">
-                                <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                                <span class="hide-menu">Home</span>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link" asp-controller="Home" asp-action="Index" aria-expanded="false">
-                                    <span>
-                                        <i class="ti ti-layout-dashboard"></i>
-                                    </span>
-                                    <span class="hide-menu">Dashboard</span>
-                                </a>
-                            </li>
-                            <li class="nav-small-cap">
-                                <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                                <span class="hide-menu">UI COMPONENTS</span>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link" asp-controller="Home" asp-action="UIButtons" aria-expanded="false">
-                                    <span>
-                                        <i class="ti ti-article"></i>
-                                    </span>
-                                    <span class="hide-menu">Buttons</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link" asp-controller="Home" asp-action="UIAlerts" aria-expanded="false">
-                                    <span>
-                                        <i class="ti ti-alert-circle"></i>
-                                    </span>
-                                    <span class="hide-menu">Alerts</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link" asp-controller="Home" asp-action="UICard" aria-expanded="false">
-                                    <span>
-                                        <i class="ti ti-cards"></i>
-                                    </span>
-                                    <span class="hide-menu">Card</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link" asp-controller="Home" asp-action="UIForms" aria-expanded="false">
-                                    <span>
-                                        <i class="ti ti-file-description"></i>
-                                    </span>
-                                    <span class="hide-menu">Forms</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link" asp-controller="Home" asp-action="UITypograpy" aria-expanded="false">
-                                    <span>
-                                        <i class="ti ti-typography"></i>
-                                    </span>
-                                    <span class="hide-menu">Typography</span>
-                                </a>
-                            </li>
-                            <li class="nav-small-cap">
-                                <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                                <span class="hide-menu">EXTRA</span>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link" asp-controller="Home" asp-action="IconTabler" aria-expanded="false">
-                                    <span>
-                                        <i class="ti ti-mood-happy"></i>
-                                    </span>
-                                    <span class="hide-menu">Icons</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link" asp-controller="Home" asp-action="SamplePage" aria-expanded="false">
-                                    <span>
-                                        <i class="ti ti-aperture"></i>
-                                    </span>
-                                    <span class="hide-menu">Sample Page</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                
-            </div>
-        </aside>
+                </aside>
+            }
+            if (isAdmin)
+            {
+                <aside class="left-sidebar">
+                    <div>
+                        <div class="brand-logo d-flex align-items-center justify-content-between">
+                            <a asp-controller="@(User!= null ? "Home" : "User")" asp-action="Index" class="text-nowrap logo-img">
+                                <img src="~/assets/images/logos/dark-logo.svg" width="180" alt="" />
+                            </a>
+                            <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+                                <i class="ti ti-x fs-8"></i>
+                            </div>
+                        </div>
+                        <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+                            <ul id="sidebarnav">
+                                <li class="nav-small-cap">
+                                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                                    <span class="hide-menu">Home</span>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-controller="Home" asp-action="Index" aria-expanded="false">
+                                        <span>
+                                            <i class="ti ti-layout-dashboard"></i>
+                                        </span>
+                                        <span class="hide-menu">Dashboard</span>
+                                    </a>
+                                </li>
+                                <li class="nav-small-cap">
+                                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                                    <span class="hide-menu">UI COMPONENTS</span>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-controller="Home" asp-action="UIButtons" aria-expanded="false">
+                                        <span>
+                                            <i class="ti ti-article"></i>
+                                        </span>
+                                        <span class="hide-menu">Buttons</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-controller="Home" asp-action="UIAlerts" aria-expanded="false">
+                                        <span>
+                                            <i class="ti ti-alert-circle"></i>
+                                        </span>
+                                        <span class="hide-menu">Alerts</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-controller="Home" asp-action="UICard" aria-expanded="false">
+                                        <span>
+                                            <i class="ti ti-cards"></i>
+                                        </span>
+                                        <span class="hide-menu">Card</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-controller="Home" asp-action="UIForms" aria-expanded="false">
+                                        <span>
+                                            <i class="ti ti-file-description"></i>
+                                        </span>
+                                        <span class="hide-menu">Forms</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-controller="Home" asp-action="UITypograpy" aria-expanded="false">
+                                        <span>
+                                            <i class="ti ti-typography"></i>
+                                        </span>
+                                        <span class="hide-menu">Typography</span>
+                                    </a>
+                                </li>
+                                <li class="nav-small-cap">
+                                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                                    <span class="hide-menu">EXTRA</span>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-controller="Home" asp-action="IconTabler" aria-expanded="false">
+                                        <span>
+                                            <i class="ti ti-mood-happy"></i>
+                                        </span>
+                                        <span class="hide-menu">Icons</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-controller="Home" asp-action="SamplePage" aria-expanded="false">
+                                        <span>
+                                            <i class="ti ti-aperture"></i>
+                                        </span>
+                                        <span class="hide-menu">Sample Page</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+
+                    </div>
+                </aside>
+            }
+
         }
         <div class="body-wrapper">
             @if (User != null)
             {
                 <header class="app-header">
                     <nav class="navbar navbar-expand-lg navbar-light border-bottom">
-                    <ul class="navbar-nav">
-                        <li class="nav-item d-block d-xl-none">
-                            <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)">
-                                <i class="ti ti-menu-2"></i>
-                            </a>
-                        </li>
-                    </ul>
-                    <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
-                        <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">                       
-
-                                <a class="nav-link nav-icon-hover" asp-controller="Home" asp-action="UIButtons">
-                                    <img src="~/assets/images/profile/user-1.jpg" alt="" width="50" height="50" class="rounded-circle">
+                        <ul class="navbar-nav">
+                            <li class="nav-item d-block d-xl-none">
+                                <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)">
+                                    <i class="ti ti-menu-2"></i>
                                 </a>
-
+                            </li>
                         </ul>
-                    </div>
-                </nav>
-            </header>
+                        <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+                            <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+
+                                <a class="nav-link nav-icon-hover" asp-controller="User" asp-action="MyProfile">
+                                    <img src="@User.ProfilePicture" alt="" width="50" height="50" class="rounded-circle">
+                                </a>
+                            </ul>
+                        </div>
+                    </nav>
+                </header>
             }
             <div class="container-fluid me-5 ms-5">
                 @RenderBody()

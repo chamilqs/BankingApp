@@ -1,9 +1,9 @@
-﻿namespace BankingApp.Infrastructure.Identity.Enums
+﻿namespace BankingApp.Core.Application.Enums
 {
     public enum Roles
     {
         SuperAdmin,
         Admin,
-        Basic
+        Client
     }
 }

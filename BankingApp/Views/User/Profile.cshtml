@@ -319,7 +319,7 @@
             </div>
         </header>
         <div class="profile__name">
-            <h2>@Model.Name @Model.LastName<img src="~/Images/Users/verified.svg" alt="Verified Ticker" style="margin-left:-5px;"></h2>
+            <h2>@Model.Name @Model.LastName<img src="~/assets/images/logos/verified.svg" alt="Verified Ticker" style="margin-left:-5px;"></h2>
             <p class="text-muted" style="margin-top:-15px;">&commat;@Model.UserName</p>
         </div>
         <div>
@@ -403,8 +403,7 @@
 
         <div class="d-flex justify-content-center align-items-center">
             <div class="btn-group">
-                <a asp-controller="UserIdentity" asp-action="EditProfile" asp-route-id="@User.Id" class="btn btn-primary">Editar</a>
-                <a asp-controller="Home" asp-action="Index" class="btn btn-warning">Regresar</a>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-warning">Go back</a>
             </div>
         </div>
 

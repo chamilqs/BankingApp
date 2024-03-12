@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using BankingApp.Infrastructure.Identity.Enums;
 using BankingApp.Infrastructure.Identity.Entities;
+using BankingApp.Core.Application.Enums;
 
 namespace BankingApp.Infrastructure.Identity.Seeds
 {
@@ -24,7 +24,7 @@ namespace BankingApp.Infrastructure.Identity.Seeds
                 if (user == null)
                 {
                     await userManager.CreateAsync(defaultUser, "123Pa$$word!");
-                    await userManager.AddToRoleAsync(defaultUser, Roles.Basic.ToString());
+                    await userManager.AddToRoleAsync(defaultUser, Roles.Client.ToString());
                     await userManager.AddToRoleAsync(defaultUser, Roles.Admin.ToString());
                     await userManager.AddToRoleAsync(defaultUser, Roles.SuperAdmin.ToString());
                 }

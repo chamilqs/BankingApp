@@ -9,12 +9,12 @@ namespace BankingApp.Core.Application.Mappings
         public GeneralProfile()
         {
             #region UserProfileIdentity
-            CreateMap<AuthenticationRequest, LoginIdentityViewModel>()
+            CreateMap<AuthenticationRequest, LoginViewModel>()
                 .ForMember(x => x.HasError, opt => opt.Ignore())
                 .ForMember(x => x.Error, opt => opt.Ignore())
                 .ReverseMap();
 
-            CreateMap<RegisterRequest, SaveIdentityUserViewModel>()
+            CreateMap<RegisterRequest, SaveUserViewModel>()
                 .ForMember(x => x.HasError, opt => opt.Ignore())
                 .ForMember(x => x.Error, opt => opt.Ignore())
                 .ReverseMap();

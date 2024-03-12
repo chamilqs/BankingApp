@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using BankingApp.Infrastructure.Identity.Enums;
 using BankingApp.Infrastructure.Identity.Entities;
+using BankingApp.Core.Application.Enums;
 
 namespace BankingApp.Infrastructure.Identity.Seeds
 {
@@ -10,7 +10,7 @@ namespace BankingApp.Infrastructure.Identity.Seeds
         {
             await roleManager.CreateAsync(new IdentityRole(Roles.SuperAdmin.ToString()));
             await roleManager.CreateAsync(new IdentityRole(Roles.Admin.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(Roles.Basic.ToString()));
+            await roleManager.CreateAsync(new IdentityRole(Roles.Client.ToString()));
         }
     }
 }

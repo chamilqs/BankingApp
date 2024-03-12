@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BankingApp.Core.Application.Enums;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace BankingApp.Core.Application.ViewModels.User
 {
-    public class SaveIdentityUserViewModel
+    public class SaveUserViewModel
     {
         [Required(ErrorMessage = "Debe colocar un nombre.")]
         [DataType(DataType.Text)]
@@ -32,6 +33,8 @@ namespace BankingApp.Core.Application.ViewModels.User
         [DataType(DataType.Text)]
         public string Phone { get; set; }
         public string? ProfilePicture { get; set; }
+
+        public Roles? Role { get; set; }
 
         [DataType(DataType.Upload)]
         public IFormFile? File { get; set; }

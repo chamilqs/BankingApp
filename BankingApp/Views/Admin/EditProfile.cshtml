@@ -2,7 +2,7 @@
 @using BankingApp.Core.Application.DTOs.Account
 @using BankingApp.Core.Application.ViewModels.User;
 @using BankingApp.Core.Application.Helpers;
-@model SaveIdentityUserViewModel
+@model SaveUserViewModel
 @inject IHttpContextAccessor httpContextAccessor
 @{
     var User = httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
