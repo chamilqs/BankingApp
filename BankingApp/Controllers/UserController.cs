@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WebAdmin.BankingApp.Controllers
 {
-    [Authorize]
     public class UserController : Controller
     {
         private readonly IHttpContextAccessor _httpContextAccessor;

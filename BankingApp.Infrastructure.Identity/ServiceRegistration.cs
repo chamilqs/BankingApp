@@ -35,8 +35,8 @@ namespace BankingApp.Infrastructure.Identity
 
             services.ConfigureApplicationCookie(options =>
             {
-                options.LoginPath = "/UserIdentity";
-                options.AccessDeniedPath = "/UserIdentity/AccessDenied";
+                options.LoginPath = "/User";
+                options.AccessDeniedPath = "/User/AccessDenied";
             });
 
             services.AddAuthentication();

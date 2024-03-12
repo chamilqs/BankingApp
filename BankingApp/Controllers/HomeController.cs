@@ -1,61 +1,40 @@
-﻿using BankingApp.Models;
+﻿using BankingApp.Core.Application.DTOs.Account;
+using BankingApp.Models;
+using Microsoft.AspNetCore.Authorization;
+using BankingApp.Core.Application.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace BankingApp.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly AuthenticationResponse authViewModel;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IHttpContextAccessor httpContextAccessor)
         {
-            _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
+            authViewModel = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
+
         }
 
         public IActionResult Index()
         {
-            return View();
-        }
+            var isAdmin = authViewModel != null ? authViewModel.Roles.Any(r => r == "Admin") : false;
+            var isClient = authViewModel != null ? authViewModel.Roles.Any(r => r == "Client") : false;
 
-        public IActionResult IconTabler()
-        {
-            return View();
-        }
+            if (isAdmin)
+            {
+                return RedirectToAction("Dashboard", "Admin");
+            }
+            else if (isClient)
+            {
+                return RedirectToAction("Dashboard", "Client");
+            }
 
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-        public IActionResult SamplePage()
-        {
-            return View();
-        }
-
-        public IActionResult UIAlerts()
-        {
-            return View();
-        }
-
-        public IActionResult UIButtons()
-        {
-            return View();
-        }
-
-        public IActionResult UICard()
-        {
-            return View();
-        }
-
-        public IActionResult UIForms()
-        {
-            return View();
-        }
-
-        public IActionResult UITypography()
-        {
-            return View();
+            return RedirectToAction("Login", "User");
         }
     }
 }

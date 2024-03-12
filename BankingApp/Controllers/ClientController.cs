@@ -3,9 +3,11 @@ using BankingApp.Infrastructure.Identity.Entities;
 using BankingApp.Core.Application.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BankingApp.Controllers
 {
+    [Authorize(Roles = "Client")]
     public class ClientController : Controller
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -21,6 +23,11 @@ namespace BankingApp.Controllers
         }
 
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult Dashboard()
         {
             return View();
         }

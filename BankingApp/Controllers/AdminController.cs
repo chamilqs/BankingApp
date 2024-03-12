@@ -9,9 +9,11 @@ using WebAdmin.BankingApp.Middlewares;
 using BankingApp.Core.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BankingApp.Core.Application.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BankingApp.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -28,16 +30,22 @@ namespace BankingApp.Controllers
         }
 
         /*
-         The methods need to redirect to the mantainense page when a process is finalized, like reseting a password or registering a new user.
+         The methods need to redirect to the Maintenance page when a process is finalized, like reseting a password or registering a new user.
          The EditProfile by POST method needs to be configured so the method recieves the ID of the user that is going to be edited
 
          
          */
-
-
-        public IActionResult Index()
+        public IActionResult Dashboard()
         {
             return View();
+        }
+
+        public IActionResult ClientMaintenance()
+        {
+            List<ApplicationUser> users = new List<ApplicationUser>();
+            users = _userManager.Users.ToList();
+
+            return View(users);
         }
 
         public IActionResult Register()
@@ -113,10 +121,9 @@ namespace BankingApp.Controllers
             }
 
             await _userService.UpdateUserAsync(vm);
-            return RedirectToRoute(new { controller = "UserIdentity", action = "MyProfile" });
+            return RedirectToRoute(new { controller = "Admin", action = "ClientMaintenance" });
         }
-        
-        
+
         private string UploadFile(IFormFile file, string email, bool isEditMode = false, string imagePath = "")
         {
             if (isEditMode)

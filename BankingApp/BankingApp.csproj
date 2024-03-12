@@ -15,13 +15,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Views\Home\IconTabler.cshtml" />
-    <None Include="Views\Home\SamplePage.cshtml" />
-    <None Include="Views\Home\UIAlerts.cshtml" />
-    <None Include="Views\Home\UIButtons.cshtml" />
-    <None Include="Views\Home\UICard.cshtml" />
-    <None Include="Views\Home\UIForms.cshtml" />
-    <None Include="Views\Home\UITypography.cshtml" />
+    <None Include="Views\Utilities\IconTabler.cshtml" />
+    <None Include="Views\Utilities\SamplePage.cshtml" />
+    <None Include="Views\Utilities\UIAlerts.cshtml" />
+    <None Include="Views\Utilities\UIButtons.cshtml" />
+    <None Include="Views\Utilities\UICard.cshtml" />
+    <None Include="Views\Utilities\UIForms.cshtml" />
+    <None Include="Views\Utilities\UITypography.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,10 +31,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.11" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\Client\" />
   </ItemGroup>
 
 </Project>
