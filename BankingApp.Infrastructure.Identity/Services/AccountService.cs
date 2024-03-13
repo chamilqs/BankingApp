@@ -56,15 +56,15 @@ namespace BankingApp.Infrastructure.Identity.Services
             response.Id = user.Id;
             response.Name = user.Name;
             response.LastName = user.LastName;
-            response.ProfilePicture = user.ProfilePicture;
             response.Phone = user.PhoneNumber;
             response.Email = user.Email;
             response.UserName = user.UserName;
+            response.IdentificationNumber = user.IdentificationNumber;
+            response.IsActive = user.IsActive;
 
             var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
 
             response.Roles = rolesList.ToList();
-            response.IsVerified = user.EmailConfirmed;
 
             return response;
         }
@@ -89,7 +89,8 @@ namespace BankingApp.Infrastructure.Identity.Services
             userVm.LastName = vm.LastName;
             userVm.UserName = vm.Username;
             userVm.PhoneNumber = vm.Phone;
-            userVm.ProfilePicture = vm.ProfilePicture;
+            userVm.IdentificationNumber = vm.IdentificationNumber;
+            userVm.IsActive = vm.IsActive;
             userVm.Email = vm.Email;
 
             var updateResult = await _userManager.UpdateAsync(userVm);
@@ -145,8 +146,9 @@ namespace BankingApp.Infrastructure.Identity.Services
                 LastName = request.LastName,
                 Email = request.Email,
                 PhoneNumber = request.Phone,
-                ProfilePicture = request.ProfilePicture,
-                UserName = request.UserName
+                UserName = request.UserName,
+                IdentificationNumber = request.IdentificationUser,
+                IsActive = request.IsActive
                 
             };
 

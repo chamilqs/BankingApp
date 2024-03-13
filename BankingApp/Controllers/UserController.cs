@@ -59,18 +59,7 @@ namespace WebAdmin.BankingApp.Controllers
         {
             await _userService.SignOutAsync();
             HttpContext.Session.Remove("user");
-            return RedirectToRoute(new { controller = "User", action = "Index" });
-        }
-
-        public async Task<IActionResult> MyProfile()
-        {
-            if (authViewModel == null)
-            {
-                return RedirectToRoute(new { controller = "User", action = "Login" });
-            }
-            ApplicationUser vm = await _userManager.FindByEmailAsync(authViewModel.Email);
-            return View("~/Views/User/Profile.cshtml", vm);
-
+            return RedirectToRoute(new { controller = "User", action = "Login" });
         }
 
         public IActionResult AccessDenied()

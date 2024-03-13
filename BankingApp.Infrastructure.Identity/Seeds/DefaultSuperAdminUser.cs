@@ -12,11 +12,12 @@ namespace BankingApp.Infrastructure.Identity.Seeds
             defaultUser.UserName = "superadminuser";
             defaultUser.Email = "superadminuser@email.com";
             defaultUser.Name = "John";
-            defaultUser.LastName = "Doe";
-            defaultUser.ProfilePicture = "https://i.pinimg.com/736x/07/33/ba/0733ba760b29378474dea0fdbcb97107.jpg";
+            defaultUser.LastName = "Doe";            
             defaultUser.PhoneNumber = "(123) 456-7890";
             defaultUser.EmailConfirmed = true;
             defaultUser.PhoneNumberConfirmed = true;
+            defaultUser.IdentificationNumber = "15354565478";
+            defaultUser.IsActive = true;
 
             if(userManager.Users.All(u=> u.Id != defaultUser.Id))
             {

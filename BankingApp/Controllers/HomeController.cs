@@ -36,5 +36,6 @@ namespace BankingApp.Controllers
 
             return RedirectToAction("Login", "User");
         }
+
     }
 }

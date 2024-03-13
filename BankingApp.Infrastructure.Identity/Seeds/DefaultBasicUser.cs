@@ -12,11 +12,12 @@ namespace BankingApp.Infrastructure.Identity.Seeds
             defaultUser.UserName = "clientuser";
             defaultUser.Email = "clientuser@email.com";
             defaultUser.Name = "Heung Min";
-            defaultUser.LastName = "Son";
-            defaultUser.ProfilePicture = "https://leadership.civicaction.ca/wp-content/uploads/2016/11/Foundation-Website-Mark-Sam.png";
+            defaultUser.LastName = "Son";      
             defaultUser.PhoneNumber = "(123) 456-7890";
             defaultUser.EmailConfirmed = true;
             defaultUser.PhoneNumberConfirmed = true;
+            defaultUser.IdentificationNumber = "21532544785";
+            defaultUser.IsActive = true;
 
             if(userManager.Users.All(u=> u.Id != defaultUser.Id))
             {

@@ -1,11 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BankingApp.Core.Domain.Common;
+using BankingApp.Core.Domain.Entities;
 
 namespace BankingApp.Infrastructure.Persistence.Contexts
 {
     public class ApplicationContext : DbContext
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
+
+        public DbSet<Client> Clients { get; set; }
+        public DbSet<CreditCard> CreditCards { get; set; }
+        public DbSet<Loan> Loans { get; set; }
+        public DbSet<SavingsAccount> SavingsAccounts { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<TransactionType> TransactionTypes { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -33,22 +41,223 @@ namespace BankingApp.Infrastructure.Persistence.Contexts
 
             #region "Table Names"
 
+            modelBuilder.Entity<Client>()
+                .ToTable("Clients");
 
+            modelBuilder.Entity<CreditCard>()
+                .ToTable("CreditCards");
+
+            modelBuilder.Entity<Loan>()
+                .ToTable("Loans");
+
+            modelBuilder.Entity<SavingsAccount>()
+                .ToTable("SavingsAccounts");
+
+            modelBuilder.Entity<Transaction>()
+                .ToTable("Transactions");
+
+            modelBuilder.Entity<TransactionType>()
+                .ToTable("TransactionTypes");
 
             #endregion
 
             #region "Primary Keys"
+            modelBuilder.Entity<Client>()
+                .HasKey(client => client.Id);
 
+            modelBuilder.Entity<CreditCard>()
+                .HasKey(cd => cd.Id);
+
+            modelBuilder.Entity<Loan>()
+                .HasKey(loan => loan.Id);
+
+            modelBuilder.Entity<SavingsAccount>()
+                .HasKey(sa => sa.Id);
+
+            modelBuilder.Entity<Transaction>()
+                .HasKey(trans => trans.Id);
+
+            modelBuilder.Entity<TransactionType>()
+                .HasKey(transt => transt.Id);
 
             #endregion
 
             #region "Relationships"
 
+            #region Beneficiary
+
+            // not directly
+            #endregion
+
+            #region Client
+            modelBuilder.Entity<Client>()
+                .HasMany(c => c.Loans)
+                .WithOne(l => l.Client)
+                .HasForeignKey(l => l.ClientId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Client>()
+                .HasMany(c => c.SavingsAccounts)
+                .WithOne(l => l.Client)
+                .HasForeignKey(l => l.ClientId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Client>()
+                .HasMany(c => c.Beneficiaries)
+                .WithOne(l => l.Client)
+                .HasForeignKey(l => l.ClientId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Client>()
+                .HasMany(c => c.CreditCards)
+                .WithOne(l => l.Client)
+                .HasForeignKey(l => l.ClientId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            #endregion
+
+            #region CreditCard
+            // not directly
+
+            #endregion
+
+            #region Loan
+            // not directly
+
+            #endregion
+
+            #region SavingsAccounts
+            modelBuilder.Entity<SavingsAccount>()
+                .HasMany(c => c.Beneficiaries)
+                .WithOne(l => l.SavingsAccount)
+                .HasForeignKey(l => l.SavingsAccountId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            #endregion
+
+            #region Transactions
+
+
+            #endregion
+
+            #region TransactionType
+            modelBuilder.Entity<TransactionType>()
+                .HasMany(c => c.Transactions)
+                .WithOne(l => l.TransactionType)
+                .HasForeignKey(l => l.TransactionTypeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            #endregion
 
             #endregion
 
             #region "Property configurations"
 
+            #region Beneficiary
+
+            modelBuilder.Entity<Beneficiary>().
+                Property(cc => cc.ClientId)
+                .IsRequired();
+
+            modelBuilder.Entity<Beneficiary>().
+                Property(cc => cc.SavingsAccountId)
+                .IsRequired();
+
+            #endregion
+
+            #region Client
+            modelBuilder.Entity<Client>().
+                Property(client => client.UserId)
+                .IsRequired();
+
+            #endregion
+
+            #region CreditCard
+            modelBuilder.Entity<CreditCard>().
+                Property(cc => cc.Id)
+                .IsRequired();
+
+            modelBuilder.Entity<CreditCard>().
+                Property(cc => cc.ClientId)
+                .IsRequired();
+
+            modelBuilder.Entity<CreditCard>().
+                Property(cc => cc.Limit)
+                .IsRequired();
+
+            modelBuilder.Entity<CreditCard>().
+                Property(cc => cc.Balance)
+                .IsRequired();
+
+            modelBuilder.Entity<CreditCard>().
+                Property(cc => cc.Debt)
+                .IsRequired();
+            #endregion
+
+            #region Loan
+            modelBuilder.Entity<Loan>().
+                Property(cc => cc.Id)
+                .IsRequired();
+
+            modelBuilder.Entity<Loan>().
+                Property(cc => cc.ClientId)
+                .IsRequired();
+
+            modelBuilder.Entity<Loan>().
+                Property(cc => cc.Amount)
+                .IsRequired();
+
+            modelBuilder.Entity<Loan>().
+                Property(cc => cc.Balance)
+                .IsRequired();
+            #endregion
+
+            #region SavingsAccount
+            modelBuilder.Entity<SavingsAccount>().
+                Property(sa => sa.Id)
+                .IsRequired();
+
+            modelBuilder.Entity<SavingsAccount>().
+                Property(sa => sa.ClientId)
+                .IsRequired();
+
+            modelBuilder.Entity<SavingsAccount>().
+                Property(sa => sa.Balance)
+                .IsRequired();
+
+            modelBuilder.Entity<SavingsAccount>().
+                Property(sa => sa.isMainAccount)
+                .IsRequired();
+            #endregion
+
+            #region Transaction
+            modelBuilder.Entity<Transaction>().
+                Property(ts => ts.Origin)
+                .IsRequired();
+
+            modelBuilder.Entity<Transaction>().
+                Property(ts => ts.Destination)
+                .IsRequired();
+
+            modelBuilder.Entity<Transaction>().
+                Property(ts => ts.TransactionTypeId)
+                .IsRequired();
+
+            modelBuilder.Entity<Transaction>().
+                Property(ts => ts.Amount)
+                .IsRequired();
+
+            modelBuilder.Entity<Transaction>().
+                Property(ts => ts.Concept)
+                .HasMaxLength(30);
+            #endregion
+
+            #region TransactionType
+            modelBuilder.Entity<TransactionType>().
+                Property(ts => ts.Name)
+                .IsRequired();
+
+            #endregion
 
             #endregion
 

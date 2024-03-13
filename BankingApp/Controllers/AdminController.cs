@@ -62,7 +62,6 @@ namespace BankingApp.Controllers
                 return View(vm);
             }
 
-            vm.ProfilePicture = UploadFile(vm.File, vm.Email);
             var origin = Request.Headers["origin"];
 
             RegisterResponse response = await _userService.RegisterAsync(vm, origin);
@@ -89,7 +88,8 @@ namespace BankingApp.Controllers
                 Username = vm.UserName,
                 Email = vm.Email,
                 Phone = vm.PhoneNumber,
-                ProfilePicture = vm.ProfilePicture
+                IdentificationNumber = vm.IdentificationNumber,
+                IsActive = vm.IsActive,
             };
             return View("EditProfile", svm);
         }
@@ -98,6 +98,8 @@ namespace BankingApp.Controllers
         public async Task<IActionResult> EditProfile(SaveUserViewModel vm)
         {
             // Needs to be configured so the method recieves the ID from the Client that its going to be edited
+            // then you can search for the user to get the current data, just in case the user does not want to change
+            // his password or others
 
             // ApplicationUser userVm = await _userManager.FindByIdAsync();
 
@@ -111,59 +113,8 @@ namespace BankingApp.Controllers
                 // vm.Password = userVm.PasswordHash;
             }
 
-            if (vm.File != null)
-            {
-                // vm.ProfilePicture = UploadFile(vm.File, authViewModel.Email, true, userVm.ProfilePicture);
-            }
-            else
-            {
-                // vm.ProfilePicture = userVm.ProfilePicture;
-            }
-
             await _userService.UpdateUserAsync(vm);
             return RedirectToRoute(new { controller = "Admin", action = "ClientMaintenance" });
-        }
-
-        private string UploadFile(IFormFile file, string email, bool isEditMode = false, string imagePath = "")
-        {
-            if (isEditMode)
-            {
-                if (file == null)
-                {
-                    return imagePath;
-                }
-            }
-            string basePath = $"/Images/Users/{email}";
-            string path = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot{basePath}");
-
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-
-            Guid guid = Guid.NewGuid();
-            FileInfo fileInfo = new(file.FileName);
-            string fileName = guid + fileInfo.Extension;
-
-            string fileNameWithPath = Path.Combine(path, fileName);
-
-            using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
-            {
-                file.CopyTo(stream);
-            }
-
-            if (isEditMode)
-            {
-                string[] oldImagePart = imagePath.Split("/");
-                string oldImagePath = oldImagePart[^1];
-                string completeImageOldPath = Path.Combine(path, oldImagePath);
-
-                if (System.IO.File.Exists(completeImageOldPath))
-                {
-                    System.IO.File.Delete(completeImageOldPath);
-                }
-            }
-            return $"{basePath}/{fileName}";
         }
 
         public static class Get

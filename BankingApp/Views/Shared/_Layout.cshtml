@@ -68,6 +68,14 @@
                                         <span class="hide-menu">Buttons</span>
                                     </a>
                                 </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-controller="User" asp-action="LogOut" aria-expanded="false">
+                                        <span>
+                                            <i class="ti ti-article"></i>
+                                        </span>
+                                        <span class="hide-menu">LogOut</span>
+                                    </a>
+                                </li>
                             </ul>
                         </nav>
 
@@ -112,13 +120,20 @@
                                         <span class="hide-menu">Client Maintenance</span>
                                     </a>
                                 </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-controller="User" asp-action="LogOut" aria-expanded="false">
+                                        <span>
+                                            <i class="ti ti-article"></i>
+                                        </span>
+                                        <span class="hide-menu">LogOut</span>
+                                    </a>
+                                </li>
                             </ul>
                         </nav>
 
                     </div>
                 </aside>
             }
-
         }
         <div class="body-wrapper">
             @if (User != null)
@@ -135,8 +150,8 @@
                         <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
                             <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
 
-                                <a class="nav-link nav-icon-hover" asp-controller="User" asp-action="MyProfile">
-                                    <img src="@User.ProfilePicture" alt="" width="50" height="50" class="rounded-circle">
+                                <a class="nav-link nav-icon-hover" asp-controller="Home" asp-action="Index">
+                                    <img src="~/assets/images/profile/user-1.jpg" alt="" width="50" height="50" class="rounded-circle">
                                 </a>
                             </ul>
                         </div>

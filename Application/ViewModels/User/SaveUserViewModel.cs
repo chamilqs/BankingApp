@@ -32,12 +32,11 @@ namespace BankingApp.Core.Application.ViewModels.User
         [Required(ErrorMessage = "Debe colocar un telefono.")]
         [DataType(DataType.Text)]
         public string Phone { get; set; }
-        public string? ProfilePicture { get; set; }
 
+        [Required(ErrorMessage = "Debe colocar una cédula.")]
+        public string IdentificationNumber { get; set; }
+        public bool? IsActive { get; set; }
         public Roles? Role { get; set; }
-
-        [DataType(DataType.Upload)]
-        public IFormFile? File { get; set; }
 
         public bool HasError { get; set; }
         public string? Error { get; set; }
