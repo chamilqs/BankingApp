@@ -10,7 +10,7 @@ namespace BankingApp.Infrastructure.Identity.Seeds
         {
             ApplicationUser defaultUser = new();
             defaultUser.UserName = "clientuser";
-            defaultUser.Email = "clientuser@email.com";
+            defaultUser.Email = "clientuser@gmail.com";
             defaultUser.Name = "Heung Min";
             defaultUser.LastName = "Son";      
             defaultUser.PhoneNumber = "(123) 456-7890";

@@ -2,8 +2,7 @@
 {
     public enum Roles
     {
-        SuperAdmin,
-        Admin,
+        Admin = 1,
         Client
     }
 }

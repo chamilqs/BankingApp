@@ -4,13 +4,13 @@ using BankingApp.Core.Application.Enums;
 
 namespace BankingApp.Infrastructure.Identity.Seeds
 {
-    public static class DefaultSuperAdminUser
+    public static class DefaultAdminUser
     {
         public static async Task SeedAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             ApplicationUser defaultUser = new();
-            defaultUser.UserName = "superadminuser";
-            defaultUser.Email = "superadminuser@email.com";
+            defaultUser.UserName = "adminuser";
+            defaultUser.Email = "adminuser@gmail.com";
             defaultUser.Name = "John";
             defaultUser.LastName = "Doe";            
             defaultUser.PhoneNumber = "(123) 456-7890";
@@ -25,9 +25,7 @@ namespace BankingApp.Infrastructure.Identity.Seeds
                 if (user == null)
                 {
                     await userManager.CreateAsync(defaultUser, "123Pa$$word!");
-                    await userManager.AddToRoleAsync(defaultUser, Roles.Client.ToString());
                     await userManager.AddToRoleAsync(defaultUser, Roles.Admin.ToString());
-                    await userManager.AddToRoleAsync(defaultUser, Roles.SuperAdmin.ToString());
                 }
             }
          
