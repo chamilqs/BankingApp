@@ -45,7 +45,7 @@ namespace BankingApp.Infrastructure.Identity.Services
             if (user.IsActive)
             {
                 response.HasError = true;
-                response.Error = $"Account disactive for {request.Email}, please contact an administrator.";
+                response.Error = $"Account disactive for {request.Email}, please contact the administrator.";
                 return response;
             }
 

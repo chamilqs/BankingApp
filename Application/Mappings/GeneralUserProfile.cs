@@ -4,9 +4,9 @@ using BankingApp.Core.Application.DTOs.Account;
 
 namespace BankingApp.Core.Application.Mappings
 {
-    public class GeneralProfile : Profile
+    public class GeneralUserProfile : Profile
     {
-        public GeneralProfile()
+        public GeneralUserProfile()
         {
             #region UserProfileIdentity
             CreateMap<AuthenticationRequest, LoginViewModel>()
@@ -15,16 +15,6 @@ namespace BankingApp.Core.Application.Mappings
                 .ReverseMap();
 
             CreateMap<RegisterRequest, SaveUserViewModel>()
-                .ForMember(x => x.HasError, opt => opt.Ignore())
-                .ForMember(x => x.Error, opt => opt.Ignore())
-                .ReverseMap();
-
-            CreateMap<ForgotPasswordRequest, ForgotPasswordViewModel>()
-                .ForMember(x => x.HasError, opt => opt.Ignore())
-                .ForMember(x => x.Error, opt => opt.Ignore())
-                .ReverseMap();
-
-            CreateMap<ResetPasswordRequest, ResetPasswordViewModel>()
                 .ForMember(x => x.HasError, opt => opt.Ignore())
                 .ForMember(x => x.Error, opt => opt.Ignore())
                 .ReverseMap();

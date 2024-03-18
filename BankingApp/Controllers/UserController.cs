@@ -26,15 +26,29 @@ namespace WebAdmin.BankingApp.Controllers
             authViewModel = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
         }
 
+        #region Login
         [ServiceFilter(typeof(LoginAuthorize))]
-        public IActionResult Login()
+        public async Task<IActionResult> Index(bool hasError = false, string? message = null)
         {
-            return View(new LoginViewModel());
+            var login = new LoginViewModel();
+
+            if (hasError)
+            {
+                login.HasError = hasError;
+                login.Error = message;
+            }
+
+            return View(login);
+        }
+
+        public async Task<IActionResult> RedirectIndex(string? ReturnUrl)
+        {
+            return RedirectToRoute(new { controller = "User", action = "Index", hasError = true, message = "You don't have access to this section!" });
         }
 
         [ServiceFilter(typeof(LoginAuthorize))]
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel vm)
+        public async Task<IActionResult> Index(LoginViewModel vm)
         {
             if (!ModelState.IsValid)
             {
@@ -54,20 +68,19 @@ namespace WebAdmin.BankingApp.Controllers
                 return View(vm);
             }
         }
+        #endregion
 
         public async Task<IActionResult> LogOut()
         {
             await _userService.SignOutAsync();
             HttpContext.Session.Remove("user");
-            return RedirectToRoute(new { controller = "User", action = "Login" });
+            return RedirectToRoute(new { controller = "User", action = "Index" });
         }
 
         public IActionResult AccessDenied()
         {
             return View();
         }
-
-
     }
 }
 

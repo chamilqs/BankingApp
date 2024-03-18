@@ -4,11 +4,11 @@ namespace BankingApp.Core.Application.ViewModels.User
 {
     public class LoginViewModel
     {
-        [Required(ErrorMessage = "Debe colocar el email de su cuenta.")]
+        [Required(ErrorMessage = "You mus enter an email.")]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Debe colocar una contraseña.")]
+        [Required(ErrorMessage = "You must enter a password.")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
         public bool HasError { get; set; }
