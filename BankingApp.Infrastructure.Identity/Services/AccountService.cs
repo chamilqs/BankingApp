@@ -1,9 +1,5 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.WebUtilities;
+﻿using Microsoft.AspNetCore.Identity;
 using BankingApp.Core.Application.DTOs.Account;
-using BankingApp.Core.Application.Helpers;
 using BankingApp.Core.Application.DTOs.Email;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.User;
@@ -46,10 +42,10 @@ namespace BankingApp.Infrastructure.Identity.Services
                 return response;
             }
 
-            if (!user.EmailConfirmed)
+            if (user.IsActive)
             {
                 response.HasError = true;
-                response.Error = $"Account not confirmed for {request.Email}, please contact an administrator.";
+                response.Error = $"Account disactive for {request.Email}, please contact an administrator.";
                 return response;
             }
 

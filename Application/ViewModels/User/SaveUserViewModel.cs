@@ -6,36 +6,36 @@ namespace BankingApp.Core.Application.ViewModels.User
 {
     public class SaveUserViewModel
     {
-        [Required(ErrorMessage = "Debe colocar un nombre.")]
+        [Required(ErrorMessage = "You must enter a name.")]
         [DataType(DataType.Text)]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "Debe colocar un apellido.")]
+        [Required(ErrorMessage = "You must enter a lastname.")]
         [DataType(DataType.Text)]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "Debe colocar un nombre de usuario.")]
+        [Required(ErrorMessage = "You mus enter a Username.")]
         [DataType(DataType.Text)]
         public string Username { get; set; }
 
-        [Required(ErrorMessage = "Debe colocar un correo.")]
+        [Required(ErrorMessage = "You must enter an email.")]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
         [DataType(DataType.Password)]
         public string? Password { get; set; }
 
-        [Compare(nameof(Password), ErrorMessage = "Las contraseñas no coiciden")]
+        [Compare(nameof(Password), ErrorMessage = "The password must match")]
         [DataType(DataType.Password)]
         public string? ConfirmPassword { get; set; }
 
-        [Required(ErrorMessage = "Debe colocar un telefono.")]
+        [Required(ErrorMessage = "You must enter a phone.")]
         [DataType(DataType.Text)]
         public string Phone { get; set; }
 
-        [Required(ErrorMessage = "Debe colocar una cédula.")]
+        [Required(ErrorMessage = "You must enter an ID.")]
         public string IdentificationNumber { get; set; }
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
         public Roles? Role { get; set; }
 
         public bool HasError { get; set; }
