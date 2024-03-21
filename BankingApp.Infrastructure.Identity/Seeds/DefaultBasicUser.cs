@@ -10,7 +10,7 @@ namespace BankingApp.Infrastructure.Identity.Seeds
         {
             ApplicationUser defaultUser = new();
             defaultUser.UserName = "clientuser";
-            defaultUser.Email = "clientuser@email.com";
+            defaultUser.Email = "clientuser@gmail.com";
             defaultUser.Name = "Heung Min";
             defaultUser.LastName = "Son";      
             defaultUser.PhoneNumber = "(123) 456-7890";
@@ -24,7 +24,7 @@ namespace BankingApp.Infrastructure.Identity.Seeds
                 var user = await userManager.FindByEmailAsync(defaultUser.Email);
                 if (user == null)
                 {
-                    await userManager.CreateAsync(defaultUser, "123Pa$$word!");
+                    await userManager.CreateAsync(defaultUser, "123P4$$w0rd!");
                     await userManager.AddToRoleAsync(defaultUser, Roles.Client.ToString());
                 }
             }
