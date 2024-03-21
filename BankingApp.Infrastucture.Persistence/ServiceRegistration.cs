@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using BankingApp.Core.Application.Interfaces.Repositories;
 using BankingApp.Infrastructure.Persistence.Contexts;
+using BankingApp.Infrastucture.Persistence.Repositories;
 
 namespace BankingApp.Infrastructure.Persistence
 {
@@ -26,7 +27,7 @@ namespace BankingApp.Infrastructure.Persistence
 
             #region Repositories
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
+            services.AddTransient<IBeneficiaryRepository, BeneficiaryRepository>();
 
             #endregion
         }

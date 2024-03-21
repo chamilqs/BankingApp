@@ -10,6 +10,7 @@ namespace BankingApp.Infrastructure.Persistence.Contexts
 
         public DbSet<Client> Clients { get; set; }
         public DbSet<CreditCard> CreditCards { get; set; }
+        public DbSet<Beneficiary> Beneficiaries { get; set; }
         public DbSet<Loan> Loans { get; set; }
         public DbSet<SavingsAccount> SavingsAccounts { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
@@ -44,6 +45,9 @@ namespace BankingApp.Infrastructure.Persistence.Contexts
             modelBuilder.Entity<Client>()
                 .ToTable("Clients");
 
+            modelBuilder.Entity<Beneficiary>()
+                .ToTable("Beneficiaries");
+
             modelBuilder.Entity<CreditCard>()
                 .ToTable("CreditCards");
 
@@ -64,6 +68,9 @@ namespace BankingApp.Infrastructure.Persistence.Contexts
             #region "Primary Keys"
             modelBuilder.Entity<Client>()
                 .HasKey(client => client.Id);
+
+            modelBuilder.Entity<Beneficiary>()
+                .HasKey(bf => bf.Id);
 
             modelBuilder.Entity<CreditCard>()
                 .HasKey(cd => cd.Id);
