@@ -5,6 +5,8 @@ using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.User;
 using BankingApp.Infrastructure.Identity.Entities;
 using BankingApp.Core.Application.Enums;
+using Microsoft.EntityFrameworkCore;
+using Azure;
 
 namespace BankingApp.Infrastructure.Identity.Services
 {
@@ -22,6 +24,7 @@ namespace BankingApp.Infrastructure.Identity.Services
             _emailService = emailService;
         }
 
+        #region Login & Logout
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request)
         {
             AuthenticationResponse response = new();
@@ -69,6 +72,7 @@ namespace BankingApp.Infrastructure.Identity.Services
         {
             await _signInManager.SignOutAsync();
         }
+        #endregion
 
         public async Task<SaveUserViewModel> UpdateUserAsync(SaveUserViewModel vm)
         {
@@ -111,7 +115,6 @@ namespace BankingApp.Infrastructure.Identity.Services
 
             return vm;
         }
-
 
         public async Task<RegisterResponse> RegisterUserAsync(RegisterRequest request, string origin)
         {
@@ -181,8 +184,34 @@ namespace BankingApp.Infrastructure.Identity.Services
             }
 
             return response;
-        }        
-    
+        }
+
+        #region GetAllUserAsync
+        public async Task<List<UserDTO>> GetAllUserAsync()
+        {
+            var userList = await _userManager.Users.ToListAsync();
+
+            var userDTOList = userList.Select(user => new UserDTO
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Name = user.Name,
+                LastName = user.LastName,
+                IdentificationNumber = user.IdentificationNumber
+            }).ToList();
+
+            foreach (var userDTO in userDTOList)
+            {
+                var user = await _userManager.FindByIdAsync(userDTO.Id);
+
+                var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
+
+                userDTO.Role = rolesList.ToList()[0];
+            }
+
+            return userDTOList;
+        }
+        #endregion
     }
 
 }
