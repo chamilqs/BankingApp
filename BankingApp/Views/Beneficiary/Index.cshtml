@@ -1,0 +1,114 @@
+﻿@using BankingApp.Core.Application.ViewModels.Beneficiary;
+@model List<BeneficiaryViewModel>
+@{
+    ViewData["Title"] = "Beneficiaries";
+}
+
+<link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp&amp;display=swap" rel="stylesheet">
+
+<style>
+    .searchbar {
+        margin-bottom: auto;
+        margin-top: auto;
+        height: 60px;
+        background-color: #353b48;
+        border-radius: 30px;
+        padding: 10px;
+    }
+
+    .search_input {
+        color: white;
+        border: 0;
+        outline: 0;
+        background: none;
+        width: 0;
+        caret-color: transparent;
+        line-height: 40px;
+        transition: width 0.4s linear;
+    }
+
+    .searchbar:hover > .search_input {
+        padding: 0 10px;
+        width: 450px;
+        caret-color: white;
+        transition: width 0.4s linear;
+    }
+
+    .searchbar:hover > .search_icon {
+        background: white;
+        color: black;
+    }
+
+    .search_icon {
+        height: 40px;
+        width: 40px;
+        float: right;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        color: white;
+        text-decoration: none;
+    }
+</style>
+
+<h1 class="text-center">Beneficiaries</h1>
+
+<div class="container h-100">
+    <div class="d-flex justify-content-center h-100">
+        <div class="searchbar">
+            <input class="search_input" type="text" name="" placeholder="Search...">
+            <a href="#" class="search_icon"><span class="material-icons"> search </span></a>
+        </div>
+    </div>
+</div>
+
+    @if (Model.Count == 0 || Model == null)
+    {
+
+        <h1 colspan="2" class="text-center mt-4">
+            There are no beneficiaries registered.
+        </h1>
+    }
+    else
+    {
+        <table class="table table-hover mt-4">
+            <thead>
+                <tr>
+                    <th class="text-center">
+                        Name
+                    </th>
+                    <th class="text-center">
+                        Last Name
+                    </th>
+                    <th class="text-center">
+                        Account Number
+                    </th>
+                    <th>
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (BeneficiaryViewModel item in Model)
+                {
+                    <tr>
+                        <td class="text-center">
+                            @Html.DisplayFor(modelItem => item.BeneficiaryName)
+                        </td>
+                        <td class="text-center">
+                            @Html.DisplayFor(modelItem => item.BeneficiaryLastName)
+                        </td>
+                        <td class="text-center">
+                            @Html.DisplayFor(modelItem => item.BeneficiaryAccountNumber)
+                        </td>
+                        <td>
+                            <a asp-controller="Beneficiary" asp-action="Delete" class="btn btn-danger" asp-route-id="@item.BeneficiaryAccountNumber">Delete</a>
+                        </td>
+                    </tr>
+                }
+        
+            </tbody>
+        </table>    
+    }
