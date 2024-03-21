@@ -13,7 +13,6 @@ namespace BankingApp.Infrastucture.Persistence.Repositories
         {
             _dbContext = dbContext;
         }
-
         public Task<Beneficiary> GetByAccountNumber(string accountNumber)
         {
             var beneficiary = _dbContext.Beneficiaries.FirstOrDefaultAsync(b => b.SavingsAccountId == accountNumber);

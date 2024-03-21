@@ -44,18 +44,7 @@ namespace WebAdmin.BankingApp.Controllers
             AuthenticationResponse userVm = await _userService.LoginAsync(vm);
             if (userVm != null && userVm.HasError != true)
             {
-                if (userVm.Roles.Contains("Admin"))
-                {
-                    HttpContext.Session.Set("user", userVm);
-                }
-                else
-                {
-                    //var client = "await _userService.GetByIdSaveViewModel(userVm.Id)";
-                    //HttpContext.Session.Set("client", client);
-
-                    HttpContext.Session.Set("user", userVm);
-
-                }
+                HttpContext.Session.Set("user", userVm);
                 return RedirectToRoute(new { controller = "Home", action = "Index" });
             }
             else

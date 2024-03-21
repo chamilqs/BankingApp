@@ -28,7 +28,7 @@ namespace BankingApp.Infrastructure.Persistence
             #region Repositories
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IBeneficiaryRepository, BeneficiaryRepository>();
-
+            services.AddTransient<IClientRepository, ClientRepository>();
             #endregion
         }
     }

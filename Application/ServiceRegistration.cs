@@ -15,6 +15,7 @@ namespace BankingApp.Core.Application
             services.AddTransient(typeof(IGenericService<,,>), typeof(GenericService<,,>));
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IBeneficiaryService, BeneficiaryService>();
+            services.AddTransient<IClientService, ClientService>();
             #endregion
         }
     }
