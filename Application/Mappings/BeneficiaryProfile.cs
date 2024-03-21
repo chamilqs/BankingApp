@@ -1,13 +1,6 @@
 ﻿using AutoMapper;
-using BankingApp.Core.Application.DTOs.Account;
 using BankingApp.Core.Application.ViewModels.Beneficiary;
-using BankingApp.Core.Application.ViewModels.User;
 using BankingApp.Core.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingApp.Core.Application.Mappings
 {

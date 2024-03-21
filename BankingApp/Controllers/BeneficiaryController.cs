@@ -13,15 +13,16 @@ namespace BankingApp.Controllers
     {
         private readonly IBeneficiaryService _beneficiaryService;
         private readonly IBeneficiaryRepository _beneficiaryRepository;
+        private readonly IClientService _clientService;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly Client client;
-
-        public BeneficiaryController(IBeneficiaryService beneficiaryService, IHttpContextAccessor httpContextAccessor, IBeneficiaryRepository beneficiaryRepository)
+        private readonly AuthenticationResponse user;
+        public BeneficiaryController(IBeneficiaryService beneficiaryService, IHttpContextAccessor httpContextAccessor, IClientService clientService,IBeneficiaryRepository beneficiaryRepository)
         {
             _beneficiaryService = beneficiaryService;
             _httpContextAccessor = httpContextAccessor;
             _beneficiaryRepository = beneficiaryRepository;
-            client = _httpContextAccessor.HttpContext.Session.Get<Client>("client");
+            _clientService = clientService;
+            user = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
         }
 
         public async Task<IActionResult> Index()
@@ -37,6 +38,8 @@ namespace BankingApp.Controllers
             {
                 return BadRequest(new { message = "Account not found." });
             }
+
+            var client = await _clientService.GetByUserIdViewModel(user.Id);
 
             var beneficiaries = await _beneficiaryService.GetAllViewModel();
             if (beneficiaries.Any(f => (f.ClientId == client.Id && f.BeneficiaryAccountNumber == accountNumber)))
