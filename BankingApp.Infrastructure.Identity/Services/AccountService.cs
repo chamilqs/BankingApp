@@ -26,11 +26,11 @@ namespace BankingApp.Infrastructure.Identity.Services
         {
             AuthenticationResponse response = new();
 
-            var user = await _userManager.FindByEmailAsync(request.Email);
+            var user = await _userManager.FindByNameAsync(request.Username);
             if (user == null)
             {
                 response.HasError = true;
-                response.Error = $"No accounts registered with the email: {request.Email}.";
+                response.Error = $"No accounts registered with the username: {request.Username}.";
                 return response;
             }
 
@@ -38,14 +38,14 @@ namespace BankingApp.Infrastructure.Identity.Services
             if (!result.Succeeded)
             {
                 response.HasError = true;
-                response.Error = $"Invalid credentials for {request.Email}.";
+                response.Error = $"Invalid credentials for {request.Username}.";
                 return response;
             }
 
-            if (user.IsActive)
+            if (!user.IsActive)
             {
                 response.HasError = true;
-                response.Error = $"Account disactive for {request.Email}, please contact the administrator.";
+                response.Error = $"Account disactive for {request.Username}, please contact the administrator.";
                 return response;
             }
 
@@ -132,7 +132,7 @@ namespace BankingApp.Infrastructure.Identity.Services
             if (userWithSameEmail != null)
             {
                 response.HasError = true;
-                response.Error = $"This email '{request.Email}' is already registered.";
+                response.Error = $"This username '{request.Email}' is already registered.";
                 return response;
             }
 
