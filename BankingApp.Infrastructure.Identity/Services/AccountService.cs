@@ -197,7 +197,8 @@ namespace BankingApp.Infrastructure.Identity.Services
                 Username = user.UserName,
                 Name = user.Name,
                 LastName = user.LastName,
-                IdentificationNumber = user.IdentificationNumber
+                IdentificationNumber = user.IdentificationNumber,
+                IsActive = user.IsActive
             }).ToList();
 
             foreach (var userDTO in userDTOList)
