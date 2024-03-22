@@ -91,9 +91,9 @@
                             </div>
 
                             <div id="collapse-account-amount" class="collapse">
-                                <div class="mb-3">
+                                <div class="mb-3 align-text-end">
                                     <label asp-for="AccountAmount" class="form-label">AccountAmount:</label>
-                                    <input asp-for="AccountAmount" class="form-control" placeholder="Account Amount" />
+                                    <input asp-for="AccountAmount" class="form-control pe-3" placeholder="Account Amount" value="0.00" />
                                     <span asp-validation-for="AccountAmount" class="text-danger"></span>
                                 </div>
                             </div>
@@ -125,9 +125,16 @@
 
 <script>
     $(document).ready(function () {
+        var initialValue = $('#select-role').val();
+        if (initialValue === "@((int)Roles.Client)") {
+            $('#collapse-account-amount').collapse('show');
+        } else {
+            $('#collapse-account-amount').collapse('hide');
+        }
+
         $('#select-role').change(function () {
             var selectedValue = $(this).val();
-            if (selectedValue === "2") { // Change this condition based on your requirement
+            if (selectedValue === "@((int)Roles.Client)") { // Change this condition based on your requirement
                 $('#collapse-account-amount').collapse('show');
             } else {
                 $('#collapse-account-amount').collapse('hide');

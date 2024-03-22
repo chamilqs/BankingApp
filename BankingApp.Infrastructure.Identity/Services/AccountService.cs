@@ -55,7 +55,6 @@ namespace BankingApp.Infrastructure.Identity.Services
             response.Id = user.Id;
             response.Name = user.Name;
             response.LastName = user.LastName;
-            response.Phone = user.PhoneNumber;
             response.Email = user.Email;
             response.UserName = user.UserName;
             response.IdentificationNumber = user.IdentificationNumber;
@@ -88,7 +87,6 @@ namespace BankingApp.Infrastructure.Identity.Services
             userVm.Name = vm.Name;
             userVm.LastName = vm.LastName;
             userVm.UserName = vm.Username;
-            userVm.PhoneNumber = vm.Phone;
             userVm.IdentificationNumber = vm.IdentificationNumber;
             userVm.IsActive = vm.IsActive;
             userVm.Email = vm.Email;
