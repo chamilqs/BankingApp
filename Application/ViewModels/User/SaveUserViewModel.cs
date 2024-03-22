@@ -6,6 +6,8 @@ namespace BankingApp.Core.Application.ViewModels.User
 {
     public class SaveUserViewModel
     {
+        public string Id { get; set; }
+
         [Required(ErrorMessage = "You must enter a name.")]
         [DataType(DataType.Text)]
         public string Name { get; set; }
@@ -22,9 +24,11 @@ namespace BankingApp.Core.Application.ViewModels.User
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
+        [Required(ErrorMessage = "You must enter a Password.")]
         [DataType(DataType.Password)]
         public string? Password { get; set; }
 
+        [Required(ErrorMessage = "You must enter a Password.")]
         [Compare(nameof(Password), ErrorMessage = "The password must match")]
         [DataType(DataType.Password)]
         public string? ConfirmPassword { get; set; }
@@ -35,8 +39,10 @@ namespace BankingApp.Core.Application.ViewModels.User
 
         [Required(ErrorMessage = "You must enter an ID.")]
         public string IdentificationNumber { get; set; }
-        public bool IsActive { get; set; }
+
+        [Range(1, int.MaxValue, ErrorMessage = "You must enter an ID.")]
         public Roles? Role { get; set; }
+        public bool IsActive { get; set; }
 
         public bool HasError { get; set; }
         public string? Error { get; set; }

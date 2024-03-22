@@ -10,6 +10,7 @@ using BankingApp.Core.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BankingApp.Core.Application.Enums;
 using Microsoft.AspNetCore.Authorization;
+using System;
 
 namespace BankingApp.Controllers
 {
@@ -48,14 +49,16 @@ namespace BankingApp.Controllers
         }
         #endregion
 
-        //public IActionResult Register()
-        //{
-        //    ViewBag.Roles = Get.ListRoles();
-        //    return View(new SaveUserViewModel());
-        //}
+        #region Create
+        public IActionResult Create()
+        {
+            ViewBag.Roles = Enum.GetNames(typeof(Roles));
+
+            return View(new SaveUserViewModel());
+        }
 
         [HttpPost]
-        public async Task<IActionResult> Register(SaveUserViewModel vm)
+        public async Task<IActionResult> Create(SaveUserViewModel vm)
         {
             if (!ModelState.IsValid)
             {
@@ -75,6 +78,7 @@ namespace BankingApp.Controllers
 
             return RedirectToRoute(new { controller = "Admin", action = "ClientMaintenance" });
         }
+        #endregion
 
 
         //// needs mantainense
