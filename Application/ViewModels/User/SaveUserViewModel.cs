@@ -26,22 +26,23 @@ namespace BankingApp.Core.Application.ViewModels.User
 
         [Required(ErrorMessage = "You must enter a Password.")]
         [DataType(DataType.Password)]
-        public string? Password { get; set; }
+        public string Password { get; set; }
 
         [Required(ErrorMessage = "You must enter a Password.")]
         [Compare(nameof(Password), ErrorMessage = "The password must match")]
         [DataType(DataType.Password)]
-        public string? ConfirmPassword { get; set; }
-
-        [Required(ErrorMessage = "You must enter a phone.")]
-        [DataType(DataType.Text)]
-        public string Phone { get; set; }
+        public string ConfirmPassword { get; set; }
 
         [Required(ErrorMessage = "You must enter an ID.")]
+        [RegularExpression(@"^\\d{3}\-\d{7}-\d{1}$", ErrorMessage = "Your Id must be with the following format: ###-#######-#.")]
+        [DataType(DataType.Text)]
         public string IdentificationNumber { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "You must enter an ID.")]
         public Roles? Role { get; set; }
+
+        [DataType(DataType.Currency)]
+        public double? AccountAmount { get; set; }
         public bool IsActive { get; set; }
 
         public bool HasError { get; set; }
