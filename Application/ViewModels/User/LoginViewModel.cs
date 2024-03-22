@@ -5,8 +5,8 @@ namespace BankingApp.Core.Application.ViewModels.User
     public class LoginViewModel
     {
         [Required(ErrorMessage = "You mus enter an email.")]
-        [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
+        [DataType(DataType.Text)]
+        public string Username { get; set; }
 
         [Required(ErrorMessage = "You must enter a password.")]
         [DataType(DataType.Password)]

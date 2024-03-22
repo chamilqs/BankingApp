@@ -16,16 +16,19 @@ namespace BankingApp.Core.Application.Services
             _mapper = mapper;
         }
 
+        #region Login & Logout
         public async Task<AuthenticationResponse> LoginAsync(LoginViewModel vm)
         {
             AuthenticationRequest loginRequest = _mapper.Map<AuthenticationRequest>(vm);
             AuthenticationResponse userResponse = await _accountService.AuthenticateAsync(loginRequest);
             return userResponse;
         }
+
         public async Task SignOutAsync()
         {
             await _accountService.SignOutAsync();
         }
+        #endregion
 
         public async Task<RegisterResponse> RegisterAsync(SaveUserViewModel vm, string origin)
         {
@@ -38,5 +41,13 @@ namespace BankingApp.Core.Application.Services
             return await _accountService.UpdateUserAsync(vm);
         }
 
+        #region GetAllViewModel
+        public async Task<List<UserViewModel>> GetAllViewModel()
+        {
+            var userList = await _accountService.GetAllUserAsync();
+
+            return _mapper.Map<List<UserViewModel>>(userList);
+        }
+        #endregion
     }
 }
