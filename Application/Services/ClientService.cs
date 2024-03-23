@@ -42,8 +42,14 @@ namespace BankingApp.Core.Application.Services
             {
                 var user = await _userService.GetByUsername(vm.Username);
 
+                SaveClientViewModel saveClientViewModel = new() 
+                { 
+                    UserId = user.Id
+                };
 
-                //await _clientRepository.AddAsync();
+                await base.Add(saveClientViewModel);
+
+
             }
 
             return response;

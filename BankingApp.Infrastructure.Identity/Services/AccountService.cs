@@ -111,6 +111,7 @@ namespace BankingApp.Infrastructure.Identity.Services
             return vm;
         }
 
+        #region Register
         public async Task<RegisterResponse> RegisterUserAsync(RegisterRequest request)
         {
             RegisterResponse response = new()
@@ -157,6 +158,7 @@ namespace BankingApp.Infrastructure.Identity.Services
 
             return response;
         }
+        #endregion
 
         #region GetAllUserAsync
         public async Task<List<UserDTO>> GetAllUserAsync()
