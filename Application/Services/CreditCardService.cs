@@ -17,9 +17,33 @@ namespace BankingApp.Core.Application.Services
             _mapper = mapper;
         }
 
-        public Task<CreditCardViewModel> GetByAccountNumber(string accountNumber)
+        public async Task<CreditCard> GetByAccountNumber(string accountNumber, int clientId)
         {
-            throw new NotImplementedException();
+            var creditCard = await _creditCardRepository.GetByAccountNumber(accountNumber, clientId);
+            if (creditCard == null)
+            {
+                return null;
+            }
+
+            return creditCard;
         }
+
+        public async Task UpdateCreditCard(double balance, double debt, string accountNumber, int clientId)
+        {
+            var creditCard = await GetByAccountNumber(accountNumber, clientId);
+
+            SaveCreditCardViewModel vm = new SaveCreditCardViewModel
+            {
+                Id = creditCard.Id,
+                ClientId = creditCard.ClientId,
+                DateCreated = creditCard.DateCreated,
+                Balance = balance,
+                Debt = debt,
+                Limit = creditCard.Limit
+            };
+
+            await base.UpdateProduct(vm, accountNumber);
+        }
+
     }
 }
