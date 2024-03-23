@@ -69,13 +69,13 @@ namespace BankingApp.Controllers
 
             RegisterResponse response = new();
 
-            if (vm.Role == (int)Roles.Client)
-            {
-                response = await _clientService.RegisterAsync(vm);
-            }
-            else if (vm.Role == (int)Roles.Admin)
+            if (vm.Role == (int)Roles.Admin)
             {
                response = await _userService.RegisterAsync(vm);
+            }
+            else if (vm.Role == (int)Roles.Client)
+            {
+                response = await _clientService.RegisterAsync(vm);
             }
 
             if (response.HasError)

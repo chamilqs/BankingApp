@@ -10,5 +10,6 @@ namespace BankingApp.Core.Application.Interfaces.Services
         Task<SaveUserViewModel> UpdateUserAsync(SaveUserViewModel vm);
         Task SignOutAsync();
         Task<List<UserViewModel>> GetAllViewModel();
+        Task<UserViewModel> GetByUsername(string username);
     }
 }

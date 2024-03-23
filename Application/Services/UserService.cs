@@ -31,21 +31,23 @@ namespace BankingApp.Core.Application.Services
         }
         #endregion
 
+        #region Register
         public async Task<RegisterResponse> RegisterAsync(SaveUserViewModel vm)
         {
             RegisterRequest registerRequest = _mapper.Map<RegisterRequest>(vm);
 
-            if (vm.Role == (int)Roles.Client)
-            {
-                registerRequest.Role = Roles.Client.ToString();
-            }
-            else if (vm.Role == (int)Roles.Admin)
+            if (vm.Role == (int)Roles.Admin)
             {
                 registerRequest.Role = Roles.Admin.ToString();                
+            }
+            else if (vm.Role == (int)Roles.Client)
+            {
+                registerRequest.Role = Roles.Client.ToString();
             }
 
             return await _accountService.RegisterUserAsync(registerRequest);
         }
+        #endregion
 
         public async Task<SaveUserViewModel> UpdateUserAsync(SaveUserViewModel vm)
         {
@@ -58,6 +60,17 @@ namespace BankingApp.Core.Application.Services
             var userList = await _accountService.GetAllUserAsync();
 
             return _mapper.Map<List<UserViewModel>>(userList);
+        }
+        #endregion
+
+        #region GetUserByUsername
+        public async Task<UserViewModel> GetByUsername(string username)
+        {
+            UserDTO userDTO = await _accountService.FindByUsernameAsync(username);
+
+            UserViewModel vm = _mapper.Map<UserViewModel>(userDTO);
+
+            return vm;
         }
         #endregion
     }

@@ -40,7 +40,9 @@ namespace BankingApp.Core.Application.Services
 
             if (!response.HasError)
             {
-                //await _userService.fin(vm);
+                var user = await _userService.GetByUsername(vm.Username);
+
+
                 //await _clientRepository.AddAsync();
             }
 
