@@ -1,4 +1,4 @@
-﻿using BankingApp.Infrastructure.Persistence.Repository;
+using BankingApp.Infrastructure.Persistence.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +29,7 @@ namespace BankingApp.Infrastructure.Persistence
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IBeneficiaryRepository, BeneficiaryRepository>();
             services.AddTransient<IClientRepository, ClientRepository>();
+            services.AddTransient<ILoanRepository, LoanRepository>();
             services.AddTransient<ITransactionRepository, TransactionRepository>();
             services.AddTransient<ICreditCardRepository, CreditCardRepository>();
             services.AddTransient<ISavingsAccountRepository, SavingsAccountRepository>();
