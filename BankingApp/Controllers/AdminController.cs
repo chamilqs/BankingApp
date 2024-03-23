@@ -19,13 +19,15 @@ namespace BankingApp.Controllers
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserService _userService;
+        private readonly IClientService _clientService;
         private readonly AuthenticationResponse _authViewModel;
 
-        public AdminController(IHttpContextAccessor httpContextAccessor, IUserService userService)
+        public AdminController(IHttpContextAccessor httpContextAccessor, IUserService userService, IClientService clientService)
         {
             _httpContextAccessor = httpContextAccessor;
             _authViewModel = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
             _userService = userService;
+            _clientService = clientService;
         }
 
         /*
@@ -65,9 +67,16 @@ namespace BankingApp.Controllers
                 return View(vm);
             }
 
-            var origin = Request.Headers["origin"];
+            RegisterResponse response = new();
 
-            RegisterResponse response = await _userService.RegisterAsync(vm, origin);
+            if (vm.Role == (int)Roles.Client)
+            {
+                response = await _clientService.RegisterAsync(vm);
+            }
+            else if (vm.Role == (int)Roles.Admin)
+            {
+               response = await _userService.RegisterAsync(vm);
+            }
 
             if (response.HasError)
             {
@@ -76,7 +85,7 @@ namespace BankingApp.Controllers
                 return View(vm);
             }
 
-            return RedirectToRoute(new { controller = "Admin", action = "ClientMaintenance" });
+            return RedirectToRoute(new { controller = "Admin", action = "Index" });
         }
         #endregion
 

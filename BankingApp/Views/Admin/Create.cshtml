@@ -4,12 +4,6 @@
 
 @{
     ViewData["Title"] = "New User";
-    var enumValues = Enum.GetValues(typeof(Roles)).Cast<Roles>();
-    var selectList = new SelectList(enumValues.Select(e => new SelectListItem
-        {
-            Value = ((int)e).ToString(),
-            Text = e.ToString()
-        }), "Value", "Text");
 }
 
 <div class="container-fluid">
@@ -84,8 +78,10 @@
 
                             <div class="mb-3">
                                 <label asp-for="Role" class="form-label">Role:</label>
-                                <select id="select-role" asp-for="Role" asp-items="@selectList" class="form-select">
+                                <select id="select-role" asp-for="Role" class="form-select">
                                     <option value="0">Select a role</option>
+                                    <option value="@((int)Roles.Admin)">@(Roles.Admin.ToString())</option>
+                                    <option value="@((int)Roles.Client)">@(Roles.Client.ToString())</option>
                                 </select>
                                 <span asp-validation-for="Role" class="text-danger"></span>
                             </div>
