@@ -38,7 +38,6 @@ namespace BankingApp.Infrastructure.Persistence.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //FLUENT API
 
             #region "Table Names"
 
