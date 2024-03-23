@@ -232,7 +232,7 @@ namespace BankingApp.Infrastructure.Persistence.Contexts
                 .IsRequired();
 
             modelBuilder.Entity<SavingsAccount>().
-                Property(sa => sa.isMainAccount)
+                Property(sa => sa.IsMainAccount)
                 .IsRequired();
             #endregion
 

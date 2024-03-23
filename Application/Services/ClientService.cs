@@ -59,9 +59,7 @@ namespace BankingApp.Core.Application.Services
                     DateCreated = DateTime.UtcNow,
                 };
 
-                await base.Add(saveClientViewModel);
-
-                var client = await GetByUserIdViewModel(user.Id);
+                var client = await base.Add(saveClientViewModel);
 
                 SaveSavingsAccountViewModel savingsAccountViewModel = new()
                 {

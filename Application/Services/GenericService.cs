@@ -4,15 +4,15 @@ using BankingApp.Core.Application.Interfaces.Services;
 
 namespace BankingApp.Core.Application.Services
 {
-    public class GenericService<SaveViewModel,ViewModel,Model> : IGenericService<SaveViewModel, ViewModel, Model>
+    public class GenericService<SaveViewModel, ViewModel, Entity> : IGenericService<SaveViewModel, ViewModel, Entity>
          where SaveViewModel : class
          where ViewModel : class
-         where Model : class
+         where Entity : class
     {
-        private readonly IGenericRepository<Model> _repository;
+        private readonly IGenericRepository<Entity> _repository;
         private readonly IMapper _mapper;
 
-        public GenericService(IGenericRepository<Model> repository, IMapper mapper)
+        public GenericService(IGenericRepository<Entity> repository, IMapper mapper)
         {
             _repository = repository;           
             _mapper = mapper;
@@ -20,13 +20,13 @@ namespace BankingApp.Core.Application.Services
 
         public virtual async Task Update(SaveViewModel vm,int id)
         {
-            Model entity = _mapper.Map<Model>(vm);
+            Entity entity = _mapper.Map<Entity>(vm);
             await _repository.UpdateAsync(entity, id);
         }
 
         public virtual async Task<SaveViewModel> Add(SaveViewModel vm)
         {
-            Model entity = _mapper.Map<Model>(vm);
+            Entity entity = _mapper.Map<Entity>(vm);
             entity = await _repository.AddAsync(entity);
 
             SaveViewModel entityVm = _mapper.Map<SaveViewModel>(entity);
