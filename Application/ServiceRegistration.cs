@@ -1,4 +1,4 @@
-﻿using BankingApp.Core.Application.Services;
+using BankingApp.Core.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 using BankingApp.Core.Application.Interfaces.Services;
 using System.Reflection;
@@ -17,6 +17,9 @@ namespace BankingApp.Core.Application
             services.AddTransient<IBeneficiaryService, BeneficiaryService>();
             services.AddTransient<IClientService, ClientService>();
             services.AddTransient<ILoanService, LoanService>();
+            services.AddTransient<ITransactionService, TransactionService>();
+            services.AddTransient<ISavingsAccountService, SavingsAccountService>();
+            services.AddTransient<ICreditCardService, CreditCardService>();
             #endregion
         }
     }

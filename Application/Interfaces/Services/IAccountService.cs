@@ -9,5 +9,6 @@ namespace BankingApp.Core.Application.Interfaces.Services
         Task<RegisterResponse> RegisterUserAsync(RegisterRequest request, string origin);
         Task<SaveUserViewModel> UpdateUserAsync(SaveUserViewModel vm);
         Task SignOutAsync();
+        Task<List<UserDTO>> GetAllUserAsync();
     }
 }

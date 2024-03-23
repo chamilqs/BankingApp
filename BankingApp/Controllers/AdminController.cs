@@ -10,6 +10,7 @@ using BankingApp.Core.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BankingApp.Core.Application.Enums;
 using Microsoft.AspNetCore.Authorization;
+using System;
 
 namespace BankingApp.Controllers
 {
@@ -18,15 +19,13 @@ namespace BankingApp.Controllers
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserService _userService;
-        private readonly AuthenticationResponse authViewModel;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly AuthenticationResponse _authViewModel;
 
-        public AdminController(IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager, IUserService userService)
+        public AdminController(IHttpContextAccessor httpContextAccessor, IUserService userService)
         {
             _httpContextAccessor = httpContextAccessor;
-            authViewModel = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
+            _authViewModel = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
             _userService = userService;
-            _userManager = userManager;
         }
 
         /*
@@ -40,22 +39,26 @@ namespace BankingApp.Controllers
             return View();
         }
 
-        public IActionResult ClientMaintenance()
+        #region GetAllUsers
+        public async Task<IActionResult> Index()
         {
-            List<ApplicationUser> users = new List<ApplicationUser>();
-            users = _userManager.Users.ToList();
+            List<UserViewModel> users = await _userService.GetAllViewModel();
+            ViewBag.User = _authViewModel;
 
             return View(users);
         }
+        #endregion
 
-        public IActionResult Register()
+        #region Create
+        public IActionResult Create()
         {
-            ViewBag.Roles = Get.ListRoles();
+            ViewBag.Roles = Enum.GetNames(typeof(Roles));
+
             return View(new SaveUserViewModel());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(SaveUserViewModel vm)
+        public async Task<IActionResult> Create(SaveUserViewModel vm)
         {
             if (!ModelState.IsValid)
             {
@@ -75,65 +78,48 @@ namespace BankingApp.Controllers
 
             return RedirectToRoute(new { controller = "Admin", action = "ClientMaintenance" });
         }
+        #endregion
 
 
-        // needs mantainense
-        public async Task<IActionResult> EditProfile(string userId)
-        {
-            ApplicationUser vm = await _userManager.FindByIdAsync(userId);
-            SaveUserViewModel svm = new()
-            {
-                Name = vm.Name,
-                LastName = vm.LastName,
-                Username = vm.UserName,
-                Email = vm.Email,
-                Phone = vm.PhoneNumber,
-                IdentificationNumber = vm.IdentificationNumber,
-                IsActive = vm.IsActive,
-            };
-            return View("EditProfile", svm);
-        }
+        //// needs mantainense
+        //public async Task<IActionResult> EditProfile(string userId)
+        //{
+        //    ApplicationUser vm = await _userManager.FindByIdAsync(userId);
+        //    SaveUserViewModel svm = new()
+        //    {
+        //        Name = vm.Name,
+        //        LastName = vm.LastName,
+        //        Username = vm.UserName,
+        //        Email = vm.Email,
+        //        Phone = vm.PhoneNumber,
+        //        IdentificationNumber = vm.IdentificationNumber,
+        //        IsActive = vm.IsActive,
+        //    };
+        //    return View("EditProfile", svm);
+        //}
 
-        [HttpPost]
-        public async Task<IActionResult> EditProfile(SaveUserViewModel vm)
-        {
-            // Needs to be configured so the method recieves the ID from the Client that its going to be edited
-            // then you can search for the user to get the current data, just in case the user does not want to change
-            // his password or others
+        //[HttpPost]
+        //public async Task<IActionResult> EditProfile(SaveUserViewModel vm)
+        //{
+        //    // Needs to be configured so the method recieves the ID from the Client that its going to be edited
+        //    // then you can search for the user to get the current data, just in case the user does not want to change
+        //    // his password or others
 
-            // ApplicationUser userVm = await _userManager.FindByIdAsync();
+        //    // ApplicationUser userVm = await _userManager.FindByIdAsync();
 
-            if (!ModelState.IsValid)
-            {
-                return View("EditProfile", vm);
-            }
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View("EditProfile", vm);
+        //    }
 
-            if (vm.Password.IsNullOrEmpty())
-            {
-                // vm.Password = userVm.PasswordHash;
-            }
+        //    if (vm.Password.IsNullOrEmpty())
+        //    {
+        //        // vm.Password = userVm.PasswordHash;
+        //    }
 
-            await _userService.UpdateUserAsync(vm);
-            return RedirectToRoute(new { controller = "Admin", action = "ClientMaintenance" });
-        }
-
-        public static class Get
-        {
-            public static IEnumerable<SelectListItem> ListRoles()
-            {
-                var selectedRoles = new List<Roles> { Roles.Client, Roles.Admin };  
-
-                var roles = selectedRoles
-                    .Select(e => new SelectListItem
-                    {
-                        Value = e.ToString(),
-                        Text = Enum.GetName(typeof(Roles), e)
-                    });
-
-                return roles;
-            }
-        }
-
+        //    await _userService.UpdateUserAsync(vm);
+        //    return RedirectToRoute(new { controller = "Admin", action = "ClientMaintenance" });
+        //}
 
     }
 }
