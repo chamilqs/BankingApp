@@ -10,13 +10,13 @@ namespace BankingApp.Core.Application.Mappings
         {
             #region UserProfileIdentity
             CreateMap<AuthenticationRequest, LoginViewModel>()
-                .ForMember(x => x.HasError, opt => opt.Ignore())
-                .ForMember(x => x.Error, opt => opt.Ignore())
+                .ForMember(dest => dest.HasError, opt => opt.Ignore())
+                .ForMember(dest => dest.Error, opt => opt.Ignore())
                 .ReverseMap();
 
             CreateMap<RegisterRequest, SaveUserViewModel>()
-                .ForMember(x => x.HasError, opt => opt.Ignore())
-                .ForMember(x => x.Error, opt => opt.Ignore())
+                .ForMember(dest => dest.HasError, opt => opt.Ignore())
+                .ForMember(dest => dest.Error, opt => opt.Ignore())
                 .ReverseMap();
 
             CreateMap<UserViewModel, UserDTO>()

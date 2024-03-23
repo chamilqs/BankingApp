@@ -6,9 +6,10 @@ namespace BankingApp.Core.Application.Interfaces.Services
     public interface IUserService
     {
         Task<AuthenticationResponse> LoginAsync(LoginViewModel vm);
-        Task<RegisterResponse> RegisterAsync(SaveUserViewModel vm, string origin);
+        Task<RegisterResponse> RegisterAsync(SaveUserViewModel vm);
         Task<SaveUserViewModel> UpdateUserAsync(SaveUserViewModel vm);
         Task SignOutAsync();
         Task<List<UserViewModel>> GetAllViewModel();
+        Task<UserViewModel> GetByUsername(string username);
     }
 }

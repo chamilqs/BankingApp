@@ -14,14 +14,11 @@ namespace BankingApp.Infrastructure.Identity.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IEmailService _emailService;
 
-        public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, 
-            IEmailService emailService)
+        public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _emailService = emailService;
         }
 
         #region Login & Logout
@@ -55,7 +52,6 @@ namespace BankingApp.Infrastructure.Identity.Services
             response.Id = user.Id;
             response.Name = user.Name;
             response.LastName = user.LastName;
-            response.Phone = user.PhoneNumber;
             response.Email = user.Email;
             response.UserName = user.UserName;
             response.IdentificationNumber = user.IdentificationNumber;
@@ -88,7 +84,6 @@ namespace BankingApp.Infrastructure.Identity.Services
             userVm.Name = vm.Name;
             userVm.LastName = vm.LastName;
             userVm.UserName = vm.Username;
-            userVm.PhoneNumber = vm.Phone;
             userVm.IdentificationNumber = vm.IdentificationNumber;
             userVm.IsActive = vm.IsActive;
             userVm.Email = vm.Email;
@@ -116,7 +111,8 @@ namespace BankingApp.Infrastructure.Identity.Services
             return vm;
         }
 
-        public async Task<RegisterResponse> RegisterUserAsync(RegisterRequest request, string origin)
+        #region Register
+        public async Task<RegisterResponse> RegisterUserAsync(RegisterRequest request)
         {
             RegisterResponse response = new()
             {
@@ -131,24 +127,14 @@ namespace BankingApp.Infrastructure.Identity.Services
                 return response;
             }
 
-            var userWithSameEmail = await _userManager.FindByEmailAsync(request.Email);
-            if (userWithSameEmail != null)
-            {
-                response.HasError = true;
-                response.Error = $"This username '{request.Email}' is already registered.";
-                return response;
-            }
-
             var user = new ApplicationUser
             {
                 Name = request.Name,
                 LastName = request.LastName,
                 Email = request.Email,
-                PhoneNumber = request.Phone,
                 UserName = request.UserName,
-                IdentificationNumber = request.IdentificationUser,
+                IdentificationNumber = request.IdentificationNumber,
                 IsActive = request.IsActive
-                
             };
 
             var result = await _userManager.CreateAsync(user, request.Password);
@@ -162,20 +148,7 @@ namespace BankingApp.Infrastructure.Identity.Services
                 {
                     await _userManager.AddToRoleAsync(user, Roles.Client.ToString());
                 }
-                else
-                {
-                    await _userManager.AddToRoleAsync(user, Roles.Client.ToString());
-                }                
-
-                await _emailService.SendAsync(new EmailRequest()
-                {
-                    To = user.Email,
-                    Subject = "Welcome to RoyalBank, your bank.",
-                    Body = $"Thanks for trust in us to be your bank."
-
-                });
             }
-
             else
             {
                 response.HasError = true;
@@ -185,6 +158,7 @@ namespace BankingApp.Infrastructure.Identity.Services
 
             return response;
         }
+        #endregion
 
         #region GetAllUserAsync
         public async Task<List<UserDTO>> GetAllUserAsync()
@@ -211,6 +185,27 @@ namespace BankingApp.Infrastructure.Identity.Services
             }
 
             return userDTOList;
+        }
+        #endregion
+
+        #region GetByUsername & GetById
+        public async Task<UserDTO> FindByUsernameAsync(string username)
+        {
+            UserDTO userDTO = new();
+
+            var user = await _userManager.FindByNameAsync(username);
+            if (user != null)
+            {
+                userDTO.Id = user.Id;
+                userDTO.Username = user.UserName;
+                userDTO.Name = user.Name;
+                userDTO.LastName = user.LastName;
+                userDTO.IdentificationNumber = user.IdentificationNumber;
+
+                return userDTO;
+            }
+
+            return null;
         }
         #endregion
     }
