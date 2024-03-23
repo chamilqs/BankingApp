@@ -27,16 +27,35 @@ namespace BankingApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _beneficiaryService.GetAllViewModel());
+            var vms = await _beneficiaryService.GetAllViewModel();
+
+            // Where the id of the client is not equal to his own id client
+            var userId = user.Id;
+            var client = await _clientService.GetByUserIdViewModel(userId);
+
+            // Here goes the method to get the user's account number
+            vms.Where(f => f.ClientId != client.Id);
+
+            return View(vms);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddBeneficiaryBySearch(string accountNumber)
         {
+            // Check that the account number is not the same as the user's account number
+
+            // Here goes the method to get the user's account number
+            /*if( == accountNumber)
+            {
+                ModelState.AddModelError("AccountNumber", "You cannot add yourself as a beneficiary.");
+                return View("Index", await _beneficiaryService.GetAllViewModel());
+            }*/
+
             var beneficiary = await _beneficiaryService.GetByAccountNumber(accountNumber);          
             if (beneficiary == null)
             {
-                return BadRequest(new { message = "Account not found." });
+                ModelState.AddModelError("AccountNumber", "Account not found.");
+                return View("Index", await _beneficiaryService.GetAllViewModel());
             }
 
             var client = await _clientService.GetByUserIdViewModel(user.Id);
@@ -44,12 +63,13 @@ namespace BankingApp.Controllers
             var beneficiaries = await _beneficiaryService.GetAllViewModel();
             if (beneficiaries.Any(f => (f.ClientId == client.Id && f.BeneficiaryAccountNumber == accountNumber)))
             {
-                return BadRequest(new { message = "This person is already a beneficiary." });
+                ModelState.AddModelError("AccountNumber", "This person is already a beneficiary.");
+                return View("Index", await _beneficiaryService.GetAllViewModel());
             }
 
             SaveBeneficiaryViewModel vm = new();
             await _beneficiaryService.AddBeneficiary(vm, accountNumber);
-            return Ok(new { message = "Beneficiary added successfully." });
+            return View("Index", await _beneficiaryService.GetAllViewModel());
         }
 
         public async Task<IActionResult> DeleteBeneficiary(string accountNumber)

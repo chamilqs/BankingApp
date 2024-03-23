@@ -16,6 +16,9 @@ namespace BankingApp.Core.Application
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IBeneficiaryService, BeneficiaryService>();
             services.AddTransient<IClientService, ClientService>();
+            services.AddTransient<ITransactionService, TransactionService>();
+            services.AddTransient<ISavingsAccountService, SavingsAccountService>();
+            services.AddTransient<ICreditCardService, CreditCardService>();
             #endregion
         }
     }
