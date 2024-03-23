@@ -8,6 +8,6 @@ namespace BankingApp.Core.Application.ViewModels.Loan
 {
     public class LoanViewModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
     }
 }

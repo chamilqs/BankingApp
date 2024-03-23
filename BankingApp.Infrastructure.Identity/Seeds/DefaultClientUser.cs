@@ -27,7 +27,6 @@ namespace BankingApp.Infrastructure.Identity.Seeds
                     await userManager.AddToRoleAsync(defaultUser, Roles.Client.ToString());
                 }
             }
-         
         }
     }
 }

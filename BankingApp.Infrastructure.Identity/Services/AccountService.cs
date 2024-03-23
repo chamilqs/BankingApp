@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using BankingApp.Core.Application.DTOs.Account;
-using BankingApp.Core.Application.DTOs.Email;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.User;
 using BankingApp.Infrastructure.Identity.Entities;
