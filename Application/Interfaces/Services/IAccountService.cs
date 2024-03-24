@@ -13,7 +13,6 @@ namespace BankingApp.Core.Application.Interfaces.Services
         Task<List<UserDTO>> GetAllUserAsync();
         Task<UserDTO> FindByUsernameAsync(string username);
         Task<UserDTO> FindByIdAsync(string id);
-
         Task<GenericResponse> UpdateUserStatusAsync(string userId);
     }
 }

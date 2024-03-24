@@ -1,7 +1,7 @@
 ﻿@using BankingApp.Core.Application.ViewModels.Transaction
 @model SaveTransactionViewModel
 @{
-    ViewData["Title"] = "Transfers";
+    ViewData["Title"] = "Transfer Between Accounts";
 }
 
 <style>
@@ -153,8 +153,8 @@
             <div class="to">
                 <p>To</p>
                 <div class="select-box">
-                    <label asp-for="Origin" class="form-label">Origin account: </label>
-                    <select asp-for="Origin" asp-items="@(new SelectList(ViewBag.ClientAccounts,"Id","Id"))" class="form-select">
+                    <label asp-for="Destination" class="form-label">Destination account: </label>
+                    <select asp-for="Destination" asp-items="@(new SelectList(ViewBag.ClientAccounts,"Id","Id"))" class="form-select">
                         <option value="0">Select an option</option>
                     </select>
                 </div>

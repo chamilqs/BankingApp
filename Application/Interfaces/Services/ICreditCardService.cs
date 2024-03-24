@@ -5,9 +5,13 @@ namespace BankingApp.Core.Application.Interfaces.Services
 {
     public interface ICreditCardService : IGenericService<SaveCreditCardViewModel, CreditCardViewModel, CreditCard>
     {
-        Task<CreditCard> GetByAccountNumber(string accountNumber, int clientId);
+
 
         Task<List<CreditCardViewModel>> GetAllByClientId(int clientId);
+
+        Task<CreditCard> GetByAccountNumberLoggedUser(string accountNumber, int clientId);
+        Task<CreditCard> GetByAccountNumber(string accountNumber);
+
         Task UpdateCreditCard(double balance, double debt, string accountNumber, int clientId);
     }
 }

@@ -17,6 +17,7 @@ namespace BankingApp.Core.Application.Services
             _mapper = mapper;
         }
 
+
         public async Task<List<CreditCardViewModel>> GetAllByClientId(int clientId)
         {
             var creditCardList = await _creditCardRepository.GetAllAsync();
@@ -33,8 +34,11 @@ namespace BankingApp.Core.Application.Services
         }
 
         public async Task<CreditCard> GetByAccountNumber(string accountNumber, int clientId)
+
+        public async Task<CreditCard> GetByAccountNumberLoggedUser(string accountNumber, int clientId)
+
         {
-            var creditCard = await _creditCardRepository.GetByAccountNumber(accountNumber, clientId);
+            var creditCard = await _creditCardRepository.GetByAccountNumberLoggedUser(accountNumber, clientId);
             if (creditCard == null)
             {
                 return null;
@@ -45,7 +49,7 @@ namespace BankingApp.Core.Application.Services
 
         public async Task UpdateCreditCard(double balance, double debt, string accountNumber, int clientId)
         {
-            var creditCard = await GetByAccountNumber(accountNumber, clientId);
+            var creditCard = await GetByAccountNumberLoggedUser(accountNumber, clientId);
 
             SaveCreditCardViewModel vm = new SaveCreditCardViewModel
             {
