@@ -96,11 +96,15 @@ namespace BankingApp.Controllers
 
             if (response.HasError)
             {
-                return RedirectToRoute(new { controller = "Admin", action = "Index",  });
+                return RedirectToRoute(new { controller = "Admin", action = "Index", hasError = response.HasError, message = response.Error });
             }
 
-            return RedirectToRoute(new { controller = "Admin", action = "Index", hasError = response.HasError, message = response.Error });
+            return RedirectToRoute(new { controller = "Admin", action = "Index",  });
         }
+        #endregion
+
+        #region Edit User
+
         #endregion
 
         //// needs mantainense

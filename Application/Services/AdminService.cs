@@ -28,7 +28,9 @@ namespace BankingApp.Core.Application.Services
         #region UpdateUserStatus
         public async Task<GenericResponse> UpdateUserStatus(string userId)
         {
-            await _accountService.UpdateUserStatusAsync(userId);
+            var userStatus = await _accountService.UpdateUserStatusAsync(userId);
+
+            return userStatus;
         }
         #endregion
     }
