@@ -33,17 +33,28 @@ namespace BankingApp.Core.Application.Services
             user = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
             _creditCardService = creditCardService;
         }
+
         public async Task<SaveTransactionViewModel> Transfer(SaveTransactionViewModel vm, Enums.TransactionType transactionType, bool isCashAdvance)
         {
             vm.TransactionTypeId = (int)transactionType;
 
             if (isCashAdvance)
             {
-                await AddMoneyToAccountCreditCard(vm.Origin, vm.Destination, vm.Amount);
+                var makeAdvance = await AddMoneyToAccountCreditCard(vm.Origin, vm.Destination, vm.Amount);
+                if (!makeAdvance)
+                {
+                    return null;
+                }
+
             }
             else
             {
-                await AddMoneyToAccount(vm.Destination, vm.Origin, vm.Amount);
+                var addMoney = await AddMoneyToAccount(vm.Destination, vm.Origin, vm.Amount);
+                if(!addMoney)
+                {
+                    return null;
+                }
+
             }
 
             return await _transactionService.Add(vm);
