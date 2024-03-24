@@ -26,12 +26,11 @@
 </head>
 
 <body>
-    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
-         data-sidebar-position="fixed" data-header-position="fixed">
-        @if (User != null)
-        {
+    @if (User != null)
+    {
+        <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
 
-            if (isClient)
+            @if (isClient)
             {
                 <aside class="left-sidebar">
                     <div>
@@ -91,7 +90,8 @@
                     </div>
                 </aside>
             }
-            if (isAdmin)
+
+            @if (isAdmin)
             {
                 <aside class="left-sidebar">
                     <div>
@@ -143,21 +143,30 @@
                     </div>
                 </aside>
             }
-        }
-        <div class="body-wrapper">
-            @if (User != null)
-            {
-                <header class="app-header">
-                    <div class="navbar-nav flex-row ms-auto align-items-center justify-content-end py-3">
-                        <p class="nav-item mb-0">@User.UserName</p>
-                    </div>
-                </header>
-            }
-            <div class="container-fluid pe-3 ps-3">
-                @RenderBody()
+            <div class="body-wrapper">
+                @if (User != null)
+                {
+                    <header class="app-header">
+                        <div class="navbar-nav flex-row ms-auto align-items-center justify-content-end py-3">
+                            <p class="nav-item mb-0">@User.UserName</p>
+                        </div>
+                    </header>
+                }
+                <div class="container-fluid pe-3 ps-3">
+                    @RenderBody()
+                </div>
             </div>
         </div>
-    </div>
+    }
+    else
+    {
+        <div class="container">
+            <main role="main" class="align-middle">
+                @RenderBody()
+            </main>
+        </div>
+    }
+
     <script src="~/assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="~/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/assets/js/sidebarmenu.js"></script>

@@ -42,7 +42,7 @@ namespace BankingApp.Core.Application.Services
 
             ClientViewModel client = clientList.FirstOrDefault(client => client.UserId == userId);
                 
-            return new ClientViewModel();
+            return client;
         }
 
         public async Task<RegisterResponse> RegisterAsync(SaveUserViewModel vm)

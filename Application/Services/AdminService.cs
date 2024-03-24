@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BankingApp.Core.Application.Dtos.Account;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.User;
 
@@ -25,9 +26,11 @@ namespace BankingApp.Core.Application.Services
         #endregion
 
         #region UpdateUserStatus
-        public async Task UpdateUserStatus(string userId)
+        public async Task<GenericResponse> UpdateUserStatus(string userId)
         {
-            await _accountService.UpdateUserStatusAsync(userId);
+            var userStatus = await _accountService.UpdateUserStatusAsync(userId);
+
+            return userStatus;
         }
         #endregion
     }
