@@ -1,4 +1,5 @@
 ﻿using BankingApp.Core.Application.ViewModels.Beneficiary;
+using BankingApp.Core.Application.ViewModels.SavingsAccount;
 using BankingApp.Core.Domain.Entities;
 
 namespace BankingApp.Core.Application.Interfaces.Services
@@ -7,6 +8,8 @@ namespace BankingApp.Core.Application.Interfaces.Services
     {
         Task<SaveBeneficiaryViewModel> AddBeneficiary(SaveBeneficiaryViewModel vm, string AccountNumber);
         Task<Beneficiary> GetByAccountNumber(string accountNumber);
+
+        Task<List<BeneficiaryViewModel>> GetAllByClientId(int clientId);
         Task DeleteBeneficiary(string AccountNumber);
     }
 }

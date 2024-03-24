@@ -17,6 +17,21 @@ namespace BankingApp.Core.Application.Services
             _mapper = mapper;
         }
 
+        public async Task<List<CreditCardViewModel>> GetAllByClientId(int clientId)
+        {
+            var creditCardList = await _creditCardRepository.GetAllAsync();
+            return creditCardList.Where(c => c.ClientId == clientId).Select(c => new CreditCardViewModel
+            {
+                Id = c.Id,
+                Balance = c.Balance,
+                Debt = c.Debt,
+                ClientId = c.ClientId,
+                Limit = c.Limit,
+                DateCreated = c.DateCreated,
+
+            }).ToList();
+        }
+
         public async Task<CreditCard> GetByAccountNumber(string accountNumber, int clientId)
         {
             var creditCard = await _creditCardRepository.GetByAccountNumber(accountNumber, clientId);

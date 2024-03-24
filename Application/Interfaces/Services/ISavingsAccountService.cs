@@ -1,3 +1,4 @@
+using BankingApp.Core.Application.ViewModels.CreditCard;
 using BankingApp.Core.Application.ViewModels.SavingsAccount;
 using BankingApp.Core.Domain.Entities;
 
@@ -7,6 +8,7 @@ namespace BankingApp.Core.Application.Interfaces.Services
     {
         Task<SavingsAccount> GetByAccountNumberLoggedUser(string accountNumber, int ClientId);
         Task<SavingsAccount> GetByAccountNumber(string accountNumber);
+        Task<List<SavingsAccountViewModel>> GetAllByClientId(int clientId);
         Task UpdateSavingsAccount(double balance, int ClientId, string id);
     }
 }
