@@ -61,12 +61,15 @@ namespace BankingApp.Core.Application.Services
         public async Task<List<BeneficiaryViewModel>> GetAllByClientId(int clientId)
         {
             var beneficiaries = await _beneficiaryRepository.GetAllAsync();
-            return beneficiaries.Where(b => b.ClientId == clientId).Select( b => new BeneficiaryViewModel
+
+
+            var clientUser = await _accountService.FindByIdAsync(user.Id);
+            return beneficiaries.Where(b => b.ClientId == clientId).Select(b => new BeneficiaryViewModel
             {
                 ClientId = b.ClientId,
                 BeneficiaryAccountNumber = b.SavingsAccountId,
-                BeneficiaryName = await _accountService. ,
-                BeneficiaryLastName = await _accountService. ,
+                BeneficiaryName = clientUser.Name,
+                BeneficiaryLastName = clientUser.LastName
 
 
             }).ToList();

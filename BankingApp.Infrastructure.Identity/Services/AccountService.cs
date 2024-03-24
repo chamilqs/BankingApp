@@ -102,8 +102,8 @@ namespace BankingApp.Infrastructure.Identity.Services
                 if (request.Role == Roles.Admin.ToString())
                 {
                     await _userManager.AddToRoleAsync(user, Roles.Admin.ToString());
-                } 
-                else if(request.Role == Roles.Client.ToString())
+                }
+                else if (request.Role == Roles.Client.ToString())
                 {
                     await _userManager.AddToRoleAsync(user, Roles.Client.ToString());
                 }
@@ -147,12 +147,31 @@ namespace BankingApp.Infrastructure.Identity.Services
         }
         #endregion
 
-        #region FindByUsernameAsync
+        #region FindByUsernameAsync & FindByIdAsync
         public async Task<UserDTO> FindByUsernameAsync(string username)
         {
             UserDTO userDTO = new();
 
             var user = await _userManager.FindByNameAsync(username);
+            if (user != null)
+            {
+                userDTO.Id = user.Id;
+                userDTO.Username = user.UserName;
+                userDTO.Name = user.Name;
+                userDTO.LastName = user.LastName;
+                userDTO.IdentificationNumber = user.IdentificationNumber;
+
+                return userDTO;
+            }
+
+            return null;
+        }
+
+        public async Task<UserDTO> FindByIdAsync(string id)
+        {
+            UserDTO userDTO = new();
+
+            var user = await _userManager.FindByIdAsync(id);
             if (user != null)
             {
                 userDTO.Id = user.Id;
