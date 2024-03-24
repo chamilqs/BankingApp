@@ -40,9 +40,10 @@ namespace BankingApp.Controllers
         #endregion
 
         #region GetAllUsers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool hasError = false, string? message = null)
         {
             List<UserViewModel> users = await _adminService.GetAllViewModel();
+            ViewBag.User = _authViewModel;
             ViewBag.User = _authViewModel;
 
             return View(users);
@@ -91,9 +92,14 @@ namespace BankingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateUserStatus(string username)
         {
-            await _adminService.UpdateUserStatus(username);
+            var response = await _adminService.UpdateUserStatus(username);
 
-            return RedirectToRoute(new { controller = "Admin", action = "Index" });
+            if (response.HasError)
+            {
+                return RedirectToRoute(new { controller = "Admin", action = "Index",  });
+            }
+
+            return RedirectToRoute(new { controller = "Admin", action = "Index", hasError = response.HasError, message = response.Error });
         }
         #endregion
 
