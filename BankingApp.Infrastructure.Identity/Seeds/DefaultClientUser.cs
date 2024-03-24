@@ -40,7 +40,7 @@ namespace BankingApp.Infrastructure.Identity.Seeds
 
                 SaveSavingsAccountViewModel savingsAccountViewModel = new()
                 {
-                    Id = await _productService.GenerateProductNumber(),
+                    Id = "111222333",
                     ClientId = client.Id,
                     Balance = 0.00,
                     DateCreated = DateTime.UtcNow,
