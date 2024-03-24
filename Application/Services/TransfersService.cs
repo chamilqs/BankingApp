@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace BankingApp.Core.Application.Services
 {
@@ -65,10 +66,7 @@ namespace BankingApp.Core.Application.Services
             // Get products where the ClientId is the same as the logged user ClientId
             var client = await _clientService.GetByUserIdViewModel(user.Id);
 
-            // Destination account
             var destinyAccount = await _savingsAccountService.GetByAccountNumberLoggedUser(accountNumberDestination, client.Id);
-
-            // Origin account
             var originAccount = await _savingsAccountService.GetByAccountNumberLoggedUser(accountNumberOrigin, client.Id);
 
             if(destinyAccount != null && originAccount != null)
@@ -82,7 +80,7 @@ namespace BankingApp.Core.Application.Services
             }
             else
             {
-                return false;
+                throw new Exception("Operation failed.");
             }
 
         }
@@ -92,11 +90,8 @@ namespace BankingApp.Core.Application.Services
             // Get products where the ClientId is the same as the logged user ClientId
             var client = await _clientService.GetByUserIdViewModel(user.Id);
 
-            // Destination account
             var destinyAccount = await _savingsAccountService.GetByAccountNumberLoggedUser(accountNumberDestination, client.Id);
-
-            // Origin account
-            var originAccount = await _creditCardService.GetByAccountNumber(accountNumberOrigin, client.Id);
+            var originAccount = await _creditCardService.GetByAccountNumberLoggedUser(accountNumberOrigin, client.Id);
 
             if (destinyAccount != null && originAccount != null)
             {
@@ -107,50 +102,86 @@ namespace BankingApp.Core.Application.Services
             }
             else
             {
-                return false;
+                throw new Exception("Operation failed."); 
             }
 
         }
 
-        public async Task<string> CashAdvance(SaveTransactionViewModel vm)
+        public async Task<bool> CashAdvance(SaveTransactionViewModel vm)
         {
             // Get credit card and verify if the limit is enough to make the cash advance
             var client = await _clientService.GetByUserIdViewModel(user.Id);
-            var creditCard = await _creditCardService.GetByAccountNumber(vm.Origin, client.Id);
+            var creditCard = await _creditCardService.GetByAccountNumberLoggedUser(vm.Origin, client.Id);
             if (creditCard == null)
             {
-                return "This credit card doesn't exist.";
+                throw new Exception("This credit card doesn't exist.");
             }
 
             if (vm.Amount > creditCard.Limit || vm.Amount > creditCard.Balance)
             {
-                return "You can't do this transaction, the amount is higher than the limit or the balance.";
+                throw new Exception("You can't do this transaction, the amount is higher than the limit or the balance.");
             }
 
-            try
+            using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                double interest = 0.0625;
-                double debt = vm.Amount + (vm.Amount * interest);
-                double balance = creditCard.Balance - vm.Amount;
-
-                await _creditCardService.UpdateCreditCard(balance, debt, creditCard.Id, client.Id);
-                vm.TransactionTypeId = (int)Enums.TransactionType.CashAdvance;
-
-                if (vm.Concept == null || vm.Concept.Length == 0)
+                try
                 {
-                    vm.Concept = "Cash advance";
+                    double interest = 0.0625;
+                    double debt = vm.Amount + (vm.Amount * interest);
+                    double balance = creditCard.Balance - vm.Amount;
+
+                    await _creditCardService.UpdateCreditCard(balance, debt, creditCard.Id, client.Id);
+                    vm.TransactionTypeId = (int)Enums.TransactionType.CashAdvance;
+
+                    if (vm.Concept == null || vm.Concept.Length == 0)
+                    {
+                        vm.Concept = "Cash advance";
+                    }
+
+                    var transferResult = await Transfer(vm, Enums.TransactionType.CashAdvance, true);
+
+                    if (transferResult != null)
+                    {
+                        transactionScope.Complete();
+                        return true;
+                    }
+                    else
+                    {
+                        throw new Exception("Cash advance failed.");
+                    }
                 }
-                await Transfer(vm, Enums.TransactionType.CashAdvance, true);
-
-                return "Cash advance done successfully.";
-
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    throw new Exception("An error occurred during cash advance.");
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            return "Cash advance done successfully.";
         }
+
+        //try
+        //{
+        //    double interest = 0.0625;
+        //    double debt = vm.Amount + (vm.Amount * interest);
+        //    double balance = creditCard.Balance - vm.Amount;
+
+        //    await _creditCardService.UpdateCreditCard(balance, debt, creditCard.Id, client.Id);
+        //    vm.TransactionTypeId = (int)Enums.TransactionType.CashAdvance;
+
+        //    if (vm.Concept == null || vm.Concept.Length == 0)
+        //    {
+        //        vm.Concept = "Cash advance";
+        //    }
+        //    await Transfer(vm, Enums.TransactionType.CashAdvance, true);
+
+        //    return "Cash advance done successfully.";
+
+        //}
+        //catch (Exception ex)
+        //{
+        //    Console.WriteLine(ex.Message);
+        //}
+
+        //return "Cash advance done successfully.";
     }
 }
+
