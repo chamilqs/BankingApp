@@ -43,20 +43,20 @@ namespace BankingApp.Controllers
             // Check that the account number is not the same as the user's account number
 
             // Here goes the method to get the user's account number
-            /*if( == accountNumber)
-            {
-                ModelState.AddModelError("AccountNumber", "You cannot add yourself as a beneficiary.");
-                return View("Index", await _beneficiaryService.GetAllViewModel());
-            }*/
+            var client = await _clientService.GetByUserIdViewModel(user.Id);
+            var acc = await _beneficiaryService.GetByAccountNumber(accountNumber);
 
-            var beneficiary = await _beneficiaryService.GetByAccountNumber(accountNumber);          
-            if (beneficiary == null)
+            if (acc == null)
             {
                 ModelState.AddModelError("AccountNumber", "Account not found.");
                 return View("Index", await _beneficiaryService.GetAllViewModel());
-            }
+            }                       
 
-            var client = await _clientService.GetByUserIdViewModel(user.Id);
+            if(acc.ClientId == client.Id && acc.Id == accountNumber)
+            {
+                ModelState.AddModelError("AccountNumber", "You cannot add yourself as a beneficiary.");
+                return RedirectToAction("Index");
+            }
 
             var beneficiaries = await _beneficiaryService.GetAllViewModel();
             if (beneficiaries.Any(f => (f.ClientId == client.Id && f.BeneficiaryAccountNumber == accountNumber)))
@@ -67,20 +67,19 @@ namespace BankingApp.Controllers
 
             SaveBeneficiaryViewModel vm = new();
             await _beneficiaryService.AddBeneficiary(vm, accountNumber);
-            return View("Index", await _beneficiaryService.GetAllViewModel());
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> DeleteBeneficiary(string accountNumber)
         {
-            return View(await _beneficiaryService.GetByAccountNumber(accountNumber));
+            return View(await _beneficiaryService.GetBeneficiary(accountNumber));
         }
 
         [HttpPost]
         public async Task<IActionResult> DeleteBeneficiaryPost(string SavingsAccountId)
         {
             await _beneficiaryService.DeleteBeneficiary(SavingsAccountId);
-            return RedirectToRoute(new { controller = "Beneficiary", action = "Index" });
-
+            return RedirectToAction("Index");
         }
 
     }

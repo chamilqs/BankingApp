@@ -37,22 +37,32 @@ namespace BankingApp.Core.Application.Services
 
         }
 
-        public async Task<Beneficiary> GetByAccountNumber(string accountNumber)
+        public async Task<SavingsAccount> GetByAccountNumber(string accountNumber)
         {
-            var beneficiary = await _beneficiaryRepository.GetByAccountNumber(accountNumber);
-            if(beneficiary == null)
+            var sa = await _beneficiaryRepository.GetByAccountNumber(accountNumber);
+            if(sa == null)
+            {
+                return null;
+            }
+
+            return sa;
+        }
+
+        public async Task DeleteBeneficiary(string accountNumber)
+        {
+            var beneficiary = await _beneficiaryRepository.GetBeneficiary(accountNumber);
+            await base.Delete(beneficiary.Id);
+        }
+
+        public async Task<Beneficiary> GetBeneficiary(string accountNumber)
+        {
+            var beneficiary = await _beneficiaryRepository.GetBeneficiary(accountNumber);
+            if (beneficiary == null)
             {
                 return null;
             }
 
             return beneficiary;
         }
-
-        public async Task DeleteBeneficiary(string accountNumber)
-        {
-            var beneficiary = await _beneficiaryRepository.GetByAccountNumber(accountNumber);
-            await base.Delete(beneficiary.Id);
-        }
-
     }
 }

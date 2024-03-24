@@ -14,7 +14,18 @@ namespace BankingApp.Infrastucture.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public Task<CreditCard> GetByAccountNumber(string accountNumber, int clientId)
+        public Task<CreditCard> GetByAccountNumber(string accountNumber)
+        {
+            var creditCard = _dbContext.CreditCards.FirstOrDefaultAsync(b => b.Id == accountNumber);
+            if (creditCard == null)
+            {
+                return null;
+            }
+
+            return creditCard;
+        }
+
+        public Task<CreditCard> GetByAccountNumberLoggedUser(string accountNumber, int clientId)
         {
             var creditCard = _dbContext.CreditCards.FirstOrDefaultAsync(b => b.Id == accountNumber && b.ClientId == clientId);
             if (creditCard == null)
