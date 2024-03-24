@@ -1,9 +1,9 @@
 ﻿namespace BankingApp.Core.Application.Interfaces.Services
 {
-    public interface IGenericService<SaveViewModel, ViewModel, Model>
+    public interface IGenericService<SaveViewModel, ViewModel, Entity>
            where SaveViewModel : class
            where ViewModel : class
-           where Model : class
+           where Entity : class
     {
         Task Update(SaveViewModel vm, int id);
         Task UpdateProduct(SaveViewModel vm, string id);

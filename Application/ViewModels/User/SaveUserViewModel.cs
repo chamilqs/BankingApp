@@ -5,6 +5,8 @@ namespace BankingApp.Core.Application.ViewModels.User
 {
     public class SaveUserViewModel
     {
+        public string Id { get; set; }
+
         [Required(ErrorMessage = "You must enter a name.")]
         [DataType(DataType.Text)]
         public string Name { get; set; }
@@ -40,7 +42,6 @@ namespace BankingApp.Core.Application.ViewModels.User
 
         [DataType(DataType.Currency)]
         public double? AccountAmount { get; set; }
-        public bool IsActive { get; set; } = false;
 
         public bool HasError { get; set; }
         public string? Error { get; set; }

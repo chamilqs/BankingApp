@@ -1,4 +1,5 @@
-﻿using BankingApp.Core.Application.DTOs.Account;
+﻿using BankingApp.Core.Application.Dtos.Account;
+using BankingApp.Core.Application.DTOs.Account;
 using BankingApp.Core.Application.ViewModels.User;
 
 namespace BankingApp.Core.Application.Interfaces.Services
@@ -7,9 +8,10 @@ namespace BankingApp.Core.Application.Interfaces.Services
     {
         Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request);
         Task<RegisterResponse> RegisterUserAsync(RegisterRequest request);
-        Task<SaveUserViewModel> UpdateUserAsync(SaveUserViewModel vm);
+        Task<GenericResponse> UpdateUserAsync(UpdateUserRequest request);
         Task SignOutAsync();
         Task<List<UserDTO>> GetAllUserAsync();
         Task<UserDTO> FindByUsernameAsync(string username);
+        Task<GenericResponse> UpdateUserStatusAsync(string userId);
     }
 }

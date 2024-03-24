@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BankingApp.Core.Application.Dtos.Account;
 using BankingApp.Core.Application.DTOs.Account;
 using BankingApp.Core.Application.Enums;
 using BankingApp.Core.Application.Interfaces.Services;
@@ -49,17 +50,12 @@ namespace BankingApp.Core.Application.Services
         }
         #endregion
 
-        public async Task<SaveUserViewModel> UpdateUserAsync(SaveUserViewModel vm)
+        #region Update
+        public async Task<GenericResponse> UpdateUserAsync(SaveUserViewModel vm)
         {
-            return await _accountService.UpdateUserAsync(vm);
-        }
+            UpdateUserRequest updateRequest = _mapper.Map<UpdateUserRequest>(vm);
 
-        #region GetAllViewModel
-        public async Task<List<UserViewModel>> GetAllViewModel()
-        {
-            var userList = await _accountService.GetAllUserAsync();
-
-            return _mapper.Map<List<UserViewModel>>(userList);
+            return await _accountService.UpdateUserAsync(updateRequest);
         }
         #endregion
 

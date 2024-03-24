@@ -11,7 +11,7 @@ namespace BankingApp.Core.Application.Mappings
         {
             #region ClientProfile
 
-            CreateMap<Client, SaveBeneficiaryViewModel>()
+            CreateMap<Client, SaveClientViewModel>()
                 .ReverseMap()
                 .ForMember(origin => origin.SavingsAccounts, opt => opt.Ignore())
                 .ForMember(origin => origin.Beneficiaries, opt => opt.Ignore())
@@ -19,7 +19,11 @@ namespace BankingApp.Core.Application.Mappings
                 .ForMember(origin => origin.Loans, opt => opt.Ignore());
 
             CreateMap<Client, ClientViewModel>()
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(origin => origin.SavingsAccounts, opt => opt.Ignore())
+                .ForMember(origin => origin.Beneficiaries, opt => opt.Ignore())
+                .ForMember(origin => origin.CreditCards, opt => opt.Ignore())
+                .ForMember(origin => origin.Loans, opt => opt.Ignore());
             #endregion
 
         }

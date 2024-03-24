@@ -20,14 +20,16 @@ namespace BankingApp.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserService _userService;
         private readonly IClientService _clientService;
+        private readonly IAdminService _adminService;
         private readonly AuthenticationResponse _authViewModel;
 
-        public AdminController(IHttpContextAccessor httpContextAccessor, IUserService userService, IClientService clientService)
+        public AdminController(IHttpContextAccessor httpContextAccessor, IUserService userService, IClientService clientService, IAdminService adminService)
         {
             _httpContextAccessor = httpContextAccessor;
             _authViewModel = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
             _userService = userService;
             _clientService = clientService;
+            _adminService = adminService;
         }
 
         /*
@@ -36,15 +38,17 @@ namespace BankingApp.Controllers
 
          
          */
+        #region Dashboard
         public IActionResult Dashboard()
         {
             return View();
         }
+        #endregion
 
         #region GetAllUsers
         public async Task<IActionResult> Index()
         {
-            List<UserViewModel> users = await _userService.GetAllViewModel();
+            List<UserViewModel> users = await _adminService.GetAllViewModel();
             ViewBag.User = _authViewModel;
 
             return View(users);
@@ -89,6 +93,15 @@ namespace BankingApp.Controllers
         }
         #endregion
 
+        #region Active & Unactive User
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserStatus(string userId)
+        {
+            await _adminService.UpdateUserStatus(userId);
+
+            return RedirectToRoute(new { controller = "Admin", action = "Index" });
+        }
+        #endregion
 
         //// needs mantainense
         //public async Task<IActionResult> EditProfile(string userId)

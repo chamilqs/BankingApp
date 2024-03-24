@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using BankingApp.Core.Application.DTOs.Account;
-using BankingApp.Core.Application.DTOs.Email;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.User;
 using BankingApp.Infrastructure.Identity.Entities;
 using BankingApp.Core.Application.Enums;
 using Microsoft.EntityFrameworkCore;
-using Azure;
+using System.Data;
+using BankingApp.Core.Application.Dtos.Account;
 
 namespace BankingApp.Infrastructure.Identity.Services
 {
@@ -70,47 +70,6 @@ namespace BankingApp.Infrastructure.Identity.Services
         }
         #endregion
 
-        public async Task<SaveUserViewModel> UpdateUserAsync(SaveUserViewModel vm)
-        {
-            // needs to recieve the ID of the user by parameter
-            ApplicationUser userVm = await _userManager.FindByIdAsync("");
-
-            if (userVm == null)
-            {
-                Console.WriteLine("User not found.");
-                return null;
-            }
-
-            userVm.Name = vm.Name;
-            userVm.LastName = vm.LastName;
-            userVm.UserName = vm.Username;
-            userVm.IdentificationNumber = vm.IdentificationNumber;
-            userVm.IsActive = vm.IsActive;
-            userVm.Email = vm.Email;
-
-            var updateResult = await _userManager.UpdateAsync(userVm);
-
-            if (!updateResult.Succeeded)
-            {
-                Console.WriteLine("Error updating user.");
-                return null;
-            }
-
-            if (!string.IsNullOrEmpty(vm.Password))
-            {
-                var token = await _userManager.GeneratePasswordResetTokenAsync(userVm);
-                var passwordChangeResult = await _userManager.ResetPasswordAsync(userVm, token, vm.Password);
-
-                if (!passwordChangeResult.Succeeded)
-                {
-                    Console.WriteLine("Error changing password.");
-                    return null;
-                }
-            }
-
-            return vm;
-        }
-
         #region Register
         public async Task<RegisterResponse> RegisterUserAsync(RegisterRequest request)
         {
@@ -134,7 +93,7 @@ namespace BankingApp.Infrastructure.Identity.Services
                 Email = request.Email,
                 UserName = request.UserName,
                 IdentificationNumber = request.IdentificationNumber,
-                IsActive = request.IsActive
+                IsActive = false
             };
 
             var result = await _userManager.CreateAsync(user, request.Password);
@@ -188,7 +147,7 @@ namespace BankingApp.Infrastructure.Identity.Services
         }
         #endregion
 
-        #region GetByUsername & GetById
+        #region FindByUsernameAsync
         public async Task<UserDTO> FindByUsernameAsync(string username)
         {
             UserDTO userDTO = new();
@@ -206,6 +165,79 @@ namespace BankingApp.Infrastructure.Identity.Services
             }
 
             return null;
+        }
+        #endregion
+
+        #region Update
+        public async Task<GenericResponse> UpdateUserAsync(UpdateUserRequest request)
+        {
+            GenericResponse response = new()
+            {
+                HasError = false
+            };
+
+            var user = await _userManager.FindByIdAsync(request.Id);
+            user.Name = request.Name;
+            user.LastName = request.LastName;
+            user.Email = request.Email;
+            user.UserName = request.UserName;
+            user.IdentificationNumber = request.IdentificationNumber;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                if (request.Password != null)
+                {
+                    // Update Password
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    result = await _userManager.ResetPasswordAsync(user, token, request.Password);
+
+                    if (!result.Succeeded)
+                    {
+                        response.HasError = true;
+                        response.Error = $"An error has ocurred trying to update the password.";
+                        return response;
+                    }
+                }
+            }
+            else
+            {
+                response.HasError = true;
+                response.Error = $"An error has ocurred trying to update the user {user.UserName}.";
+                return response;
+            }
+
+            return response;
+        }
+
+        #endregion
+
+        #region Active & Unactive 
+        public async Task<GenericResponse> UpdateUserStatusAsync(string username)
+        {
+            GenericResponse response = new()
+            {
+                HasError = false
+            };
+
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                response.HasError = true;
+                response.Error = $"User: {username} not found.";
+                return response;
+            }
+
+            user.IsActive = !user.IsActive;
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                response.HasError = true;
+                response.Error = $"An error has ocurred trying to update the status of the user: {username}.";
+                return response;
+            }
+
+            return response;
         }
         #endregion
     }

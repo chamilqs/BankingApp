@@ -88,7 +88,7 @@
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
 
-                                                    <form method="post" asp-controller="Admin" asp-action="Unactive">
+                                                    <form method="post" asp-controller="Admin" asp-action="Unactive" asp-route-userId="@userVm.Id">
                                                         <div class="modal-body">
 
                                                             <input type="hidden" name="UserId" value="@userVm.Id" />
@@ -126,12 +126,17 @@
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
 
-                                                    <form method="post" asp-controller="Admin" asp-action="Active">
+                                                    <form method="post" asp-controller="Admin" asp-action="Active" asp-route-userId="@userVm.Id">
                                                         <div class="modal-body">
 
                                                             <input type="hidden" name="UserId" value="@userVm.Id" />
-                                                            <div class="mb-3">
-                                                                <p>Are you sure you want to active this user: @userVm.Username</p>
+                                                            <div class="mb-3 text-start">
+                                                                <p class="text-center">Are you sure you want to unactive this user?</p>
+                                                                <p><span class="fw-bolder">Id: </span>@userVm.IdentificationNumber</p>
+                                                                <p><span class="fw-bolder">Name: </span>@userVm.Name</p>
+                                                                <p><span class="fw-bolder">LastName: </span>@userVm.LastName</p>
+                                                                <p><span class="fw-bolder">Username: </span>@userVm.Username</p>
+                                                                <p><span class="fw-bolder">Role: </span>@userVm.Role</p>
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer text-center">

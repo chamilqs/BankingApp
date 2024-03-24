@@ -6,6 +6,6 @@
         public int ClientId { get; set; }
         public DateTime DateCreated { get; set; }
         public double Balance { get; set; }
-        public bool isMainAccount { get; set; }
+        public bool IsMainAccount { get; set; }
     }
 }
