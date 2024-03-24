@@ -4,6 +4,7 @@ namespace BankingApp.Core.Application.Interfaces.Repositories
 {
     public interface ISavingsAccountRepository : IGenericRepository<SavingsAccount>
     {
-        Task<SavingsAccount> GetByAccountNumber(string accountNumber, int clientId);
+        Task<SavingsAccount> GetByAccountNumberLoggedUser(string accountNumber, int clientId);
+        Task<SavingsAccount> GetByAccountNumber(string accountNumber);
     }
 }
