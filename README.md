@@ -2,7 +2,7 @@
 
 # Resumen del Proyecto
 
-<p>Este proyecto consiste en la creación de una aplicación de banca por internet utilizando ASP.NET Core MVC 6 o 7¹[1]. La aplicación tendrá dos roles de usuario: administrador y cliente.</p>p>
+<p>Este proyecto consiste en la creación de una aplicación de banca por internet utilizando ASP.NET Core MVC 6 o 7. La aplicación tendrá dos roles de usuario: administrador y cliente.</p>
 
 ## Funcionalidades
 
