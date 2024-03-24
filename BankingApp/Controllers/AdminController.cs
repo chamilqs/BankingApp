@@ -1,16 +1,10 @@
 ﻿using BankingApp.Core.Application.DTOs.Account;
 using BankingApp.Core.Application.ViewModels.User;
-using BankingApp.Infrastructure.Identity.Entities;
 using BankingApp.Core.Application.Helpers;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using WebAdmin.BankingApp.Middlewares;
 using BankingApp.Core.Application.Interfaces.Services;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using BankingApp.Core.Application.Enums;
 using Microsoft.AspNetCore.Authorization;
-using System;
 
 namespace BankingApp.Controllers
 {
@@ -95,9 +89,9 @@ namespace BankingApp.Controllers
 
         #region Active & Unactive User
         [HttpPost]
-        public async Task<IActionResult> UpdateUserStatus(string userId)
+        public async Task<IActionResult> UpdateUserStatus(string username)
         {
-            await _adminService.UpdateUserStatus(userId);
+            await _adminService.UpdateUserStatus(username);
 
             return RedirectToRoute(new { controller = "Admin", action = "Index" });
         }

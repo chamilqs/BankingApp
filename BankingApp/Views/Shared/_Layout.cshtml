@@ -26,130 +26,138 @@
 </head>
 
 <body>
-    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
-         data-sidebar-position="fixed" data-header-position="fixed">
-        @if (User != null)
-        {
+    @if (User != null)
+    {
+        <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
 
             if (isClient)
             {
-                <aside class="left-sidebar">
-                    <div>
-                        <div class="brand-logo d-flex align-items-center justify-content-between">
-                            <a asp-controller="@(User!= null ? "Home" : "User")" asp-action="Index" class="text-nowrap logo-img">
-                                <img src="~/assets/images/logos/dark-logo.svg" width="180" alt="" />
-                            </a>
-                            <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
-                                <i class="ti ti-x fs-8"></i>
-                            </div>
+            <aside class="left-sidebar">
+                <div>
+                    <div class="brand-logo d-flex align-items-center justify-content-between">
+                        <a asp-controller="@(User!= null ? "Home" : "User")" asp-action="Index" class="text-nowrap logo-img">
+                            <img src="~/assets/images/logos/dark-logo.svg" width="180" alt="" />
+                        </a>
+                        <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+                            <i class="ti ti-x fs-8"></i>
                         </div>
-                        <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
-                            <ul id="sidebarnav">
-                                <li class="nav-small-cap">
-                                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                                    <span class="hide-menu">Home</span>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a class="sidebar-link" asp-controller="Home" asp-action="Index" aria-expanded="false">
-                                        <span>
-                                            <i class="ti ti-layout-dashboard"></i>
-                                        </span>
-                                        <span class="hide-menu">Dashboard</span>
-                                    </a>
-                                </li>
-                                <li class="nav-small-cap">
-                                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                                    <span class="hide-menu">UI COMPONENTS</span>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a class="sidebar-link" asp-controller="Beneficiary" asp-action="Index" aria-expanded="false">
-                                        <span>
-                                            <i class="ti ti-article"></i>
-                                        </span>
-                                        <span class="hide-menu">Beneficiaries</span>
-                                    </a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a class="sidebar-link" asp-controller="User" asp-action="LogOut" aria-expanded="false">
-                                        <span>
-                                            <i class="ti ti-article"></i>
-                                        </span>
-                                        <span class="hide-menu">LogOut</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-
                     </div>
-                </aside>
+                    <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+                        <ul id="sidebarnav">
+                            <li class="nav-small-cap">
+                                <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                                <span class="hide-menu">Home</span>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" asp-controller="Home" asp-action="Index" aria-expanded="false">
+                                    <span>
+                                        <i class="ti ti-layout-dashboard"></i>
+                                    </span>
+                                    <span class="hide-menu">Dashboard</span>
+                                </a>
+                            </li>
+                            <li class="nav-small-cap">
+                                <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                                <span class="hide-menu">UI COMPONENTS</span>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" asp-controller="Beneficiary" asp-action="Index" aria-expanded="false">
+                                    <span>
+                                        <i class="ti ti-article"></i>
+                                    </span>
+                                    <span class="hide-menu">Beneficiaries</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" asp-controller="User" asp-action="LogOut" aria-expanded="false">
+                                    <span>
+                                        <i class="ti ti-article"></i>
+                                    </span>
+                                    <span class="hide-menu">LogOut</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                </div>
+            </aside>
             }
             if (isAdmin)
             {
-                <aside class="left-sidebar">
-                    <div>
-                        <div class="brand-logo d-flex align-items-center justify-content-between">
-                            <a asp-controller="@(User!= null ? "Home" : "User")" asp-action="Index" class="text-nowrap logo-img">
-                                <img src="~/assets/images/logos/dark-logo.svg" width="180" alt="" />
-                            </a>
-                            <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
-                                <i class="ti ti-x fs-8"></i>
-                            </div>
+            <aside class="left-sidebar">
+                <div>
+                    <div class="brand-logo d-flex align-items-center justify-content-between">
+                        <a asp-controller="@(User!= null ? "Home" : "User")" asp-action="Index" class="text-nowrap logo-img">
+                            <img src="~/assets/images/logos/dark-logo.svg" width="180" alt="" />
+                        </a>
+                        <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+                            <i class="ti ti-x fs-8"></i>
                         </div>
-                        <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
-                            <ul id="sidebarnav">
-                                <li class="nav-small-cap">
-                                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                                    <span class="hide-menu">Home</span>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a class="sidebar-link" asp-controller="Admin" asp-action="Dashboard" aria-expanded="false">
-                                        <span>
-                                            <i class="ti ti-layout-dashboard"></i>
-                                        </span>
-                                        <span class="hide-menu">Dashboard</span>
-                                    </a>
-                                </li>
-                                <li class="nav-small-cap">
-                                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                                    <span class="hide-menu">FEATURES</span>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a class="sidebar-link" asp-controller="Admin" asp-action="Index" aria-expanded="false">
-                                        <span>
-                                            <i class="ti ti-users"></i>
-                                        </span>
-                                        <span class="hide-menu">Manage Users</span>
-                                    </a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a class="sidebar-link" asp-controller="User" asp-action="LogOut" aria-expanded="false">
-                                        <span>
-                                            <i class="ti ti-logout"></i>
-                                        </span>
-                                        <span class="hide-menu">LogOut</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                    </div>
+                    <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+                        <ul id="sidebarnav">
+                            <li class="nav-small-cap">
+                                <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                                <span class="hide-menu">Home</span>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" asp-controller="Admin" asp-action="Dashboard" aria-expanded="false">
+                                    <span>
+                                        <i class="ti ti-layout-dashboard"></i>
+                                    </span>
+                                    <span class="hide-menu">Dashboard</span>
+                                </a>
+                            </li>
+                            <li class="nav-small-cap">
+                                <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                                <span class="hide-menu">FEATURES</span>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" asp-controller="Admin" asp-action="Index" aria-expanded="false">
+                                    <span>
+                                        <i class="ti ti-users"></i>
+                                    </span>
+                                    <span class="hide-menu">Manage Users</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" asp-controller="User" asp-action="LogOut" aria-expanded="false">
+                                    <span>
+                                        <i class="ti ti-logout"></i>
+                                    </span>
+                                    <span class="hide-menu">LogOut</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
 
-                    </div>
-                </aside>
+                </div>
+            </aside>
             }
-        }
-        <div class="body-wrapper">
-            @if (User != null)
-            {
-                <header class="app-header">
-                    <div class="navbar-nav flex-row ms-auto align-items-center justify-content-end py-3">
-                        <p class="nav-item mb-0">@User.UserName</p>
-                    </div>
-                </header>
-            }
-            <div class="container-fluid pe-3 ps-3">
-                @RenderBody()
+            <div class="body-wrapper">
+                @if (User != null)
+                {
+                    <header class="app-header">
+                        <div class="navbar-nav flex-row ms-auto align-items-center justify-content-end py-3">
+                            <p class="nav-item mb-0">@User.UserName</p>
+                        </div>
+                    </header>
+                }
+                <div class="container-fluid pe-3 ps-3">
+                    @RenderBody()
+                </div>
             </div>
         </div>
-    </div>
+    }
+    else
+    {
+        <div class="container">
+            <main role="main" class="align-middle">
+                @RenderBody()
+            </main>
+        </div>
+    }
+
     <script src="~/assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="~/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/assets/js/sidebarmenu.js"></script>
