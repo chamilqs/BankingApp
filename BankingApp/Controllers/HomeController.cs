@@ -34,7 +34,7 @@ namespace BankingApp.Controllers
                 return RedirectToAction("Dashboard", "Client");
             }
 
-            return RedirectToAction("Login", "User");
+            return RedirectToAction("RedirectIndex", "User");
         }
 
     }

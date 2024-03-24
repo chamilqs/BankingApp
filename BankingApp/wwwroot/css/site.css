@@ -20,3 +20,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.align-text-end input[type="text"] {
+    text-align: right; /* This aligns the text to the right */
+}

@@ -29,6 +29,13 @@ namespace BankingApp.Infrastructure.Persistence.Repository
             await _dbContext.SaveChangesAsync();
         }
 
+        public virtual async Task UpdateProductAsync(Entity entity, string id)
+        {
+            var entry = await _dbContext.Set<Entity>().FindAsync(id);
+            _dbContext.Entry(entry).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+        }
+
         public virtual async Task DeleteAsync(Entity entity)
         {
             _dbContext.Set<Entity>().Remove(entity);

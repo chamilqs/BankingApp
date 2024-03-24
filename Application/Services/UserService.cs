@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using BankingApp.Core.Application.Dtos.Account;
 using BankingApp.Core.Application.DTOs.Account;
+using BankingApp.Core.Application.Enums;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.User;
 
@@ -16,27 +18,56 @@ namespace BankingApp.Core.Application.Services
             _mapper = mapper;
         }
 
+        #region Login & Logout
         public async Task<AuthenticationResponse> LoginAsync(LoginViewModel vm)
         {
             AuthenticationRequest loginRequest = _mapper.Map<AuthenticationRequest>(vm);
             AuthenticationResponse userResponse = await _accountService.AuthenticateAsync(loginRequest);
             return userResponse;
         }
+
         public async Task SignOutAsync()
         {
             await _accountService.SignOutAsync();
         }
+        #endregion
 
-        public async Task<RegisterResponse> RegisterAsync(SaveUserViewModel vm, string origin)
+        #region Register
+        public async Task<RegisterResponse> RegisterAsync(SaveUserViewModel vm)
         {
             RegisterRequest registerRequest = _mapper.Map<RegisterRequest>(vm);
-            return await _accountService.RegisterUserAsync(registerRequest, origin);
-        }
 
-        public async Task<SaveUserViewModel> UpdateUserAsync(SaveUserViewModel vm)
+            if (vm.Role == (int)Roles.Admin)
+            {
+                registerRequest.Role = Roles.Admin.ToString();                
+            }
+            else if (vm.Role == (int)Roles.Client)
+            {
+                registerRequest.Role = Roles.Client.ToString();
+            }
+
+            return await _accountService.RegisterUserAsync(registerRequest);
+        }
+        #endregion
+
+        #region Update
+        public async Task<GenericResponse> UpdateUserAsync(SaveUserViewModel vm)
         {
-            return await _accountService.UpdateUserAsync(vm);
-        }
+            UpdateUserRequest updateRequest = _mapper.Map<UpdateUserRequest>(vm);
 
+            return await _accountService.UpdateUserAsync(updateRequest);
+        }
+        #endregion
+
+        #region GetUserByUsername
+        public async Task<UserViewModel> GetByUsername(string username)
+        {
+            UserDTO userDTO = await _accountService.FindByUsernameAsync(username);
+
+            UserViewModel vm = _mapper.Map<UserViewModel>(userDTO);
+
+            return vm;
+        }
+        #endregion
     }
 }

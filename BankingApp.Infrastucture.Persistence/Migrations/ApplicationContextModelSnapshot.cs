@@ -55,7 +55,7 @@ namespace BankingApp.Infrastucture.Persistence.Migrations
 
                     b.HasIndex("SavingsAccountId");
 
-                    b.ToTable("Beneficiary");
+                    b.ToTable("Beneficiaries", (string)null);
                 });
 
             modelBuilder.Entity("BankingApp.Core.Domain.Entities.Client", b =>
@@ -143,7 +143,7 @@ namespace BankingApp.Infrastucture.Persistence.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("isMainAccount")
+                    b.Property<bool>("IsMainAccount")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");

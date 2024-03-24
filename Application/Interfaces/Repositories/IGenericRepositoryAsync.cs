@@ -4,6 +4,7 @@
     {
         Task<Entity> AddAsync(Entity entity);
         Task UpdateAsync(Entity entity, int id);
+        Task UpdateProductAsync(Entity entity, string id);
         Task DeleteAsync(Entity entity);
         Task<List<Entity>> GetAllAsync();
         Task<Entity> GetByIdAsync(int id);
