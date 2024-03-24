@@ -69,5 +69,16 @@ namespace BankingApp.Core.Application.Services
             return vm;
         }
         #endregion
+
+        #region GetUserByUsername
+        public async Task<UserViewModel> GetById(string id)
+        {
+            UserDTO userDTO = await _accountService.FindByIdAsync(id);
+
+            UserViewModel vm = _mapper.Map<UserViewModel>(userDTO);
+
+            return vm;
+        }
+        #endregion
     }
 }
