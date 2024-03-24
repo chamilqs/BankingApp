@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using BankingApp.Core.Application.Helpers;
 using BankingApp.Core.Application.Interfaces.Repositories;
 using BankingApp.Core.Application.ViewModels.Beneficiary;
-using BankingApp.Core.Domain.Entities;
-using static BankingApp.Controllers.AdminController;
 
 namespace BankingApp.Controllers
 {

@@ -6,6 +6,7 @@
            where Entity : class
     {
         Task Update(SaveViewModel vm, int id);
+        Task UpdateProduct(SaveViewModel vm, string id);
         Task<SaveViewModel> Add(SaveViewModel vm);
         Task Delete(int id);
         Task<SaveViewModel> GetByIdSaveViewModel(int id);
