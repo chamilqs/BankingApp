@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using BankingApp.Core.Application.Interfaces.Repositories;
 using BankingApp.Core.Application.Interfaces.Services;
-using BankingApp.Core.Application.ViewModels.CreditCard;
 using BankingApp.Core.Application.ViewModels.SavingsAccount;
 using BankingApp.Core.Domain.Entities;
 
@@ -17,9 +16,20 @@ namespace BankingApp.Core.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<SavingsAccount> GetByAccountNumber(string accountNumber, int ClientId)
+        public async Task<SavingsAccount> GetByAccountNumber(string accountNumber)
         {
-            var savingsAccount = await _savingsAccountRepository.GetByAccountNumber(accountNumber, ClientId);
+            var savingsAccount = await _savingsAccountRepository.GetByAccountNumber(accountNumber);
+            if (savingsAccount == null)
+            {
+                return null;
+            }
+
+            return savingsAccount;
+        }
+
+        public async Task<SavingsAccount> GetByAccountNumberLoggedUser(string accountNumber, int ClientId)
+        {
+            var savingsAccount = await _savingsAccountRepository.GetByAccountNumberLoggedUser(accountNumber, ClientId);
             if (savingsAccount == null)
             {
                 return null;
@@ -30,7 +40,7 @@ namespace BankingApp.Core.Application.Services
 
         public async Task UpdateSavingsAccount(double balance, int clientId, string id)
         {
-            var savingsAccount = await GetByAccountNumber(id, clientId);
+            var savingsAccount = await GetByAccountNumberLoggedUser(id, clientId);
 
             SaveSavingsAccountViewModel vm = new SaveSavingsAccountViewModel
             {

@@ -66,10 +66,10 @@ namespace BankingApp.Core.Application.Services
             var client = await _clientService.GetByUserIdViewModel(user.Id);
 
             // Destination account
-            var destinyAccount = await _savingsAccountService.GetByAccountNumber(accountNumberDestination, client.Id);
+            var destinyAccount = await _savingsAccountService.GetByAccountNumberLoggedUser(accountNumberDestination, client.Id);
 
             // Origin account
-            var originAccount = await _savingsAccountService.GetByAccountNumber(accountNumberOrigin, client.Id);
+            var originAccount = await _savingsAccountService.GetByAccountNumberLoggedUser(accountNumberOrigin, client.Id);
 
             if(destinyAccount != null && originAccount != null)
             {
@@ -93,7 +93,7 @@ namespace BankingApp.Core.Application.Services
             var client = await _clientService.GetByUserIdViewModel(user.Id);
 
             // Destination account
-            var destinyAccount = await _savingsAccountService.GetByAccountNumber(accountNumberDestination, client.Id);
+            var destinyAccount = await _savingsAccountService.GetByAccountNumberLoggedUser(accountNumberDestination, client.Id);
 
             // Origin account
             var originAccount = await _creditCardService.GetByAccountNumber(accountNumberOrigin, client.Id);
