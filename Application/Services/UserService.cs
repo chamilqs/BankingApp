@@ -70,7 +70,7 @@ namespace BankingApp.Core.Application.Services
         }
         #endregion
 
-        #region GetUserByUsername
+        #region GetUserById
         public async Task<UserViewModel> GetById(string id)
         {
             UserDTO userDTO = await _accountService.FindByIdAsync(id);
