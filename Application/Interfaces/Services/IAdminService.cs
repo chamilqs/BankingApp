@@ -4,5 +4,7 @@ namespace BankingApp.Core.Application.Interfaces.Services
 {
     public interface IAdminService
     {
+        Task<List<UserViewModel>> GetAllViewModel();
+        Task UpdateUserStatus(string userId);
     }
 }
