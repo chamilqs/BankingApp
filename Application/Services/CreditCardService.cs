@@ -33,7 +33,7 @@ namespace BankingApp.Core.Application.Services
             }).ToList();
         }
 
-        public async Task<CreditCard> GetByAccountNumber(string accountNumber, int clientId)
+        public async Task<CreditCard> GetByAccountNumber(string accountNumber) { }
 
         public async Task<CreditCard> GetByAccountNumberLoggedUser(string accountNumber, int clientId)
 
