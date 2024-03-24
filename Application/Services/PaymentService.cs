@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace BankingApp.Core.Application.Services
 {
-    public class PaymentService
+    public class PaymentService // : IPaymentService
     {
         private readonly ITransactionService _transactionService;
         private readonly IAccountService _accountService;

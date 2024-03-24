@@ -1,5 +1,6 @@
 ﻿using BankingApp.Core.Application.DTOs.Account;
 using BankingApp.Core.Application.Helpers;
+using BankingApp.Core.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ namespace BankingApp.Controllers
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AuthenticationResponse user;
+        private readonly PaymentService paymentService;
 
         public PaymentController(IHttpContextAccessor httpContextAccessor, AuthenticationResponse user)
         {

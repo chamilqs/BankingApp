@@ -102,8 +102,8 @@ namespace BankingApp.Infrastructure.Identity.Services
                 if (request.Role == Roles.Admin.ToString())
                 {
                     await _userManager.AddToRoleAsync(user, Roles.Admin.ToString());
-                } 
-                else if(request.Role == Roles.Client.ToString())
+                }
+                else if (request.Role == Roles.Client.ToString())
                 {
                     await _userManager.AddToRoleAsync(user, Roles.Client.ToString());
                 }
