@@ -38,7 +38,7 @@ namespace BankingApp.Core.Application.Services
                 ClientId = clientId,
                 DateCreated = savingsAccount.DateCreated,
                 Balance = balance,
-                IsMainAccount = savingsAccount.IsMainAccount
+                isMainAccount = savingsAccount.isMainAccount
             };
 
             await base.UpdateProduct(vm, id);

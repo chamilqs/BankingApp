@@ -26,7 +26,7 @@ namespace BankingApp.Core.Application.Services
 
         public virtual async Task UpdateProduct(SaveViewModel vm, string id)
         {
-            Entity entity = _mapper.Map<Entity>(vm);
+            Model entity = _mapper.Map<Model>(vm);
             await _repository.UpdateProductAsync(entity, id);
         }
 
