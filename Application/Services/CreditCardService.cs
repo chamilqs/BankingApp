@@ -27,7 +27,7 @@ namespace BankingApp.Core.Application.Services
 
             return creditCard;
         }
-
+        
         public async Task<List<CreditCardViewModel>> GetAllByClientId(int clientId)
         {
             var creditCardList = await _creditCardRepository.GetAllAsync();
