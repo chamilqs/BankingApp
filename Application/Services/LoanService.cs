@@ -4,14 +4,8 @@ using BankingApp.Core.Application.Helpers;
 using BankingApp.Core.Application.Interfaces.Repositories;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.Loan;
-using BankingApp.Core.Application.ViewModels.SavingsAccount;
 using BankingApp.Core.Domain.Entities;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingApp.Core.Application.Services
 {

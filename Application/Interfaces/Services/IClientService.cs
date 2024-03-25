@@ -1,5 +1,8 @@
-﻿using BankingApp.Core.Application.DTOs.Account;
+﻿using BankingApp.Core.Application.Dtos.Account;
+using BankingApp.Core.Application.DTOs.Account;
 using BankingApp.Core.Application.ViewModels.Client;
+using BankingApp.Core.Application.ViewModels.Products;
+using BankingApp.Core.Application.ViewModels.SavingsAccount;
 using BankingApp.Core.Application.ViewModels.User;
 using BankingApp.Core.Domain.Entities;
 
@@ -9,5 +12,7 @@ namespace BankingApp.Core.Application.Interfaces.Services
     {
         Task<ClientViewModel> GetByUserIdViewModel(string userId);
         Task<RegisterResponse> RegisterAsync(SaveUserViewModel vm);
+        Task<GenericResponse> UpdateAsync(SaveUserViewModel vm);
+        Task<ProductViewModel> GetAllProducts(string userId);
     }
 }

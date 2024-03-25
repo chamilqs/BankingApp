@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.Enums;
 using Microsoft.AspNetCore.Authorization;
+using BankingApp.Core.Application.Dtos.Account;
+using Azure;
+using BankingApp.Core.Application.ViewModels.SavingsAccount;
 
 namespace BankingApp.Controllers
 {
@@ -26,12 +29,6 @@ namespace BankingApp.Controllers
             _adminService = adminService;
         }
 
-        /*
-         The methods need to redirect to the Maintenance page when a process is finalized, like reseting a password or registering a new user.
-         The EditProfile by POST method needs to be configured so the method recieves the ID of the user that is going to be edited
-
-         
-         */
         #region Dashboard
         public IActionResult Dashboard()
         {
@@ -44,18 +41,23 @@ namespace BankingApp.Controllers
         {
             List<UserViewModel> users = await _adminService.GetAllViewModel();
             ViewBag.User = _authViewModel;
-            ViewBag.User = _authViewModel;
+            GenericResponse response = new() 
+            { 
+                HasError = hasError,
+            };
+            
+            if (hasError)
+                response.Error = message;
+            ViewBag.Response = response;
 
             return View(users);
         }
         #endregion
 
         #region Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.Roles = Enum.GetNames(typeof(Roles));
-
-            return View(new SaveUserViewModel());
+            return View("SaveUser", new SaveUserViewModel());
         }
 
         [HttpPost]
@@ -63,7 +65,7 @@ namespace BankingApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(vm);
+                return View("SaveUser", vm);
             }
 
             RegisterResponse response = new();
@@ -81,7 +83,7 @@ namespace BankingApp.Controllers
             {
                 vm.HasError = response.HasError;
                 vm.Error = response.Error;
-                return View(vm);
+                return View("SaveUser", vm);
             }
 
             return RedirectToRoute(new { controller = "Admin", action = "Index" });
@@ -104,48 +106,69 @@ namespace BankingApp.Controllers
         #endregion
 
         #region Edit User
+        public async Task<IActionResult> Edit(string username)
+        {
+            SaveUserViewModel vm = await _userService.GetUpdateUserAsync(username);
 
+            return View("SaveUser", vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(SaveUserViewModel vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("SaveUser", vm);
+            }
+
+            GenericResponse response = new();
+
+            if (vm.Role == (int)Roles.Admin)
+            {
+                response = await _userService.UpdateUserAsync(vm);
+            }
+            else if (vm.Role == (int)Roles.Client)
+            {
+                response = await _clientService.UpdateAsync(vm);
+            }
+
+            if (response.HasError)
+            {
+                vm.HasError = response.HasError;
+                vm.Error = response.Error;
+                return View("SaveUser", vm);
+            }
+
+            return RedirectToRoute(new { controller = "Admin", action = "Index" });
+        }
         #endregion
 
-        //// needs mantainense
-        //public async Task<IActionResult> EditProfile(string userId)
-        //{
-        //    ApplicationUser vm = await _userManager.FindByIdAsync(userId);
-        //    SaveUserViewModel svm = new()
-        //    {
-        //        Name = vm.Name,
-        //        LastName = vm.LastName,
-        //        Username = vm.UserName,
-        //        Email = vm.Email,
-        //        Phone = vm.PhoneNumber,
-        //        IdentificationNumber = vm.IdentificationNumber,
-        //        IsActive = vm.IsActive,
-        //    };
-        //    return View("EditProfile", svm);
-        //}
+        #region Products
+        public async Task<IActionResult> IndexProducts(string? userId = null, bool hasError = false, string? message = null)
+        {
+            try
+            {
+                GenericResponse response = new()
+                {
+                    HasError = hasError,
+                };
 
-        //[HttpPost]
-        //public async Task<IActionResult> EditProfile(SaveUserViewModel vm)
-        //{
-        //    // Needs to be configured so the method recieves the ID from the Client that its going to be edited
-        //    // then you can search for the user to get the current data, just in case the user does not want to change
-        //    // his password or others
+                if (hasError)
+                    response.Error = message;
+                ViewBag.Response = response;
 
-        //    // ApplicationUser userVm = await _userManager.FindByIdAsync();
+                return View(await _clientService.GetAllProducts(userId));
+            }
+            catch (Exception ex)
+            {
+                var user = await _userService.GetById(userId);
 
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View("EditProfile", vm);
-        //    }
+                return RedirectToRoute(new { controller = "Admin", action = "Index", userId = user.Id, hasError = true, message = $"An error has occured trying to get the products of the user: {user.Username}" });
+            }
+        }
+        #endregion
 
-        //    if (vm.Password.IsNullOrEmpty())
-        //    {
-        //        // vm.Password = userVm.PasswordHash;
-        //    }
 
-        //    await _userService.UpdateUserAsync(vm);
-        //    return RedirectToRoute(new { controller = "Admin", action = "ClientMaintenance" });
-        //}
 
     }
 }

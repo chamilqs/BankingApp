@@ -1,4 +1,8 @@
 ﻿using BankingApp.Core.Application.Interfaces.Services;
+using BankingApp.Core.Application.ViewModels.CreditCard;
+using BankingApp.Core.Application.ViewModels.Loan;
+using BankingApp.Core.Application.ViewModels.Products;
+using BankingApp.Core.Application.ViewModels.SavingsAccount;
 
 namespace BankingApp.Core.Application.Services
 {
@@ -34,7 +38,7 @@ namespace BankingApp.Core.Application.Services
             return accNumber; // Example output  627993046
         }
 
-        private async Task<bool> ExistsProduct(string productNumber)
+        public async Task<bool> ExistsProduct(string productNumber)
         {
             var savingsAccountList = await _savingsAccountService.GetAllViewModel();
             var creditCardList = await _creditCardService.GetAllViewModel();
@@ -44,16 +48,59 @@ namespace BankingApp.Core.Application.Services
             {
                 return true;
             }
-            //if (creditCardList.Any(cc => cc.Id == productNumber))
-            //{
-            //    return true;
-            //}
-            //if (loanList.Any(loan => loan.Id == productNumber))
-            //{
-            //    return true;
-            //}
+            if (creditCardList.Any(cc => cc.Id == productNumber))
+            {
+                return true;
+            }
+            if (loanList.Any(loan => loan.Id == productNumber))
+            {
+                return true;
+            }
 
             return false;
         }
+
+        #region GetAllProductsByClient
+        public async Task<ProductViewModel> GetAllProductsByClient(int clientId)
+        {
+            List<SavingsAccountViewModel> savingsAccountList = await GetAllSavingsAccounts(clientId);
+            List<CreditCardViewModel> creditCardList = await GetAllCreditCards(clientId);
+            List<LoanViewModel> loanList = await GetAllLoans(clientId);
+
+            ProductViewModel productViewModel = new()
+            {
+                ClientId = clientId,
+                SavingsAccounts = savingsAccountList,
+                CreditCards = creditCardList,
+                Loans = loanList,
+            };
+
+            return productViewModel;
+        }
+
+        private async Task<List<SavingsAccountViewModel>> GetAllSavingsAccounts(int clientId)
+        {
+            var savingsAccountList = await _savingsAccountService.GetAllViewModel();
+            savingsAccountList = savingsAccountList.FindAll(cc => cc.ClientId == clientId);
+
+            return savingsAccountList;
+        }
+
+        private async Task<List<CreditCardViewModel>> GetAllCreditCards(int clientId)
+        {
+            var creditCardList = await _creditCardService.GetAllViewModel();
+            creditCardList = creditCardList.FindAll(cc => cc.ClientId == clientId);
+
+            return creditCardList;
+        }
+
+        private async Task<List<LoanViewModel>> GetAllLoans(int clientId)
+        {
+            var loanList = await _loanService.GetAllViewModel();
+            loanList = loanList.FindAll(cc => cc.ClientId == clientId);
+
+            return loanList;
+        }
+        #endregion
     }
 }

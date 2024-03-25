@@ -3,7 +3,6 @@ using BankingApp.Core.Application.DTOs.Account;
 using BankingApp.Core.Application.Helpers;
 using BankingApp.Core.Application.Interfaces.Repositories;
 using BankingApp.Core.Application.Interfaces.Services;
-using BankingApp.Core.Application.ViewModels.CreditCard;
 using BankingApp.Core.Application.ViewModels.SavingsAccount;
 using BankingApp.Core.Domain.Entities;
 using Microsoft.AspNetCore.Http;
@@ -16,6 +15,7 @@ namespace BankingApp.Core.Application.Services
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AuthenticationResponse user;
+
         public SavingsAccountService(ISavingsAccountRepository savingsAccountRepository, IHttpContextAccessor httpContextAccessor, IMapper mapper) : base(savingsAccountRepository, mapper)
         {
             _savingsAccountRepository = savingsAccountRepository;
@@ -24,9 +24,11 @@ namespace BankingApp.Core.Application.Services
             user = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
         }
 
+        #region Delete
+        #endregion
+
         public async Task<List<SavingsAccountViewModel>> GetAllByClientId(int clientId)
         {
-
             var savingsAccounts = await _savingsAccountRepository.GetAllAsync();
             return savingsAccounts.Where(s => s.ClientId == clientId).Select(s => new SavingsAccountViewModel
             {
@@ -35,8 +37,7 @@ namespace BankingApp.Core.Application.Services
                 ClientId = s.ClientId,
                 ClientName = user.Name,
                 DateCreated = s.DateCreated,
-                isMainAccount = s.isMainAccount
-
+                IsMainAccount = s.IsMainAccount
 
             }).ToList();
 
@@ -80,5 +81,16 @@ namespace BankingApp.Core.Application.Services
 
             await base.UpdateProduct(vm, id);
         }
+
+        #region GetClientMainAccount
+        public async Task<SavingsAccountViewModel> GetClientMainAccount(int clientId)
+        {
+            var savingsAccountList = await base.GetAllViewModel();
+
+            var savingsAccount = savingsAccountList.FirstOrDefault(sa => sa.ClientId == clientId && sa.IsMainAccount == true);
+
+            return savingsAccount;
+        }
+        #endregion
     }
 }
