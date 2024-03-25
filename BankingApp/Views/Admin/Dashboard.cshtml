@@ -1,7 +1,205 @@
-﻿@*
-    En esta vista se muestra el dashboard del administrador, en el cual se muestran las estadísticas de la aplicación.
-*@
+﻿@model AdminDataViewModel
 @{
+	ViewData["Title"] = "Admin dashboard";
 }
 
-<h1>Hola, este es el ADMIN DASHBOARD.</h1>
+<div class="row">
+	<div class="col-12 col-md-6 col-xxl-3 d-flex">
+		<div class="card flex-fill w-100">
+			<div class="card-header">
+
+				<h5 class="card-title mb-0 text-center">Total of clients registered</h5>
+			</div>
+			<div class="card-body d-flex">
+				<div class="align-self-center w-100">
+					<div class="py-3">
+						<div class="chart chart-xs">
+							<canvas id="chartjs-dashboard-pie"></canvas>
+						</div>
+					</div>
+
+					<table class="table mb-0">
+						<tbody>
+							<tr>
+								<td>Active users</td>
+								<td class="text-end">@Model.TotalActiveUsers</td>
+							</tr>
+							<tr>
+								<td>Inactive users</td>
+								<td class="text-end">@Model.TotalInactiveUsers</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-4 col-xl-4">
+		<div class="card">
+			<div class="card-header">
+				<h5 class="card-title text-center mb-2">Products assigned to clients</h5>		
+			</div>
+			<div class="card-body">
+				<div class="chart chart-sm">
+					<canvas id="chartjs-pie"></canvas>
+				</div>
+			</div>
+			<table class="table mb-0">
+				<tbody>
+					<tr>
+						<td>Credit cards</td>
+						<td class="text-end">@Model.TotalCreditCards</td>
+					</tr>
+					<tr>
+						<td>Loans</td>
+						<td class="text-end">@Model.TotalLoans</td>
+					</tr>
+					<tr>
+						<td>Savings accounts</td>
+						<td class="text-end">@Model.TotalSavingsAccounts</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="col-xl-6 col-xxl-5 d-flex">
+		<div class="w-100">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="card">
+						<div class="card-body">
+							<div class="row">
+								<div class="col mt-0">
+									<h5 class="card-title">Transactions</h5>
+								</div>
+
+								<div class="col-auto">
+									<div class="stat text-primary">
+										<i class="align-middle" data-feather="credit-card"></i>
+									</div>
+								</div>
+							</div>
+							<h1 class="mt-1 mb-3">@Model.TotalTodayTransactions</h1>
+							<div class="mb-0">
+								<span class="text-muted">Total of transactions since the beginning of the day.</span>
+							</div>
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-body">
+							<div class="row">
+								<div class="col mt-0">
+									<h5 class="card-title">Payments</h5>
+								</div>
+
+								<div class="col-auto">
+									<div class="stat text-primary">
+										<i class="align-middle" data-feather="dollar-sign"></i>
+									</div>
+								</div>
+							</div>
+							<h1 class="mt-1 mb-3">@Model.TotalTodayPayments</h1>
+							<div class="mb-0">
+								<span class="text-muted">Total of payments since the beginning of the day.</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="card">
+						<div class="card-body">
+							<div class="row">
+								<div class="col mt-0">
+									<h5 class="card-title">Transactions</h5>
+								</div>
+
+								<div class="col-auto">
+									<div class="stat text-primary">
+										<i class="align-middle" data-feather="credit-card"></i>
+									</div>
+								</div>
+							</div>
+							<h1 class="mt-1 mb-3">@Model.TotalTransactions</h1>
+							<div class="mb-0">
+								<span class="text-muted">Total of transactions since the system was created.</span>
+							</div>
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-body">
+							<div class="row">
+								<div class="col mt-0">
+									<h5 class="card-title">Payments</h5>
+								</div>
+
+								<div class="col-auto">
+									<div class="stat text-primary">
+										<i class="align-middle" data-feather="dollar-sign"></i>
+									</div>
+								</div>
+							</div>
+							<h1 class="mt-1 mb-3">@Model.TotalPayments</h1>
+							<div class="mb-0">
+								<span class="text-muted">Total of payments since the system was created.</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="~/assets/charts/app.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        new Chart(document.getElementById("chartjs-dashboard-pie"), {
+            type: "pie",
+            data: {
+                labels: ["Active", "Inactive"],
+                datasets: [{
+					data: [@Model.TotalActiveUsers, @Model.TotalInactiveUsers],
+                    backgroundColor: [
+                        window.theme.primary,
+                        window.theme.danger
+                    ],
+                    borderWidth: 5
+                }]
+            },
+            options: {
+                responsive: !window.MSInputMethodContext,
+                maintainAspectRatio: false,
+                legend: {
+                    display: false
+                },
+                cutoutPercentage: 75
+            }
+        });
+    });
+</script>
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		new Chart(document.getElementById("chartjs-pie"), {
+			type: "pie",
+			data: {
+				labels: ["Credit Cards", "Loans", "Savings Accounts"],
+				datasets: [{
+					data: [@Model.TotalCreditCards, @Model.TotalLoans, @Model.TotalSavingsAccounts],
+					backgroundColor: [
+						window.theme.primary,
+						window.theme.warning,
+						window.theme.danger,
+						"#dee2e6"
+					],
+					borderColor: "transparent"
+				}]
+			},
+			options: {
+				maintainAspectRatio: false,
+				legend: {
+					display: false
+				}
+			}
+		});
+	});
+</script>

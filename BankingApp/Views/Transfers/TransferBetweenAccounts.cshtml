@@ -4,16 +4,28 @@
     ViewData["Title"] = "Transfer Between Accounts";
 }
 
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'>
+<link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&amp;display=swap'>
+
 <style>
+
+    .styles {
+        font-family: "Montserrat", sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
     ::selection {
         color: #000;
         background: #fff;
     }
 
     .wrapper {
-        width: 370px;
+        width: 600px;
         padding: 30px;
-        border-radius: 5px;
+        border-radius: 10px;
         background: #222;
         box-shadow: 7px 7px 20px rgba(0, 0, 0, 0.2);
         color: #fff;
@@ -44,6 +56,7 @@
     }
 
     form input {
+        box-sizing: border-box;
         height: 50px;
         font-size: 17px;
         padding: 0 15px;
@@ -132,35 +145,40 @@
         }
 </style>
 
-<div class="wrapper">
-    <header>Currency Converter</header>
-    <form method="post" asp-controller="Transfers" asp-action="TransferBetweenAccounts">
-        <div class="amount">
-            <p>Enter Amount</p>
-            <input type="text" asp-for="Amount" value="0">
-        </div>
-        <div class="drop-list">
-            <div class="from">
-                <p>From</p>
-                <div class="mb-3">
-                    <label asp-for="Origin" class="form-label">Origin account: </label>
-                    <select asp-for="Origin" asp-items="@(new SelectList(ViewBag.ClientAccounts,"Id","Id"))" class="form-select">
-                        <option value="0">Select an option</option>
-                    </select>
+<div class="styles">
+    <div class="wrapper">
+        <header>Transfer Between Accounts</header>
+        <form method="post" asp-controller="Transfers" asp-action="TransferBetweenAccounts">
+            <div class="amount">
+                <p>Enter Amount</p>
+                <input type="number" asp-for="Amount" value="0" required>
+            </div>
+            <div class="drop-list">
+                <div class="from">
+                    <p>From</p>
+                    <div class="select-box">
+                        <img src="https://cdn-icons-png.freepik.com/256/3044/3044876.png" alt="flag">
+                        <select required asp-for="Origin" asp-items="@(new SelectList(ViewBag.ClientAccounts,"Id","Id"))" class="form-select">
+                        </select>
+                    </div>
+                </div>
+                <div class="icon"><i class="fas fa-exchange-alt"></i></div>
+                <div class="to">
+                    <p>To</p>
+                    <div class="select-box">
+                        <img src="https://cdn-icons-png.freepik.com/256/3044/3044876.png" alt="flag">
+                        <select required asp-for="Destination" asp-items="@(new SelectList(ViewBag.ClientAccounts,"Id","Id"))" class="form-select">
+                        </select>
+                    </div>
                 </div>
             </div>
-            <div class="icon"><i class="fas fa-exchange-alt"></i></div>
-            <div class="to">
-                <p>To</p>
-                <div class="select-box">
-                    <label asp-for="Destination" class="form-label">Destination account: </label>
-                    <select asp-for="Destination" asp-items="@(new SelectList(ViewBag.ClientAccounts,"Id","Id"))" class="form-select">
-                        <option value="0">Select an option</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <button>Make transfer</button>
-    </form>
+            <div class="exchange-rate"></div>
+            <button type="submit">Make transfer</button>
+        </form>
+    </div>
 </div>
+
+
+
+
 

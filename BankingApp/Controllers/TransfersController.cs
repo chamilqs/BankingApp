@@ -71,7 +71,12 @@ namespace BankingApp.Controllers
             var creditCards = await _creditCardService.GetAllViewModel();
             creditCards = creditCards.Where(x => x.ClientId == client.Id).ToList();
 
+            var accounts = await _savingsAccountService.GetAllViewModel();
+            accounts = accounts.Where(x => x.ClientId == client.Id).ToList();
+
+            ViewBag.ClientAccounts = accounts;
             ViewBag.ClientCreditCards = creditCards;  
+
             return View();
         }
 
