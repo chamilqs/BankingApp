@@ -3,6 +3,8 @@
 @model SaveUserViewModel;
 
 @{
+    bool editMode = String.IsNullOrWhiteSpace(Model.Id) ? false : true;
+    ViewData["Title"] = editMode ? "Edit User" : "New User";
     ViewData["Title"] = "New User";
 }
 
@@ -21,10 +23,9 @@
                         </div>
                     }
 
-                    <form method="post" asp-controller="Admin" asp-action="Create" enctype="multipart/form-data">
+                    <form method="post" asp-controller="Admin" asp-action="@(editMode ? "Edit" : "Create")" enctype="multipart/form-data">
 
                         <div class="mb-3 fw-normal text-center">
-                            <i class="bi bi-camera-reels h2"></i>
                             <h1 class="h3">@ViewData["Title"]</h1>
                         </div>
 
@@ -68,25 +69,45 @@
 
                             <div class="mb-3">
                                 <label asp-for="Password" class="form-label">Password:</label>
-                                <input type="password" asp-for="Password" class="form-control" placeholder="Password" />
+                                @if (editMode)
+                                {
+                                    <input type="password" asp-for="Password" class="form-control" placeholder="Password" />
+                                }
+                                else
+                                {
+                                    <input type="password" asp-for="Password" class="form-control" placeholder="Password" required />
+                                }
                                 <span asp-validation-for="Password" class="text-danger"></span>
                             </div>
 
                             <div class="mb-3">
                                 <label asp-for="ConfirmPassword" class="form-label">Confirm Password:</label>
-                                <input type="password" asp-for="ConfirmPassword" class="form-control" placeholder="ConfirmPassword" />
+                                @if (editMode)
+                                {
+                                    <input type="password" asp-for="ConfirmPassword" class="form-control" placeholder="ConfirmPassword" />
+                                } else
+                                {
+                                    <input type="password" asp-for="ConfirmPassword" class="form-control" placeholder="ConfirmPassword" required />
+                                }
                                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                             </div>
 
-                            <div class="mb-3">
-                                <label asp-for="Role" class="form-label">Role:</label>
-                                <select id="select-role" asp-for="Role" class="form-select">
-                                    <option value="0">Select a role</option>
-                                    <option value="@((int)Roles.Admin)">@(Roles.Admin.ToString())</option>
-                                    <option value="@((int)Roles.Client)">@(Roles.Client.ToString())</option>
-                                </select>
-                                <span asp-validation-for="Role" class="text-danger"></span>
-                            </div>
+                            @if (editMode)
+                            {
+                                <input type="hidden" asp-for="Role" id="user-role" />
+                            }
+                            else
+                            {
+                                <div class="mb-3">
+                                    <label asp-for="Role" class="form-label">Role:</label>
+                                    <select id="user-role" asp-for="Role" class="form-select">
+                                        <option value="0">Select a role</option>
+                                        <option value="@((int)Roles.Admin)">@(Roles.Admin.ToString())</option>
+                                        <option value="@((int)Roles.Client)">@(Roles.Client.ToString())</option>
+                                    </select>
+                                    <span asp-validation-for="Role" class="text-danger"></span>
+                                </div>
+                            }
 
                             <div id="collapse-account-amount" class="collapse">
                                 <div class="mb-3 align-text-end">
@@ -115,22 +136,48 @@
         </div>
     </div>
 
+    @if (editMode && Model.Role == (int)Roles.Client) 
+    {
+        <div class="row">
+            <div class="col-12 col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="accordion" id="accordionPanelsStayOpenExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                                        Accordion Item #1
+                                    </button>
+                                </h2>
+                                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                                    <div class="accordion-body">
+                                        <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
 </div>
 
 
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+@* <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+ *@
 <script>
     $(document).ready(function () {
-        var initialValue = $('#select-role').val();
+        var initialValue = $('#user-role').val();
         if (initialValue === "@((int)Roles.Client)") {
             $('#collapse-account-amount').collapse('show');
         } else {
             $('#collapse-account-amount').collapse('hide');
         }
 
-        $('#select-role').change(function () {
+        $('#user-role').change(function () {
             var selectedValue = $(this).val();
             if (selectedValue === "@((int)Roles.Client)") { // Change this condition based on your requirement
                 $('#collapse-account-amount').collapse('show');
