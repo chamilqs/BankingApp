@@ -23,7 +23,7 @@ namespace BankingApp.Core.Application
             services.AddScoped<ICreditCardService, CreditCardService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddTransient<ITransfersService, TransfersService>();
-            // services.AddTransient<IPaymentService,PaymentService>();
+            services.AddTransient<IPaymentService, PaymentService>();
             #endregion
         }
     }

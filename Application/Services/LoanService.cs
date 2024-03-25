@@ -23,7 +23,16 @@ namespace BankingApp.Core.Application.Services
             _mapper = mapper;
             user = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
         }
+        public async Task<Loan> GetByAccountNumber(string accountNumber)
+        {
+            var loan = await _loanRepository.GetByAccountNumber(accountNumber);
+            if (loan == null)
+            {
+                return null;
+            }
 
+            return loan;
+        }
         public async Task<List<LoanViewModel>> GetAllByClientId(int clientId)
         {
             var loanList = await _loanRepository.GetAllAsync();
@@ -38,6 +47,16 @@ namespace BankingApp.Core.Application.Services
 
 
             }).ToList();
+        }
+        public async Task<Loan> GetByAccountNumberLoggedUser(string accountNumber, int ClientId)
+        {
+            var loan = await _loanRepository.GetByAccountNumberLoggedUser(accountNumber, ClientId);
+            if (loan == null)
+            {
+                return null;
+            }
+
+            return loan;
         }
     }
 }
