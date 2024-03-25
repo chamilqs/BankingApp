@@ -45,7 +45,7 @@ namespace BankingApp.Core.Application.Services
         {
 
             var sa = await _beneficiaryRepository.GetByAccountNumber(accountNumber);
-            if(sa == null)
+            if (sa == null)
 
             {
                 return null;
@@ -77,6 +77,7 @@ namespace BankingApp.Core.Application.Services
 
             }).ToList();
         }
+
         public async Task<Beneficiary> GetBeneficiary(string accountNumber)
         {
             var beneficiary = await _beneficiaryRepository.GetBeneficiary(accountNumber);
