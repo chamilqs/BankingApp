@@ -38,7 +38,7 @@ namespace BankingApp.Core.Application.Services
             return accNumber; // Example output  627993046
         }
 
-        private async Task<bool> ExistsProduct(string productNumber)
+        public async Task<bool> ExistsProduct(string productNumber)
         {
             var savingsAccountList = await _savingsAccountService.GetAllViewModel();
             var creditCardList = await _creditCardService.GetAllViewModel();

@@ -15,6 +15,7 @@ namespace BankingApp.Core.Application.Services
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AuthenticationResponse user;
+
         public SavingsAccountService(ISavingsAccountRepository savingsAccountRepository, IHttpContextAccessor httpContextAccessor, IMapper mapper) : base(savingsAccountRepository, mapper)
         {
             _savingsAccountRepository = savingsAccountRepository;
@@ -23,9 +24,11 @@ namespace BankingApp.Core.Application.Services
             user = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
         }
 
+        #region Delete
+        #endregion
+
         public async Task<List<SavingsAccountViewModel>> GetAllByClientId(int clientId)
         {
-
             var savingsAccounts = await _savingsAccountRepository.GetAllAsync();
             return savingsAccounts.Where(s => s.ClientId == clientId).Select(s => new SavingsAccountViewModel
             {
