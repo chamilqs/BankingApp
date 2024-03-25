@@ -84,7 +84,7 @@
 
                                     if (userVm.Role == Roles.Client.ToString())
                                     {
-                                        <a asp-controller="Admin" asp-action="EditProduct" class="btn btn-success" asp-route-id="@userVm.Id" title="Products">
+                                        <a asp-controller="Admin" asp-action="IndexProducts" class="btn btn-success" asp-route-userId="@userVm.Id" title="Products">
                                             <i class="ti ti-coin"></i>
                                         </a>
                                     }

@@ -11,6 +11,7 @@ using BankingApp.Core.Application.ViewModels.SavingsAccount;
 using BankingApp.Core.Application.ViewModels.User;
 using BankingApp.Core.Domain.Entities;
 using Microsoft.AspNetCore.Http;
+using System.ComponentModel;
 
 namespace BankingApp.Core.Application.Services
 {
@@ -118,6 +119,18 @@ namespace BankingApp.Core.Application.Services
             }
 
             return response;
+        }
+        #endregion
+
+        #region GetAllProduct
+        public async Task<ProductViewModel> GetAllProducts(string userId)
+        {
+            ClientViewModel clientVm = await GetByUserIdViewModel(userId);
+
+            if (clientVm == null)
+                throw new Exception();
+
+            return await _productService.GetAllProductsByClient(clientVm.Id);
         }
         #endregion
     }

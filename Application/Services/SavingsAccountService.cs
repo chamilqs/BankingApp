@@ -3,7 +3,6 @@ using BankingApp.Core.Application.DTOs.Account;
 using BankingApp.Core.Application.Helpers;
 using BankingApp.Core.Application.Interfaces.Repositories;
 using BankingApp.Core.Application.Interfaces.Services;
-using BankingApp.Core.Application.ViewModels.CreditCard;
 using BankingApp.Core.Application.ViewModels.SavingsAccount;
 using BankingApp.Core.Domain.Entities;
 using Microsoft.AspNetCore.Http;
