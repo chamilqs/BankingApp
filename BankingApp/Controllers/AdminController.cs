@@ -1,10 +1,11 @@
-﻿using BankingApp.Core.Application.DTOs.Account;
+using BankingApp.Core.Application.DTOs.Account;
 using BankingApp.Core.Application.ViewModels.User;
 using BankingApp.Core.Application.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.Enums;
 using Microsoft.AspNetCore.Authorization;
+using BankingApp.Models;
 using BankingApp.Core.Application.Dtos.Account;
 using Azure;
 using BankingApp.Core.Application.ViewModels.SavingsAccount;
@@ -30,9 +31,24 @@ namespace BankingApp.Controllers
         }
 
         #region Dashboard
-        public IActionResult Dashboard()
+        public async Task<IActionResult> Dashboard()
         {
-            return View();
+            AdminDataViewModel vm = new()
+            {
+				TotalUsers = await _adminService.GetActiveUsersCount() + await _adminService.GetInactiveUsersCount(),
+				TotalActiveUsers = await _adminService.GetActiveUsersCount(),
+				TotalInactiveUsers = await _adminService.GetInactiveUsersCount(),
+				TotalTransactions = await _adminService.GetTotalTransactionsCount(),
+				TotalTodayTransactions = await _adminService.GetTodayTotalTransactionsCount(),
+				TotalPayments = await _adminService.GetTotalPaymentsCount(),
+				TotalTodayPayments = await _adminService.GetTodayTotalPaymentsCount(),
+				TotalSavingsAccounts = await _adminService.GetTotalSavingsAccountsCount(),
+				TotalLoans = await _adminService.GetTotalLoansCount(),
+				TotalCreditCards = await _adminService.GetTotalCreditCardsCount()
+			};
+
+
+            return View(vm);
         }
         #endregion
 
