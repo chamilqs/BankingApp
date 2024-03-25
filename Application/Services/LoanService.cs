@@ -4,6 +4,7 @@ using BankingApp.Core.Application.Helpers;
 using BankingApp.Core.Application.Interfaces.Repositories;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.Loan;
+using BankingApp.Core.Application.ViewModels.SavingsAccount;
 using BankingApp.Core.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -29,5 +30,20 @@ namespace BankingApp.Core.Application.Services
             user = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
         }
 
+        public async Task<List<LoanViewModel>> GetAllByClientId(int clientId)
+        {
+            var loanList = await _loanRepository.GetAllAsync();
+            return loanList.Where(l => l.ClientId == clientId).Select(l => new LoanViewModel
+            {
+                Id = l.Id,
+                ClientId = l.ClientId,
+                Amount = l.Amount,
+                Balance = l.Balance,
+                DateCreated = l.DateCreated
+
+
+
+            }).ToList();
+        }
     }
 }
