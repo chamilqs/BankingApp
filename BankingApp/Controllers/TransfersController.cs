@@ -3,10 +3,12 @@ using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using BankingApp.Core.Application.ViewModels.Transaction;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BankingApp.Controllers
 {
-    public class TransfersController : Controller
+	[Authorize(Roles = "Client")]
+	public class TransfersController : Controller
     {
         private readonly ITransfersService _transfersService;
         private readonly IHttpContextAccessor _httpContextAccessor;

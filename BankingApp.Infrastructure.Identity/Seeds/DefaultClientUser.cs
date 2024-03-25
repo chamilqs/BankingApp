@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using BankingApp.Infrastructure.Identity.Entities;
 using BankingApp.Core.Application.Enums;
-using BankingApp.Core.Application.ViewModels.Client;
-using BankingApp.Core.Application.ViewModels.SavingsAccount;
-using BankingApp.Core.Application.Interfaces.Services;
 
 namespace BankingApp.Infrastructure.Identity.Seeds
 {
