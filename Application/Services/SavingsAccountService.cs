@@ -35,8 +35,7 @@ namespace BankingApp.Core.Application.Services
                 ClientId = s.ClientId,
                 ClientName = user.Name,
                 DateCreated = s.DateCreated,
-                isMainAccount = s.isMainAccount
-
+                IsMainAccount = s.IsMainAccount
 
             }).ToList();
 

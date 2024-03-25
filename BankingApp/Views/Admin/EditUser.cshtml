@@ -3,8 +3,7 @@
 @model SaveUserViewModel;
 
 @{
-    //bool editMode = String.IsNullOrWhiteSpace(Model.Id) ? false : true;
-    bool editMode = false;
+    bool editMode = String.IsNullOrWhiteSpace(Model.Id) ? false : true;
     ViewData["Title"] = editMode ? "Edit User" : "New User";
     ViewData["Title"] = "New User";
 }
@@ -86,7 +85,8 @@
                                 @if (editMode)
                                 {
                                     <input type="password" asp-for="ConfirmPassword" class="form-control" placeholder="ConfirmPassword" />
-                                } else
+                                }
+                                else
                                 {
                                     <input type="password" asp-for="ConfirmPassword" class="form-control" placeholder="ConfirmPassword" required />
                                 }

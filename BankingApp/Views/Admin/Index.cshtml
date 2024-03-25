@@ -78,7 +78,7 @@
                             <td class="text-center">
                                 @if (userVm.Id != user.Id)
                                 {
-                                    <a asp-controller="Admin" asp-action="Edit" class="btn btn-warning" asp-route-id="@userVm.Id" title="Edit">
+                                    <a asp-controller="Admin" asp-action="Edit" class="btn btn-warning" asp-route-username="@userVm.Username" title="Edit">
                                         <i class="ti ti-pencil"></i>
                                     </a>
 
