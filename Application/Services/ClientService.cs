@@ -5,10 +5,13 @@ using BankingApp.Core.Application.Helpers;
 using BankingApp.Core.Application.Interfaces.Repositories;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.Client;
+using BankingApp.Core.Application.ViewModels.Loan;
+using BankingApp.Core.Application.ViewModels.Products;
 using BankingApp.Core.Application.ViewModels.SavingsAccount;
 using BankingApp.Core.Application.ViewModels.User;
 using BankingApp.Core.Domain.Entities;
 using Microsoft.AspNetCore.Http;
+using System.ComponentModel;
 
 namespace BankingApp.Core.Application.Services
 {
@@ -116,6 +119,18 @@ namespace BankingApp.Core.Application.Services
             }
 
             return response;
+        }
+        #endregion
+
+        #region GetAllProduct
+        public async Task<ProductViewModel> GetAllProducts(string userId)
+        {
+            ClientViewModel clientVm = await GetByUserIdViewModel(userId);
+
+            if (clientVm == null)
+                throw new Exception();
+
+            return await _productService.GetAllProductsByClient(clientVm.Id);
         }
         #endregion
     }
