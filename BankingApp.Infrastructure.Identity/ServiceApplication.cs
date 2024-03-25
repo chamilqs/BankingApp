@@ -1,4 +1,4 @@
-﻿using BankingApp.Core.Application.Services;
+﻿using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Infrastructure.Identity.Entities;
 using BankingApp.Infrastructure.Identity.Seeds;
 using Microsoft.AspNetCore.Identity;
@@ -19,12 +19,10 @@ namespace BankingApp.Infrastructure.Identity
                 {
                     var userManager = servicesScope.GetRequiredService<UserManager<ApplicationUser>>();
                     var roleManager = servicesScope.GetRequiredService<RoleManager<IdentityRole>>();
-                    var clientService = servicesScope.GetRequiredService<ClientService>();
-                    var savingsAccountsService = servicesScope.GetRequiredService<SavingsAccountService>();
 
                     await DefaultRoles.SeedAsync(userManager, roleManager);
                     await DefaultAdminUser.SeedAsync(userManager, roleManager);
-                    await DefaultClientUser.SeedAsync(userManager, roleManager, clientService, savingsAccountsService);
+                    await DefaultClientUser.SeedAsync(userManager, roleManager);
                 }
                 catch (Exception ex)
                 {

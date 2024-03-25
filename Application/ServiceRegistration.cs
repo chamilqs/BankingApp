@@ -17,13 +17,13 @@ namespace BankingApp.Core.Application
             services.AddTransient<IBeneficiaryService, BeneficiaryService>();
             services.AddTransient<IClientService, ClientService>();
             services.AddTransient<IAdminService, AdminService>();
-            services.AddTransient<ILoanService, LoanService>();
+            services.AddScoped<ILoanService, LoanService>();
             services.AddTransient<ITransactionService, TransactionService>();
-            services.AddTransient<ISavingsAccountService, SavingsAccountService>();
-            services.AddTransient<ICreditCardService, CreditCardService>();
-            services.AddTransient<IProductService, ProductService>();
+            services.AddScoped<ISavingsAccountService, SavingsAccountService>();
+            services.AddScoped<ICreditCardService, CreditCardService>();
+            services.AddScoped<IProductService, ProductService>();
             services.AddTransient<ITransfersService, TransfersService>();
-            // services.AddTransient<IPaymentService,PaymentService>();
+            services.AddTransient<IPaymentService, PaymentService>();
             #endregion
         }
     }
