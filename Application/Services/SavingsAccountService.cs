@@ -35,8 +35,7 @@ namespace BankingApp.Core.Application.Services
                 ClientId = s.ClientId,
                 ClientName = user.Name,
                 DateCreated = s.DateCreated,
-                isMainAccount = s.isMainAccount
-
+                IsMainAccount = s.IsMainAccount
 
             }).ToList();
 
@@ -80,5 +79,16 @@ namespace BankingApp.Core.Application.Services
 
             await base.UpdateProduct(vm, id);
         }
+
+        #region GetClientMainAccount
+        public async Task<SavingsAccountViewModel> GetClientMainAccount(int clientId)
+        {
+            var savingsAccountList = await base.GetAllViewModel();
+
+            var savingsAccount = savingsAccountList.FirstOrDefault(sa => sa.ClientId == clientId && sa.IsMainAccount == true);
+
+            return savingsAccount;
+        }
+        #endregion
     }
 }

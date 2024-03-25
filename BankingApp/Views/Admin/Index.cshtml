@@ -1,10 +1,13 @@
 ﻿@using BankingApp.Core.Application.DTOs.Account
+@using BankingApp.Core.Application.Dtos.Account
+@using BankingApp.Core.Application.Enums
 @using BankingApp.Core.Application.ViewModels.User;
 @model List<UserViewModel>;
 
 @{
     ViewData["Title"] = "Manage Users";
     AuthenticationResponse user = ViewBag.User;
+    GenericResponse response = ViewBag.Response;
 }
 
 <div>
@@ -17,13 +20,13 @@
     </div>
 
     <div class="">
-        @* @if (Model.HasError)
+        @if (response.HasError)
         {
             <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
-                <p class="mb-0">@Model.Error</p>
+                <p class="mb-0">@response.Error</p>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-        } *@
+        }
         @if (Model.Count == 0 || Model == null)
         {
             <h3 class="text-center">There are not any user</h3>
@@ -39,7 +42,7 @@
                         <th>Username</th>
                         <th class="text-center col-1">Role</th>
                         <th class="text-center col-1">Status</th>
-                        <th class="text-center col-2">Actions</th>
+                        <th class="text-center col-3">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,11 +78,18 @@
                             <td class="text-center">
                                 @if (userVm.Id != user.Id)
                                 {
-                                    <a asp-controller="Admin" asp-action="Edit" class="btn btn-warning" asp-route-id="@userVm.Id">
+                                    <a asp-controller="Admin" asp-action="Edit" class="btn btn-warning" asp-route-username="@userVm.Username" title="Edit">
                                         <i class="ti ti-pencil"></i>
                                     </a>
 
-                                    <a class="btn btn-@(userVm.IsActive ? "danger" : "success" )" href="#" data-bs-toggle="modal" data-bs-target="#modal-update-user-status-@userVm.Username" title="@(userVm.IsActive ? " Unactive" : "Active")">
+                                    if (userVm.Role == Roles.Client.ToString())
+                                    {
+                                        <a asp-controller="Admin" asp-action="EditProduct" class="btn btn-success" asp-route-id="@userVm.Id" title="Products">
+                                            <i class="ti ti-coin"></i>
+                                        </a>
+                                    }
+
+                                    <a class="btn btn-@(userVm.IsActive ? "danger" : "secondary" )" href="#" data-bs-toggle="modal" data-bs-target="#modal-update-user-status-@userVm.Username" title="@(userVm.IsActive ? " Unactive" : "Active")">
                                         <i class="ti ti-user-@(userVm.IsActive ? "x" : "plus")"></i>
                                     </a>
 
@@ -93,10 +103,10 @@
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
 
-                                                <form method="post" asp-controller="Admin" asp-action="UpdateUserStatus" asp-route-username="@userVm.Username">
+                                                <form method="post" asp-controller="Admin" asp-action="UpdateUserStatus">
                                                     <div class="modal-body">
 
-                                                        @* <input type="hidden" name="username" value="@userVm.Id" /> *@
+                                                        <input type="hidden" name="username" value="@userVm.Username" />
 
                                                         <div class="mb-3 text-start">
                                                             <p class="text-center">Are you sure you want to <span class="fw-bolder">@(userVm.IsActive ? "unactive" : "active")</span> this user?</p>
@@ -115,83 +125,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    @* if (userVm.IsActive)
-                                    {
-                                        <a class="btn btn-danger" href="#" data-bs-toggle="modal" data-bs-target="#modal-unactive-user" title="Active">
-                                            <i class="ti ti-user-x"></i>
-                                        </a>
-
-                                        <!-- Modal Active-User -->
-                                        <div class="modal fade" id="modal-unactive-user" tabindex="-1" aria-labelledby="modal-unactive-user-label" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content">
-
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Unactive User: @userVm.Username</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-
-                                                    <form method="post" asp-controller="Admin" asp-action="Unactive" asp-route-userId="@userVm.Id">
-                                                        <div class="modal-body">
-
-                                                            <input type="hidden" name="UserId" value="@userVm.Id" />
-                                                            <div class="mb-3 text-start">
-                                                                <p class="text-center">Are you sure you want to unactive this user?</p>
-                                                                <p><span class="fw-bolder">Id: </span>@userVm.IdentificationNumber</p>
-                                                                <p><span class="fw-bolder">Name: </span>@userVm.Name</p>
-                                                                <p><span class="fw-bolder">LastName: </span>@userVm.LastName</p>
-                                                                <p><span class="fw-bolder">Username: </span>@userVm.Username</p>
-                                                                <p><span class="fw-bolder">Role: </span>@userVm.Role</p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
-                                                            <button type="submit" class="btn btn-secondary">Active</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <a class="btn btn-success" href="#" data-bs-toggle="modal" data-bs-target="#modal-active-user" title="Unactive">
-                                            <i class="ti ti-user-plus"></i>
-                                        </a>
-
-                                        <!-- Modal Unactive-User -->
-                                        <div class="modal fade" id="modal-active-user" tabindex="-1" aria-labelledby="modal-active-user-label" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content">
-
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Active User: @userVm.Username</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-
-                                                    <form method="post" asp-controller="Admin" asp-action="Active" asp-route-userId="@userVm.Id">
-                                                        <div class="modal-body">
-
-                                                            <input type="hidden" name="UserId" value="@userVm.Id" />
-                                                            <div class="mb-3 text-start">
-                                                                <p class="text-center">Are you sure you want to unactive this user?</p>
-                                                                <p><span class="fw-bolder">Id: </span>@userVm.IdentificationNumber</p>
-                                                                <p><span class="fw-bolder">Name: </span>@userVm.Name</p>
-                                                                <p><span class="fw-bolder">LastName: </span>@userVm.LastName</p>
-                                                                <p><span class="fw-bolder">Username: </span>@userVm.Username</p>
-                                                                <p><span class="fw-bolder">Role: </span>@userVm.Role</p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer text-center">
-                                                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
-                                                            <button type="submit" class="btn btn-secondary">Active</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    } *@
                                     
                                 }
                             </td>

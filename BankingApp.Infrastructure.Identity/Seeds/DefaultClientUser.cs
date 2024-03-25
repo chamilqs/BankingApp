@@ -3,13 +3,13 @@ using BankingApp.Infrastructure.Identity.Entities;
 using BankingApp.Core.Application.Enums;
 using BankingApp.Core.Application.ViewModels.Client;
 using BankingApp.Core.Application.ViewModels.SavingsAccount;
-using BankingApp.Core.Application.Services;
+using BankingApp.Core.Application.Interfaces.Services;
 
 namespace BankingApp.Infrastructure.Identity.Seeds
 {
     public static class DefaultClientUser
     {
-        public static async Task SeedAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ClientService clientService, SavingsAccountService savingsAccountService)
+        public static async Task SeedAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             ApplicationUser defaultUser = new();
             defaultUser.UserName = "clientuser";
@@ -29,25 +29,6 @@ namespace BankingApp.Infrastructure.Identity.Seeds
                     await userManager.CreateAsync(defaultUser, "123P4$$w0rd!");
                     await userManager.AddToRoleAsync(defaultUser, Roles.Client.ToString());
                 }
-
-                SaveClientViewModel saveClientViewModel = new()
-                {
-                    UserId = user.Id,
-                    DateCreated = DateTime.UtcNow,
-                };
-
-                var client = await clientService.Add(saveClientViewModel);
-
-                SaveSavingsAccountViewModel savingsAccountViewModel = new()
-                {
-                    Id = "111222333",
-                    ClientId = client.Id,
-                    Balance = 0.00,
-                    DateCreated = DateTime.UtcNow,
-                    IsMainAccount = true
-                };
-
-                await savingsAccountService.Add(savingsAccountViewModel);
             }
         }
     }

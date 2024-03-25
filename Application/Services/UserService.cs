@@ -57,6 +57,24 @@ namespace BankingApp.Core.Application.Services
 
             return await _accountService.UpdateUserAsync(updateRequest);
         }
+
+        public async Task<SaveUserViewModel> GetUpdateUserAsync(string username)
+        {
+            UserDTO userDTO = await _accountService.FindByUsernameAsync(username);
+
+            SaveUserViewModel userVm = new SaveUserViewModel()
+            {
+                Id = userDTO.Id,
+                Username = userDTO.Username,
+                Name = userDTO.Name,
+                LastName = userDTO.LastName,
+                IdentificationNumber = userDTO.IdentificationNumber,
+                Email = userDTO.Email,
+                Role = userDTO.Role == Roles.Admin.ToString() ? (int)Roles.Admin : (int)Roles.Client,
+            };
+
+            return userVm;
+        }
         #endregion
 
         #region GetUserByUsername
