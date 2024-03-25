@@ -23,11 +23,9 @@ namespace BankingApp.Core.Application.ViewModels.User
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "You must enter a Password.")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Required(ErrorMessage = "You must enter a Password.")]
         [Compare(nameof(Password), ErrorMessage = "The password must match")]
         [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
