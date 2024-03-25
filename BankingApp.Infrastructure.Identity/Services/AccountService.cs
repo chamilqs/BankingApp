@@ -131,6 +131,7 @@ namespace BankingApp.Infrastructure.Identity.Services
                 Name = user.Name,
                 LastName = user.LastName,
                 IdentificationNumber = user.IdentificationNumber,
+                Email = user.Email,
                 IsActive = user.IsActive
             }).ToList();
 
@@ -139,7 +140,6 @@ namespace BankingApp.Infrastructure.Identity.Services
                 var user = await _userManager.FindByIdAsync(userDTO.Id);
 
                 var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
-
                 userDTO.Role = rolesList.ToList()[0];
             }
 
@@ -160,6 +160,11 @@ namespace BankingApp.Infrastructure.Identity.Services
                 userDTO.Name = user.Name;
                 userDTO.LastName = user.LastName;
                 userDTO.IdentificationNumber = user.IdentificationNumber;
+                userDTO.Email = user.Email;
+                userDTO.IsActive = user.IsActive;
+
+                var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
+                userDTO.Role = rolesList.ToList()[0];
 
                 return userDTO;
             }
@@ -179,6 +184,11 @@ namespace BankingApp.Infrastructure.Identity.Services
                 userDTO.Name = user.Name;
                 userDTO.LastName = user.LastName;
                 userDTO.IdentificationNumber = user.IdentificationNumber;
+                userDTO.IsActive = user.IsActive;
+                userDTO.Email = user.Email;
+
+                var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
+                userDTO.Role = rolesList.ToList()[0];
 
                 return userDTO;
             }

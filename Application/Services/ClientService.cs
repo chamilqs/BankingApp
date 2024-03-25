@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BankingApp.Core.Application.Dtos.Account;
 using BankingApp.Core.Application.DTOs.Account;
 using BankingApp.Core.Application.Helpers;
 using BankingApp.Core.Application.Interfaces.Repositories;
@@ -36,6 +37,7 @@ namespace BankingApp.Core.Application.Services
             _productService = productService;
         }
 
+        #region GetByUserIdViewModel
         public async Task<ClientViewModel> GetByUserIdViewModel(string userId)
         {
             var clientList = await base.GetAllViewModel();
@@ -44,7 +46,9 @@ namespace BankingApp.Core.Application.Services
                 
             return client;
         }
+        #endregion
 
+        #region Register
         public async Task<RegisterResponse> RegisterAsync(SaveUserViewModel vm)
         {
             RegisterResponse response = await _userService.RegisterAsync(vm);
@@ -75,5 +79,44 @@ namespace BankingApp.Core.Application.Services
 
             return response;
         }
+        #endregion
+
+        #region Update
+        public async Task<GenericResponse> UpdateAsync(SaveUserViewModel vm)
+        {
+            GenericResponse response = await _userService.UpdateUserAsync(vm);
+
+            if (!response.HasError)
+            {
+                ClientViewModel client = await GetByUserIdViewModel(vm.Id);
+
+                var mainAccount = await _savingsAccountService.GetClientMainAccount(client.Id);
+
+                if (mainAccount != null)
+                {
+                    SaveSavingsAccountViewModel savingsAccountVm = new()
+                    {
+                        Id = mainAccount.Id,
+                        ClientId = mainAccount.ClientId,
+                        Balance = mainAccount.Balance + vm.AccountAmount.Value,
+                        DateCreated = mainAccount.DateCreated,
+                        IsMainAccount = mainAccount.IsMainAccount
+                        
+                    };
+                    
+                    await _savingsAccountService.UpdateProduct(savingsAccountVm, savingsAccountVm.Id);
+                }
+                else
+                {
+                    response.HasError = true;
+                    response.Error = $"This user: {user.UserName} doesn't have a main account";
+                    return response;
+                }
+
+            }
+
+            return response;
+        }
+        #endregion
     }
 }

@@ -10,6 +10,7 @@ namespace BankingApp.Core.Application.Services
     {
         private readonly ISavingsAccountRepository _savingsAccountRepository;
         private readonly IMapper _mapper;
+
         public SavingsAccountService(ISavingsAccountRepository savingsAccountRepository, IMapper mapper) : base(savingsAccountRepository, mapper)
         {
             _savingsAccountRepository = savingsAccountRepository;
@@ -53,5 +54,16 @@ namespace BankingApp.Core.Application.Services
 
             await base.UpdateProduct(vm, id);
         }
+
+        #region GetClientMainAccount
+        public async Task<SavingsAccountViewModel> GetClientMainAccount(int clientId)
+        {
+            var savingsAccountList = await base.GetAllViewModel();
+
+            var savingsAccount = savingsAccountList.FirstOrDefault(sa => sa.ClientId == clientId && sa.IsMainAccount == true);
+
+            return savingsAccount;
+        }
+        #endregion
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.Enums;
 using Microsoft.AspNetCore.Authorization;
+using BankingApp.Core.Application.Dtos.Account;
 
 namespace BankingApp.Controllers
 {
@@ -44,18 +45,23 @@ namespace BankingApp.Controllers
         {
             List<UserViewModel> users = await _adminService.GetAllViewModel();
             ViewBag.User = _authViewModel;
-            ViewBag.User = _authViewModel;
+            GenericResponse response = new() 
+            { 
+                HasError = hasError,
+            };
+            
+            if (hasError)
+                response.Error = message;
+            ViewBag.Response = response;
 
             return View(users);
         }
         #endregion
 
         #region Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.Roles = Enum.GetNames(typeof(Roles));
-
-            return View(new SaveUserViewModel());
+            return View("SaveUser", new SaveUserViewModel());
         }
 
         [HttpPost]
@@ -63,7 +69,7 @@ namespace BankingApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(vm);
+                return View("SaveUser", vm);
             }
 
             RegisterResponse response = new();
@@ -81,7 +87,7 @@ namespace BankingApp.Controllers
             {
                 vm.HasError = response.HasError;
                 vm.Error = response.Error;
-                return View(vm);
+                return View("SaveUser", vm);
             }
 
             return RedirectToRoute(new { controller = "Admin", action = "Index" });
@@ -104,7 +110,41 @@ namespace BankingApp.Controllers
         #endregion
 
         #region Edit User
+        public async Task<IActionResult> Edit(string username)
+        {
+            SaveUserViewModel vm = await _userService.GetUpdateUserAsync(username);
 
+            return View("SaveUser", vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(SaveUserViewModel vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("SaveUser", vm);
+            }
+
+            GenericResponse response = new();
+
+            if (vm.Role == (int)Roles.Admin)
+            {
+                response = await _userService.UpdateUserAsync(vm);
+            }
+            else if (vm.Role == (int)Roles.Client)
+            {
+                response = await _clientService.UpdateAsync(vm);
+            }
+
+            if (response.HasError)
+            {
+                vm.HasError = response.HasError;
+                vm.Error = response.Error;
+                return View("SaveUser", vm);
+            }
+
+            return RedirectToRoute(new { controller = "Admin", action = "Index" });
+        }
         #endregion
 
         //// needs mantainense

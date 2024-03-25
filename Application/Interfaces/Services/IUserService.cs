@@ -9,6 +9,7 @@ namespace BankingApp.Core.Application.Interfaces.Services
         Task<AuthenticationResponse> LoginAsync(LoginViewModel vm);
         Task<RegisterResponse> RegisterAsync(SaveUserViewModel vm);
         Task<GenericResponse> UpdateUserAsync(SaveUserViewModel vm);
+        Task<SaveUserViewModel> GetUpdateUserAsync(string username);
         Task SignOutAsync();
         Task<UserViewModel> GetByUsername(string username);
         Task<UserViewModel> GetById(string id);

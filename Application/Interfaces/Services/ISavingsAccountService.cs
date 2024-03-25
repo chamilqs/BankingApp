@@ -8,5 +8,6 @@ namespace BankingApp.Core.Application.Interfaces.Services
         Task<SavingsAccount> GetByAccountNumberLoggedUser(string accountNumber, int ClientId);
         Task<SavingsAccount> GetByAccountNumber(string accountNumber);
         Task UpdateSavingsAccount(double balance, int ClientId, string id);
+        Task<SavingsAccountViewModel> GetClientMainAccount(int ClientId);
     }
 }
