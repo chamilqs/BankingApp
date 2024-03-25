@@ -21,6 +21,18 @@ namespace BankingApp.Infrastructure.Identity.Services
             _signInManager = signInManager;
         }
 
+        #region GetActiveUsersCountAsync & GetInactiveUsersCountAsync
+        public async Task<int> GetActiveUsersCountAsync()
+        {
+			return await _userManager.Users.Where(user => user.IsActive == true).CountAsync();
+		}
+
+        public async Task<int> GetInactiveUsersCountAsync()
+        {
+            return await _userManager.Users.Where(user => user.IsActive == false).CountAsync();
+        }
+        #endregion
+
         #region Login & Logout
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request)
         {

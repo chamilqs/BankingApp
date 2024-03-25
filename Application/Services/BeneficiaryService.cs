@@ -76,7 +76,7 @@ namespace BankingApp.Core.Application.Services
 
 
             }).ToList();
-
+        }
         public async Task<Beneficiary> GetBeneficiary(string accountNumber)
         {
             var beneficiary = await _beneficiaryRepository.GetBeneficiary(accountNumber);
