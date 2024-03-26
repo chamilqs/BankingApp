@@ -11,6 +11,6 @@ namespace BankingApp.Core.Application.Interfaces.Services
         Task<List<SavingsAccountViewModel>> GetAllByClientId(int clientId);
         Task UpdateSavingsAccount(double balance, int ClientId, string id);
         Task<SavingsAccountViewModel> GetClientMainAccount(int ClientId);
-        Task DeleteProduct(string id);
+        Task Delete(string id);
     }
 }
