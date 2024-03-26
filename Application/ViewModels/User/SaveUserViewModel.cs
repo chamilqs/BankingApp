@@ -24,11 +24,11 @@ namespace BankingApp.Core.Application.ViewModels.User
         public string Email { get; set; }
 
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
         [Compare(nameof(Password), ErrorMessage = "The password must match")]
         [DataType(DataType.Password)]
-        public string ConfirmPassword { get; set; }
+        public string? ConfirmPassword { get; set; }
 
         [Required(ErrorMessage = "You must enter an ID.")]
         [RegularExpression(@"^\d{3}\-\d{7}-\d{1}$", ErrorMessage = "Your Id must be with the following format: ###-#######-#.")]

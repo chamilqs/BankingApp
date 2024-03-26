@@ -65,7 +65,7 @@ namespace BankingApp.Infrastructure.Identity.Services
             response.Name = user.Name;
             response.LastName = user.LastName;
             response.Email = user.Email;
-            response.UserName = user.UserName;
+            response.Username = user.UserName;
             response.IdentificationNumber = user.IdentificationNumber;
             response.IsActive = user.IsActive;
 

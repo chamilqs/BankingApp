@@ -4,6 +4,7 @@ using BankingApp.Core.Application.Helpers;
 using BankingApp.Core.Application.Interfaces.Repositories;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.SavingsAccount;
+using BankingApp.Core.Application.ViewModels.Transaction;
 using BankingApp.Core.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
@@ -25,6 +26,12 @@ namespace BankingApp.Core.Application.Services
         }
 
         #region Delete
+        public async Task Delete(string id)
+        {
+            var savingsAccount = await GetByAccountNumber(id);
+
+            await _savingsAccountRepository.DeleteAsync(savingsAccount);
+        }
         #endregion
 
         public async Task<List<SavingsAccountViewModel>> GetAllByClientId(int clientId)

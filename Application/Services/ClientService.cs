@@ -5,7 +5,6 @@ using BankingApp.Core.Application.Helpers;
 using BankingApp.Core.Application.Interfaces.Repositories;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.Client;
-using BankingApp.Core.Application.ViewModels.Loan;
 using BankingApp.Core.Application.ViewModels.Products;
 using BankingApp.Core.Application.ViewModels.SavingsAccount;
 using BankingApp.Core.Application.ViewModels.User;
@@ -27,7 +26,7 @@ namespace BankingApp.Core.Application.Services
 
         public ClientService(IClientRepository clientRepository,
             IHttpContextAccessor httpContextAccessor,
-            IMapper mapper, IUserService userService,
+            IMapper mapper, IUserService userService, 
             ISavingsAccountService savingsAccountService,
             IProductService productService) : base(clientRepository, mapper)
         {
@@ -93,11 +92,17 @@ namespace BankingApp.Core.Application.Services
             {
                 ClientViewModel client = await GetByUserIdViewModel(vm.Id);
 
-                var mainAccount = await _savingsAccountService.GetClientMainAccount(client.Id);
-
-                if (mainAccount != null)
+                if (client == null)
                 {
-                    SaveSavingsAccountViewModel savingsAccountVm = new()
+                    SaveClientViewModel saveClientViewModel = new()
+                    {
+                        UserId = vm.Id,
+                        DateCreated = DateTime.UtcNow,
+                    };
+
+                    var clientAdded = await base.Add(saveClientViewModel);
+
+                    SaveSavingsAccountViewModel savingsAccountViewModel = new()
                     {
                         Id = mainAccount.Id,
                         ClientId = mainAccount.ClientId,
@@ -111,9 +116,28 @@ namespace BankingApp.Core.Application.Services
                 }
                 else
                 {
-                    response.HasError = true;
-                    response.Error = $"This user: {user.UserName} doesn't have a main account";
-                    return response;
+                    var mainAccount = await _savingsAccountService.GetClientMainAccount(client.Id);
+
+                    if (mainAccount != null)
+                    {
+                        SaveSavingsAccountViewModel savingsAccountVm = new()
+                        {
+                            Id = mainAccount.Id,
+                            ClientId = mainAccount.ClientId,
+                            Balance = mainAccount.Balance + vm.AccountAmount.Value,
+                            DateCreated = mainAccount.DateCreated,
+                            IsMainAccount = mainAccount.IsMainAccount
+
+                        };
+
+                        await _savingsAccountService.UpdateProduct(savingsAccountVm, savingsAccountVm.Id);
+                    }
+                    else
+                    {
+                        response.HasError = true;
+                        response.Error = $"This user: {vm.Username} doesn't have a main account";
+                        return response;
+                    }
                 }
 
             }
@@ -130,7 +154,11 @@ namespace BankingApp.Core.Application.Services
             if (clientVm == null)
                 throw new Exception();
 
-            return await _productService.GetAllProductsByClient(clientVm.Id);
+            ProductViewModel products = await _productService.GetAllProductsByClient(clientVm.Id);
+            var user = await _userService.GetById(userId);
+            products.Username = user.Username;
+
+            return products;
         }
         #endregion
 
