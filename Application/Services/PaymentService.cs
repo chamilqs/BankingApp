@@ -19,13 +19,15 @@ namespace BankingApp.Core.Application.Services
         private readonly ISavingsAccountService _savingsAccountService;
         private readonly ICreditCardService _creditCardService;
         private readonly ILoanService _loanService;
-
+        private readonly IAccountService _accountService;
+        private readonly IClientService _clientService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AuthenticationResponse user;
         private readonly IMapper _mapper;
 
         public PaymentService(IHttpContextAccessor httpContextAccessor, IMapper mapper, ITransactionService transactionService,
-            ISavingsAccountService savingsAccountService, ICreditCardService creditCardService, ILoanService loanService)
+            ISavingsAccountService savingsAccountService, ICreditCardService creditCardService,
+            IAccountService accountService, IClientService clientService, ILoanService loanService)
         {
 
             _httpContextAccessor = httpContextAccessor;
@@ -35,6 +37,8 @@ namespace BankingApp.Core.Application.Services
             _savingsAccountService = savingsAccountService;
             _creditCardService = creditCardService;
             _loanService = loanService;
+            _accountService = accountService;
+            _clientService = clientService;
 
         }
 
@@ -74,6 +78,11 @@ namespace BankingApp.Core.Application.Services
             await _savingsAccountService.UpdateSavingsAccount(destination.Balance, destination.ClientId, destination.Id);
 
 
+            var receptorClient = await _clientService.GetByAccountNumber(destination.Id);
+            var receptorUser = await _accountService.FindByIdAsync(receptorClient.UserId);
+            vm.ClientLastName = receptorUser.LastName;
+            vm.ClientName = receptorUser.Name;
+
 
             var paymentRecord = new SaveTransactionViewModel
             {
@@ -81,9 +90,12 @@ namespace BankingApp.Core.Application.Services
                 Destination = destination.Id,
                 Amount = amount,
                 TransactionTypeId = 3,
-                Concept = $"{origin.Id} to {destination.Id}"
+                Concept = $"{origin.Id} to {destination.Id}",
+                DateCreated = DateTime.Now,
+
 
             };
+
 
             await _transactionService.Add(paymentRecord);
 
@@ -137,7 +149,8 @@ namespace BankingApp.Core.Application.Services
                 Destination = destination.Id,
                 Amount = amount,
                 TransactionTypeId = 4,
-                Concept = $"{origin.Id} to {destination.Id}"
+                Concept = $"{origin.Id} to {destination.Id}",
+                DateCreated = DateTime.Now,
 
             };
 
@@ -194,7 +207,8 @@ namespace BankingApp.Core.Application.Services
                 Destination = destination.Id,
                 Amount = amount,
                 TransactionTypeId = 2,
-                Concept = $"{origin.Id} to {destination.Id}"
+                Concept = $"{origin.Id} to {destination.Id}",
+                DateCreated = DateTime.Now,
             };
 
             await _transactionService.Add(paymentRecord);
@@ -237,6 +251,11 @@ namespace BankingApp.Core.Application.Services
             await _savingsAccountService.UpdateSavingsAccount(origin.Balance, origin.ClientId, origin.Id);
             await _savingsAccountService.UpdateSavingsAccount(destination.Balance, destination.ClientId, destination.Id);
 
+            var receptorClient = await _clientService.GetByAccountNumber(destination.Id);
+            var receptorUser = await _accountService.FindByIdAsync(receptorClient.UserId);
+            vm.BeneficiaryLastName = receptorUser.LastName;
+            vm.BeneficiaryFirstName = receptorUser.Name;
+
 
 
             var paymentRecord = new SaveTransactionViewModel
@@ -245,7 +264,8 @@ namespace BankingApp.Core.Application.Services
                 Destination = destination.Id,
                 Amount = amount,
                 TransactionTypeId = 6,
-                Concept = $"{origin.Id} to {destination.Id}"
+                Concept = $"{origin.Id} to {destination.Id}",
+                DateCreated = DateTime.UtcNow,
 
             };
 
