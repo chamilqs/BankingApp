@@ -30,6 +30,7 @@ namespace BankingApp.Controllers
             }
 
             vm.Id = await _productService.GenerateProductNumber();
+            vm.Balance = vm.Limit;
             await _creditCardService.Add(vm);
 
             var client = await _clientService.GetByIdSaveViewModel(vm.ClientId);
