@@ -21,7 +21,7 @@ namespace BankingApp.Controllers
         private readonly IAccountService _accountService;
         private readonly IClientService _clientService;
 
-        public PaymentController(IHttpContextAccessor httpContextAccessor, AuthenticationResponse user, IPaymentService paymentService,
+        public PaymentController(IHttpContextAccessor httpContextAccessor, IPaymentService paymentService,
             ISavingsAccountService savingsAccountService, ICreditCardService creditCardService, ILoanService loanService,
             IBeneficiaryService beneficiaryService, IClientService clientService, IAccountService accountService)
         {
@@ -100,21 +100,34 @@ namespace BankingApp.Controllers
 
             return View("BeneficiaryPaymentConfirm", vm);
         }
-        [HttpPost]
 
         public async Task<IActionResult> BeneficiaryPaymentConfirm(BeneficiaryPaymentViewModel vm)
+        {
+            var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
+            var destinyBeneficiary = await _beneficiaryService.GetBeneficiary(vm.Destination);
+
+            var beneficiaryList = await _beneficiaryService.GetAllByClientId(loggedClient.Id);
+
+
+            var show = beneficiaryList.Where(d => d.BeneficiaryAccountNumber == vm.Destination).FirstOrDefault();
+            vm.BeneficiaryFirstName = show.BeneficiaryName;
+            vm.BeneficiaryLastName = show.BeneficiaryLastName;
+            return View("BeneficiaryPaymentConfirm", vm);
+        }
+
+        [HttpPost]
+
+        public async Task<IActionResult> BeneficiaryPaymentConfirmPost(BeneficiaryPaymentViewModel vm)
         {
             if (!ModelState.IsValid)
             {
                 var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
                 vm.LoggedUserAccounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
                 vm.LoggedUserBeneficiaries = await _beneficiaryService.GetAllByClientId(loggedClient.Id);
-                return View("BeneficiaryPayment", vm);
+                return View("BeneficiaryPaymentConfirm", vm);
             }
 
-            var destinyBeneficiary = await _beneficiaryService.GetBeneficiary(vm.Destination);
-            var destinyClient = await _clientService.GetByAccountNumber(destinyBeneficiary.SavingsAccountId);
-            ViewBag.DestinyUser = await _accountService.FindByIdAsync(destinyClient.UserId);
+
 
             await _paymentService.BeneficiaryPayment(vm);
             return RedirectToRoute(new { controller = "Payment", action = "BeneficiaryPayment" });

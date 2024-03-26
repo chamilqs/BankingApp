@@ -15,5 +15,7 @@ namespace BankingApp.Core.Application.Interfaces.Services
         Task<List<LoanViewModel>> GetAllByClientId(int clientId);
         Task<Loan> GetByAccountNumberLoggedUser(string accountNumber, int clientId);
         Task<Loan> GetByAccountNumber(string accountNumber);
+
+        Task UpdateLoan(double balance, double amount, string accountNumber, int clientId);
     }
 }
