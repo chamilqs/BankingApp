@@ -102,13 +102,13 @@ namespace BankingApp.Core.Application.Services
 
                     var clientAdded = await base.Add(saveClientViewModel);
 
-                    SaveSavingsAccountViewModel savingsAccountViewModel = new()
+                    SaveSavingsAccountViewModel savingsAccountVm = new()
                     {
-                        Id = mainAccount.Id,
-                        ClientId = mainAccount.ClientId,
-                        Balance = mainAccount.Balance + vm.AccountAmount.Value,
-                        DateCreated = mainAccount.DateCreated,
-                        IsMainAccount = mainAccount.IsMainAccount
+                        Id = await _productService.GenerateProductNumber(),
+                        ClientId = clientAdded.Id,
+                        Balance = vm.AccountAmount.Value,
+                        DateCreated = DateTime.UtcNow,
+                        IsMainAccount = true
 
                     };
 

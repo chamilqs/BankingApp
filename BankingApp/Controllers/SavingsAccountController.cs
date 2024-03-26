@@ -61,7 +61,7 @@ namespace BankingApp.Controllers
 
             await _transfersService.Transfer(saveTransaction, TransactionType.AccountTransfer, false);
 
-            await _savingsAccountService.DeleteProduct(id);
+            await _savingsAccountService.Delete(id);
 
             return RedirectToRoute(new { controller = "Admin", action = "IndexProducts" });
         }
