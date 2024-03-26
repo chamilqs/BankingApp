@@ -14,5 +14,7 @@ namespace BankingApp.Core.Application.Interfaces.Services
         Task<RegisterResponse> RegisterAsync(SaveUserViewModel vm);
         Task<GenericResponse> UpdateAsync(SaveUserViewModel vm);
         Task<ProductViewModel> GetAllProducts(string userId);
+
+        Task<Client> GetByAccountNumber(string accountNumber);
     }
 }

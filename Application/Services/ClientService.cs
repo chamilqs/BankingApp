@@ -25,10 +25,10 @@ namespace BankingApp.Core.Application.Services
         private readonly AuthenticationResponse user;
         private readonly IMapper _mapper;
 
-        public ClientService(IClientRepository clientRepository, 
-            IHttpContextAccessor httpContextAccessor, 
-            IMapper mapper, IUserService userService, 
-            ISavingsAccountService savingsAccountService, 
+        public ClientService(IClientRepository clientRepository,
+            IHttpContextAccessor httpContextAccessor,
+            IMapper mapper, IUserService userService,
+            ISavingsAccountService savingsAccountService,
             IProductService productService) : base(clientRepository, mapper)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -46,7 +46,7 @@ namespace BankingApp.Core.Application.Services
             var clientList = await base.GetAllViewModel();
 
             ClientViewModel client = clientList.FirstOrDefault(client => client.UserId == userId);
-                
+
             return client;
         }
         #endregion
@@ -60,8 +60,8 @@ namespace BankingApp.Core.Application.Services
             {
                 var user = await _userService.GetByUsername(vm.Username);
 
-                SaveClientViewModel saveClientViewModel = new() 
-                { 
+                SaveClientViewModel saveClientViewModel = new()
+                {
                     UserId = user.Id,
                     DateCreated = DateTime.UtcNow,
                 };
@@ -104,9 +104,9 @@ namespace BankingApp.Core.Application.Services
                         Balance = mainAccount.Balance + vm.AccountAmount.Value,
                         DateCreated = mainAccount.DateCreated,
                         IsMainAccount = mainAccount.IsMainAccount
-                        
+
                     };
-                    
+
                     await _savingsAccountService.UpdateProduct(savingsAccountVm, savingsAccountVm.Id);
                 }
                 else
@@ -133,5 +133,18 @@ namespace BankingApp.Core.Application.Services
             return await _productService.GetAllProductsByClient(clientVm.Id);
         }
         #endregion
+
+        #region GetByAccountNumber
+        public async Task<Client> GetByAccountNumber(string accountNumber)
+        {
+            var client = await _clientRepository.GetByAccountNumber(accountNumber);
+            if (client == null)
+            {
+                return null;
+            }
+
+            return client;
+        }
+        #endregion 
     }
 }
