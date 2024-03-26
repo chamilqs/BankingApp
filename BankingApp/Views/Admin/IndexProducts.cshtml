@@ -213,9 +213,9 @@
                                                 <td>
                                                     @if (creditCard.Balance == 0)
                                                     {
-                                                        <a asp-controller="CreditCard" asp-action="Delete" class="btn btn-danger" asp-route-id="@creditCard.Id" title="Delete">
-                                                            <i class="ti ti-trash"></i>
-                                                        </a>
+                                                        <form method="post" asp-controller="CreditCard" asp-action="Delete"asp-route-id="@creditCard.Id">
+                                                            <button type="submit" class="btn btn-danger" title="Delete"><i class="ti ti-trash"></i></button>
+                                                        </form>
                                                     }
                                                 </td>
                                             </tr>
@@ -263,9 +263,9 @@
                                                 <td>
                                                     @if(loan.Balance == 0)
                                                     {
-                                                        <a asp-controller="Loan" asp-action="Delete" class="btn btn-danger" asp-route-id="@loan.Id" title="Delete">
-                                                            <i class="ti ti-trash"></i>
-                                                        </a>
+                                                        <form method="post" asp-controller="Loan" asp-action="Delete" asp-route-id="@loan.Id">
+                                                            <button type="submit" class="btn btn-danger" title="Delete"><i class="ti ti-trash"></i></button>
+                                                        </form>
                                                     }
                                                 </td>
                                             </tr>

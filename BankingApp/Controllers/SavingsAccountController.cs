@@ -14,14 +14,14 @@ namespace BankingApp.Controllers
         private readonly ISavingsAccountService _savingsAccountService;
         private readonly IProductService _productService;
         private readonly IClientService _clientService;
-        private readonly ITransfersService _transfersService;
+        private readonly ITransactionService _transactionService;
 
-        public SavingsAccountController(ISavingsAccountService savingsAccountService, IProductService productService, IClientService clientService, ITransfersService transfersService)
+        public SavingsAccountController(ISavingsAccountService savingsAccountService, IProductService productService, IClientService clientService, ITransactionService transactionService)
         {
             _savingsAccountService = savingsAccountService;
             _productService = productService;
             _clientService = clientService;
-            _transfersService = transfersService;
+            _transactionService = transactionService;
         }
 
         #region Create
@@ -54,16 +54,21 @@ namespace BankingApp.Controllers
             {
                 Origin = savingsAccount.Id,
                 Destination = mainAccount.Id,
-                TransactionTypeId = (int)TransactionType.AccountTransfer,
+                TransactionTypeId = (int)Core.Application.Enums.TransactionType.AccountTransfer,
                 Amount = savingsAccount.Balance,
-                Concept = $"Delete the savings account: {savingsAccount.Id}"
+                Concept = $"Delete the savings account: {savingsAccount.Id}",
+                DateCreated = DateTime.UtcNow,
             };
 
-            await _transfersService.Transfer(saveTransaction, TransactionType.AccountTransfer, false);
+            mainAccount.Balance += savingsAccount.Balance;
+            await _transactionService.Add(saveTransaction);
+            await _savingsAccountService.UpdateSavingsAccount(mainAccount.Balance, savingsAccount.ClientId, mainAccount.Id);
 
             await _savingsAccountService.Delete(id);
 
-            return RedirectToRoute(new { controller = "Admin", action = "IndexProducts" });
+            var client = await _clientService.GetByIdSaveViewModel(savingsAccount.ClientId);
+
+            return RedirectToRoute(new { controller = "Admin", action = "IndexProducts", userId = client.UserId });
         }
         #endregion
     }
