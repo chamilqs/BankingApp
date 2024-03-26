@@ -13,5 +13,6 @@ namespace BankingApp.Core.Application.Interfaces.Services
         Task<CreditCard> GetByAccountNumber(string accountNumber);
 
         Task UpdateCreditCard(double balance, double debt, string accountNumber, int clientId);
+        Task DeleteProduct(string id);
     }
 }

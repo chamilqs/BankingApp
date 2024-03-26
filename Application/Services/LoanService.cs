@@ -5,6 +5,7 @@ using BankingApp.Core.Application.Interfaces.Repositories;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.CreditCard;
 using BankingApp.Core.Application.ViewModels.Loan;
+using BankingApp.Core.Application.ViewModels.Transaction;
 using BankingApp.Core.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
@@ -18,6 +19,7 @@ namespace BankingApp.Core.Application.Services
         private readonly AuthenticationResponse user;
         private readonly IMapper _mapper;
 
+
         public LoanService(ILoanRepository loanRepository, IHttpContextAccessor httpContextAccessor, IMapper mapper
             ) : base(loanRepository, mapper)
         {
@@ -25,8 +27,17 @@ namespace BankingApp.Core.Application.Services
             _httpContextAccessor = httpContextAccessor;
 
             _mapper = mapper;
-            user = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
         }
+
+        #region Delete
+        public async Task DeleteProduct(string id)
+        {
+            var loan = await GetByAccountNumber(id);
+
+            await _loanRepository.DeleteAsync(loan);
+        }
+        #endregion
+
         public async Task<Loan> GetByAccountNumber(string accountNumber)
         {
             var loan = await _loanRepository.GetByAccountNumber(accountNumber);
@@ -37,6 +48,7 @@ namespace BankingApp.Core.Application.Services
 
             return loan;
         }
+
         public async Task<List<LoanViewModel>> GetAllByClientId(int clientId)
         {
             var loans = await _loanRepository.GetAllAsync();

@@ -160,10 +160,11 @@ namespace BankingApp.Controllers
         #endregion
 
         #region Products
-        public async Task<IActionResult> IndexProducts(string? userId = null, bool hasError = false, string? message = null)
+        public async Task<IActionResult> IndexProducts(string userId, bool hasError = false, string? message = null)
         {
             try
             {
+                ViewBag.User = _authViewModel;
                 GenericResponse response = new()
                 {
                     HasError = hasError,
@@ -179,7 +180,7 @@ namespace BankingApp.Controllers
             {
                 var user = await _userService.GetById(userId);
 
-                return RedirectToRoute(new { controller = "Admin", action = "Index", userId = user.Id, hasError = true, message = $"An error has occured trying to get the products of the user: {user.Username}" });
+                return RedirectToRoute(new { controller = "Admin", action = "Index", userId = user.Id, hasError = true, message = $"An error has occured trying to get the products of the client: {user.Username}. Try to update the client main account on edit." });
             }
         }
         #endregion
