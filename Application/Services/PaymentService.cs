@@ -80,7 +80,8 @@ namespace BankingApp.Core.Application.Services
                 Origin = origin.Id,
                 Destination = destination.Id,
                 Amount = amount,
-                TransactionTypeId = 3
+                TransactionTypeId = 3,
+                Concept = $"{origin.Id} to {destination.Id}"
 
             };
 
@@ -126,7 +127,7 @@ namespace BankingApp.Core.Application.Services
 
 
             await _savingsAccountService.UpdateSavingsAccount(origin.Balance, origin.ClientId, origin.Id);
-            await _savingsAccountService.UpdateSavingsAccount(destination.Balance, destination.ClientId, destination.Id);
+            await _creditCardService.UpdateCreditCard(destination.Balance, destination.Debt, destination.Id, destination.ClientId);
 
 
 
@@ -135,7 +136,8 @@ namespace BankingApp.Core.Application.Services
                 Origin = origin.Id,
                 Destination = destination.Id,
                 Amount = amount,
-                TransactionTypeId = 4
+                TransactionTypeId = 4,
+                Concept = $"{origin.Id} to {destination.Id}"
 
             };
 
@@ -182,16 +184,17 @@ namespace BankingApp.Core.Application.Services
 
 
             await _savingsAccountService.UpdateSavingsAccount(origin.Balance, origin.ClientId, origin.Id);
-            await _savingsAccountService.UpdateSavingsAccount(destination.Balance, destination.ClientId, destination.Id);
+            await _loanService.UpdateLoan(destination.Balance, destination.Amount, destination.Id, destination.ClientId);
 
 
             var paymentRecord = new SaveTransactionViewModel
             {
+
                 Origin = origin.Id,
                 Destination = destination.Id,
                 Amount = amount,
-                TransactionTypeId = 2
-
+                TransactionTypeId = 2,
+                Concept = $"{origin.Id} to {destination.Id}"
             };
 
             await _transactionService.Add(paymentRecord);
@@ -241,7 +244,8 @@ namespace BankingApp.Core.Application.Services
                 Origin = origin.Id,
                 Destination = destination.Id,
                 Amount = amount,
-                TransactionTypeId = 6
+                TransactionTypeId = 6,
+                Concept = $"{origin.Id} to {destination.Id}"
 
             };
 

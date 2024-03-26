@@ -163,7 +163,7 @@
                     <p>To</p>
                     <div class="select-box">
                         <img src="https://cdn-icons-png.freepik.com/256/3044/3044876.png" alt="flag">
-                        <select required asp-for="Destination" asp-items="@(new SelectList(Model.LoggedUserBeneficiaries,"SavingsAccountId","SavingsAccountId"))" class="form-select">
+                        <select required asp-for="Destination" asp-items="@(new SelectList(Model.LoggedUserBeneficiaries,"BeneficiaryAccountNumber","BeneficiaryAccountNumber"))" class="form-select">
                         </select>
                     </div>
                 </div>

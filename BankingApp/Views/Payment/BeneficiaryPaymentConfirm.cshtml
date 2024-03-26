@@ -1,7 +1,9 @@
 ﻿@using BankingApp.Core.Application.ViewModels.Payment
+@using BankingApp.Core.Application.ViewModels.Beneficiary
 @model BeneficiaryPaymentViewModel
 @{
     ViewData["Title"] = "Complete Payment";
+    
 }
 
 
@@ -9,18 +11,18 @@
     <div class="col-6 offset-3">
         <div class="card shadow rounded">
             <div class="card-header ">
-                <h4>Are you sure you would like to complete the payment to: @ViewBag.DestinyUser.Name  @ViewBag.DestinyUser.LastName  </h4>
+            <h4>Are you sure you would like to complete the payment to: @Model.BeneficiaryFirstName @Model.BeneficiaryLastName  </h4>
                 <h6>Account Number : @Model.Destination</h6>
             </div>
             <div class="card-body">
 
-                <form method="post" asp-controller="Payment" asp-action="BeneficiaryPaymentConfirm">
+                <form method="post" asp-controller="Payment" asp-action="BeneficiaryPaymentConfirmPost">
 
-                    <input type="hidden" asp-for="Amount" />
-                    <input type="hidden" asp-for="Origin" />
-                    <input type="hidden" asp-for="Destination" />
+                    <input type="hidden" asp-for="Amount" value="@Model.Amount" />
+                <input type="hidden" asp-for="Origin" value="@Model.Origin" />
+                <input type="hidden" asp-for="Destination" value="@Model.Destination" />
                     <button type="submit" class="btn btn-danger">Confirm Payment</button>
-                <a asp-controller="Payment" asp-action="BeneficiaryPayment" class="btn btn-warning">Cancel Payment</a>
+                <a asp-controller="Payment" asp-action="BeneficiaryPaymentConfirm" class="btn btn-warning">Cancel Payment</a>
 
                 </form>
 
