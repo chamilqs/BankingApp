@@ -9,12 +9,12 @@
     <div class="col-6 offset-3">
         <div class="card shadow rounded">
             <div class="card-header ">
-                <h4>Are you sure you would like to complete the payment to: @ViewBag.DestinyUser.Name  @ViewBag.DestinyUser.LastName  </h4>
+                <h4>Are you sure you would like to complete the payment to: @Model.ClientName   @Model.ClientLastName  </h4>
                 <h6>Account Number : @Model.Destination</h6>
             </div>
             <div class="card-body">
 
-                <form method="post" asp-controller="Payment" asp-action="ExpressPaymentConfirm">
+                <form method="post" asp-controller="Payment" asp-action="ExpressPaymentConfirmPost">
 
                     <input type="hidden" asp-for="Amount" />
                     <input type="hidden" asp-for="Origin" />
