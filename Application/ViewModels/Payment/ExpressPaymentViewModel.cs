@@ -14,6 +14,9 @@ namespace BankingApp.Core.Application.ViewModels.Payment
         public double Amount { get; set; }
         public List<SavingsAccountViewModel>? LoggedUserAccounts { get; set; }
 
+        public string? ClientName { get; set; }
+        public string? ClientLastName { get; set; }
+
 
     }
 }
