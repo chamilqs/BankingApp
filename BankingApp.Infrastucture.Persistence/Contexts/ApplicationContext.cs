@@ -255,7 +255,7 @@ namespace BankingApp.Infrastructure.Persistence.Contexts
 
             modelBuilder.Entity<Transaction>().
                 Property(ts => ts.Concept)
-                .HasMaxLength(30);
+                .HasMaxLength(50);
             #endregion
 
             #region TransactionType

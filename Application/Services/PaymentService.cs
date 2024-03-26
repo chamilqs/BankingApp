@@ -5,11 +5,6 @@ using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.Payment;
 using BankingApp.Core.Application.ViewModels.Transaction;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingApp.Core.Application.Services
 {
