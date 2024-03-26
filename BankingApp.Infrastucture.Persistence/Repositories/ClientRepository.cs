@@ -2,6 +2,7 @@
 using BankingApp.Core.Domain.Entities;
 using BankingApp.Infrastructure.Persistence.Contexts;
 using BankingApp.Infrastructure.Persistence.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace BankingApp.Infrastucture.Persistence.Repositories
 {
@@ -12,6 +13,14 @@ namespace BankingApp.Infrastucture.Persistence.Repositories
         {
             _dbContext = dbContext;
         }
-    
+
+        public async Task<Client> GetByAccountNumber(string accountNumber)
+        {
+            var client = await _dbContext.Clients.FirstOrDefaultAsync(c => c.SavingsAccounts.Any(s => s.Id == accountNumber));
+
+            return client;
+        }
+
+
     }
 }
