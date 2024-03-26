@@ -20,7 +20,7 @@ namespace BankingApp.Infrastructure.Identity.Seeds
 
             if(userManager.Users.All(u=> u.Id != defaultUser.Id))
             {
-                var user = await userManager.FindByEmailAsync(defaultUser.Email);
+                var user = await userManager.FindByNameAsync(defaultUser.UserName);
                 if (user == null)
                 {
                     await userManager.CreateAsync(defaultUser, "123P4$$w0rd!");

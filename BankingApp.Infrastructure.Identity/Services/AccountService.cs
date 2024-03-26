@@ -21,6 +21,18 @@ namespace BankingApp.Infrastructure.Identity.Services
             _signInManager = signInManager;
         }
 
+        #region GetActiveUsersCountAsync & GetInactiveUsersCountAsync
+        public async Task<int> GetActiveUsersCountAsync()
+        {
+			return await _userManager.Users.Where(user => user.IsActive == true).CountAsync();
+		}
+
+        public async Task<int> GetInactiveUsersCountAsync()
+        {
+            return await _userManager.Users.Where(user => user.IsActive == false).CountAsync();
+        }
+        #endregion
+
         #region Login & Logout
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request)
         {
@@ -102,8 +114,8 @@ namespace BankingApp.Infrastructure.Identity.Services
                 if (request.Role == Roles.Admin.ToString())
                 {
                     await _userManager.AddToRoleAsync(user, Roles.Admin.ToString());
-                } 
-                else if(request.Role == Roles.Client.ToString())
+                }
+                else if (request.Role == Roles.Client.ToString())
                 {
                     await _userManager.AddToRoleAsync(user, Roles.Client.ToString());
                 }
@@ -131,6 +143,7 @@ namespace BankingApp.Infrastructure.Identity.Services
                 Name = user.Name,
                 LastName = user.LastName,
                 IdentificationNumber = user.IdentificationNumber,
+                Email = user.Email,
                 IsActive = user.IsActive
             }).ToList();
 
@@ -139,7 +152,6 @@ namespace BankingApp.Infrastructure.Identity.Services
                 var user = await _userManager.FindByIdAsync(userDTO.Id);
 
                 var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
-
                 userDTO.Role = rolesList.ToList()[0];
             }
 
@@ -147,7 +159,7 @@ namespace BankingApp.Infrastructure.Identity.Services
         }
         #endregion
 
-        #region FindByUsernameAsync
+        #region FindByUsernameAsync & FindByIdAsync
         public async Task<UserDTO> FindByUsernameAsync(string username)
         {
             UserDTO userDTO = new();
@@ -160,6 +172,35 @@ namespace BankingApp.Infrastructure.Identity.Services
                 userDTO.Name = user.Name;
                 userDTO.LastName = user.LastName;
                 userDTO.IdentificationNumber = user.IdentificationNumber;
+                userDTO.Email = user.Email;
+                userDTO.IsActive = user.IsActive;
+
+                var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
+                userDTO.Role = rolesList.ToList()[0];
+
+                return userDTO;
+            }
+
+            return null;
+        }
+
+        public async Task<UserDTO> FindByIdAsync(string id)
+        {
+            UserDTO userDTO = new();
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                userDTO.Id = user.Id;
+                userDTO.Username = user.UserName;
+                userDTO.Name = user.Name;
+                userDTO.LastName = user.LastName;
+                userDTO.IdentificationNumber = user.IdentificationNumber;
+                userDTO.IsActive = user.IsActive;
+                userDTO.Email = user.Email;
+
+                var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
+                userDTO.Role = rolesList.ToList()[0];
 
                 return userDTO;
             }

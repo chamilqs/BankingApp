@@ -12,6 +12,10 @@ namespace BankingApp.Core.Application.Interfaces.Services
         Task SignOutAsync();
         Task<List<UserDTO>> GetAllUserAsync();
         Task<UserDTO> FindByUsernameAsync(string username);
+        Task<UserDTO> FindByIdAsync(string id);
         Task<GenericResponse> UpdateUserStatusAsync(string userId);
+        Task<int> GetActiveUsersCountAsync();
+        Task<int> GetInactiveUsersCountAsync();
+
     }
 }

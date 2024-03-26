@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BankingApp.Core.Application.Interfaces.Repositories;
 using BankingApp.Infrastructure.Persistence.Contexts;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace BankingApp.Infrastructure.Persistence.Repository
 {

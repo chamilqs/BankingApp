@@ -1,4 +1,5 @@
-﻿using BankingApp.Infrastructure.Identity.Entities;
+﻿using BankingApp.Core.Application.Interfaces.Services;
+using BankingApp.Infrastructure.Identity.Entities;
 using BankingApp.Infrastructure.Identity.Seeds;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
