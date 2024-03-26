@@ -39,8 +39,10 @@ namespace BankingApp.Controllers
         public async Task<IActionResult> ExpressPayment()
         {
             var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
-            ViewBag.Accounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
-            return View(ViewBag.Accounts);
+            ExpressPaymentViewModel vm = new();
+
+            vm.LoggedUserAccounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
+            return View("ExpressPayment", vm);
         }
 
         [HttpPost]
@@ -53,6 +55,23 @@ namespace BankingApp.Controllers
                 return View("ExpressPayment", vm);
             }
 
+            return View("ExpressPaymentConfirm", vm);
+        }
+
+        [HttpPost]
+
+        public async Task<IActionResult> ExpressPaymentConfirm(ExpressPaymentViewModel vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
+                vm.LoggedUserAccounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
+                return View("ExpressPayment", vm);
+            }
+
+            var destinyClient = await _clientService.GetByAccountNumber(vm.Destination);
+            ViewBag.DestinyUser = await _accountService.FindByIdAsync(destinyClient.UserId);
+
             await _paymentService.ExpressPayment(vm);
             return RedirectToRoute(new { controller = "Payment", action = "ExpressPayment" });
         }
@@ -60,43 +79,93 @@ namespace BankingApp.Controllers
         public async Task<IActionResult> BeneficiaryPayment()
         {
             var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
-            ViewBag.Accounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
-
-            return View(await _beneficiaryService.GetAllByClientId(loggedClient.Id));
+            BeneficiaryPaymentViewModel vm = new();
+            vm.LoggedUserAccounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
+            vm.LoggedUserBeneficiaries = await _beneficiaryService.GetAllByClientId(loggedClient.Id);
+            return View("BeneficiaryPayment", vm);
 
         }
 
         [HttpPost]
         public async Task<IActionResult> BeneficiaryPayment(BeneficiaryPaymentViewModel vm)
         {
+            if (!ModelState.IsValid)
+            {
+                var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
+                vm.LoggedUserAccounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
+                vm.LoggedUserBeneficiaries = await _beneficiaryService.GetAllByClientId(loggedClient.Id);
+                return View("BeneficiaryPayment", vm);
+            }
+
+
+            return View("BeneficiaryPaymentConfirm", vm);
+        }
+        [HttpPost]
+
+        public async Task<IActionResult> BeneficiaryPaymentConfirm(BeneficiaryPaymentViewModel vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
+                vm.LoggedUserAccounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
+                vm.LoggedUserBeneficiaries = await _beneficiaryService.GetAllByClientId(loggedClient.Id);
+                return View("BeneficiaryPayment", vm);
+            }
+
+            var destinyBeneficiary = await _beneficiaryService.GetBeneficiary(vm.Destination);
+            var destinyClient = await _clientService.GetByAccountNumber(destinyBeneficiary.SavingsAccountId);
+            ViewBag.DestinyUser = await _accountService.FindByIdAsync(destinyClient.UserId);
+
             await _paymentService.BeneficiaryPayment(vm);
-            return View("BeneficiaryPayment", vm);
+            return RedirectToRoute(new { controller = "Payment", action = "BeneficiaryPayment" });
         }
         public async Task<IActionResult> LoanPayment()
         {
             var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
-            ViewBag.Accounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
-            return View(await _loanService.GetAllByClientId(loggedClient.Id));
+            LoanPaymentViewModel vm = new();
+            vm.LoggedUserAccounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
+            vm.LoggedUserLoans = await _loanService.GetAllByClientId(loggedClient.Id);
+            return View("LoanPayment", vm);
         }
 
         [HttpPost]
         public async Task<IActionResult> LoanPayment(LoanPaymentViewModel vm)
         {
+            if (!ModelState.IsValid)
+            {
+                var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
+                vm.LoggedUserAccounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
+                vm.LoggedUserLoans = await _loanService.GetAllByClientId(loggedClient.Id);
+                return View("LoanPayment", vm);
+            }
             await _paymentService.LoanPayment(vm);
-            return View("LoanPayment", vm);
+            return RedirectToRoute(new { controller = "Payment", action = "LoanPayment" });
         }
         public async Task<IActionResult> CreditCardPayment()
         {
             var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
-            ViewBag.Accounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
-            return View(await _creditCardService.GetAllByClientId(loggedClient.Id));
+            CreditCardPaymentViewModel vm = new();
+            vm.LoggedUserAccounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
+            vm.LoggedUserCreditCards = await _creditCardService.GetAllByClientId(loggedClient.Id);
+            return View("CreditCardPayment", vm);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreditCardPayment(CreditCardPaymentViewModel vm)
         {
-            await _paymentService.CreditCardPayment(vm);
-            return View("CreditCardPayment", vm);
+            if (!ModelState.IsValid)
+            {
+                var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
+
+                vm.LoggedUserAccounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
+                vm.LoggedUserCreditCards = await _creditCardService.GetAllByClientId(loggedClient.Id);
+                return View("CreditCardPayment", vm);
+            }
+
+
+
+            return View("CreditCardConfirm", vm);
         }
+
     }
 }
