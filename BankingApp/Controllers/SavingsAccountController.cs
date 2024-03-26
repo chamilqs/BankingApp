@@ -1,10 +1,11 @@
-﻿using Azure;
-using BankingApp.Core.Application.Interfaces.Services;
+﻿using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.SavingsAccount;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankingApp.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class SavingsAccountController : Controller
     {
         private readonly ISavingsAccountService _savingsAccountService;
