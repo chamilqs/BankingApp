@@ -17,6 +17,15 @@ namespace BankingApp.Core.Application.Services
             _mapper = mapper;
         }
 
+        #region Delete
+        public async Task DeleteProduct(string id)
+        {
+            var crediCard = await GetByAccountNumber(id);
+
+            await _creditCardRepository.DeleteAsync(crediCard);
+        }
+        #endregion
+
         public async Task<CreditCard> GetByAccountNumber(string accountNumber)
         {
             var creditCard = await _creditCardRepository.GetByAccountNumber(accountNumber);
