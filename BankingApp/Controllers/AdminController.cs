@@ -7,8 +7,6 @@ using BankingApp.Core.Application.Enums;
 using Microsoft.AspNetCore.Authorization;
 using BankingApp.Models;
 using BankingApp.Core.Application.Dtos.Account;
-using Azure;
-using BankingApp.Core.Application.ViewModels.SavingsAccount;
 
 namespace BankingApp.Controllers
 {

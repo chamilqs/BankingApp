@@ -160,9 +160,10 @@
                                                 <td>
                                                     @if (savingsAccount.IsMainAccount == false)
                                                     {
-                                                        <a asp-controller="SavingsAccount" asp-action="Delete" class="btn btn-danger" asp-route-id="@savingsAccount.Id" title="Delete">
-                                                            <i class="ti ti-trash"></i>
-                                                        </a>
+                                                        
+                                                        <form method="post" asp-controller="SavingsAccount" asp-action="Delete" asp-route-id="@savingsAccount.Id">
+                                                            <button type="submit" class="btn btn-danger" title="Delete"><i class="ti ti-trash"></i></button>
+                                                        </form>
                                                     }
                                                 </td>
                                             </tr>
