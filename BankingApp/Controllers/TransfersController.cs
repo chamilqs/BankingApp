@@ -18,7 +18,7 @@ namespace BankingApp.Controllers
         private readonly AuthenticationResponse user;
 
         public TransfersController(ITransfersService transfersService, IHttpContextAccessor httpContextAccessor, 
-            ISavingsAccountService savingsAccountService, IClientService clientService, ICreditCardService creditCardService) 
+            ISavingsAccountService savingsAccountService, IClientService clientService, ICreditCardService creditCardService)
         { 
             _transfersService = transfersService;
             _savingsAccountService = savingsAccountService;
@@ -54,12 +54,24 @@ namespace BankingApp.Controllers
                 {
                     ModelState.AddModelError("Amount", "There was an error with the transaction");
                     return View("TransferBetweenAccounts", vm);
-                }
+                }                
+
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("Error", ex.Message.ToString());
-                return View("TransferBetweenAccounts", vm);
+                if (ex.InnerException != null)
+                {
+                    // Log or handle the inner exception
+                Console.WriteLine("Inner Exception: " + ex.InnerException.Message);
+                }
+                else
+                {
+                    // Log or handle the exception if there is no inner exception
+                    Console.WriteLine("Exception: " + ex.Message);
+                }
+
+                return RedirectToRoute(new { controller = "Transfers", action = "TransferBetweenAccounts" });
 
             }
 

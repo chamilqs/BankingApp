@@ -24,10 +24,11 @@ namespace BankingApp.Core.Application.Services
         private readonly AuthenticationResponse user;
         private readonly IMapper _mapper;
 
-        public TransfersService(ITransactionService transactionService, IMapper mapper, IClientService clientService,
+        public TransfersService(ITransactionService transactionService, ISavingsAccountService savingsAccountService, IMapper mapper, IClientService clientService,
         IHttpContextAccessor httpContextAccessor, ICreditCardService creditCardService) 
         {
             _transactionService = transactionService;
+            _savingsAccountService = savingsAccountService;
             _mapper = mapper;
             _clientService = clientService;
             _httpContextAccessor = httpContextAccessor;
@@ -38,6 +39,7 @@ namespace BankingApp.Core.Application.Services
         public async Task<SaveTransactionViewModel> Transfer(SaveTransactionViewModel vm, Enums.TransactionType transactionType, bool isCashAdvance)
         {
             vm.TransactionTypeId = (int)transactionType;
+            vm.DateCreated = DateTime.Now;
 
             if (isCashAdvance)
             {
@@ -50,7 +52,7 @@ namespace BankingApp.Core.Application.Services
             }
             else
             {
-                var addMoney = await AddMoneyToAccount(vm.Destination, vm.Origin, vm.Amount);
+                var addMoney = await AddMoneyToAccount(vm.Origin, vm.Destination, vm.Amount);
                 if(!addMoney)
                 {
                     return null;
@@ -58,7 +60,12 @@ namespace BankingApp.Core.Application.Services
 
             }
 
-            return await _transactionService.Add(vm);
+            if(vm.Concept == null || vm.Concept.Length == 0)
+            {
+                vm.Concept = "Transfer";                
+            }
+
+            return await _transactionService.Add(vm); 
         }
 
         public async Task<bool> AddMoneyToAccount(string accountNumberOrigin, string accountNumberDestination, double amount)

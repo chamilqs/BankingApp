@@ -4,7 +4,6 @@ using BankingApp.Core.Application.Helpers;
 using BankingApp.Core.Application.Interfaces.Repositories;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.Beneficiary;
-using BankingApp.Core.Application.ViewModels.CreditCard;
 using BankingApp.Core.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
@@ -35,7 +34,7 @@ namespace BankingApp.Core.Application.Services
             var client = await _clientService.GetByUserIdViewModel(userId);
 
             vm.ClientId = client.Id;
-            vm.AccountNumber = AccountNumber;
+            vm.SavingsAccountId = AccountNumber;
 
             return await base.Add(vm);
 
@@ -65,18 +64,28 @@ namespace BankingApp.Core.Application.Services
         {
             var beneficiaries = await _beneficiaryRepository.GetAllAsync();
 
+            var beneficiaryViewModels = new List<BeneficiaryViewModel>();
 
-            var clientUser = await _accountService.FindByIdAsync(user.Id);
-            return beneficiaries.Where(b => b.ClientId == clientId).Select(b => new BeneficiaryViewModel
+            foreach (var beneficiary in beneficiaries.Where(b => b.ClientId == clientId))
             {
-                ClientId = b.ClientId,
-                BeneficiaryAccountNumber = b.SavingsAccountId,
-                BeneficiaryName = clientUser.Name,
-                BeneficiaryLastName = clientUser.LastName
+                var account = await GetByAccountNumber(beneficiary.SavingsAccountId);
+                var client = await _clientService.GetByIdSaveViewModel(account.ClientId);
+                var clientUser = await _accountService.FindByIdAsync(client.UserId);
 
+                var beneficiaryViewModel = new BeneficiaryViewModel
+                {
+                    ClientId = beneficiary.ClientId,
+                    BeneficiaryAccountNumber = beneficiary.SavingsAccountId,
+                    BeneficiaryName = clientUser.Name,
+                    BeneficiaryLastName = clientUser.LastName
+                };
 
-            }).ToList();
+                beneficiaryViewModels.Add(beneficiaryViewModel);
+            }
+
+            return beneficiaryViewModels;
         }
+
 
         public async Task<Beneficiary> GetBeneficiary(string accountNumber)
         {

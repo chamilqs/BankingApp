@@ -5,7 +5,7 @@ namespace BankingApp.Core.Application.ViewModels.User
 {
     public class SaveUserViewModel
     {
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [Required(ErrorMessage = "You must enter a name.")]
         [DataType(DataType.Text)]
