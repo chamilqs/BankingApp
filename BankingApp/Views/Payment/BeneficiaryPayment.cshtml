@@ -75,30 +75,25 @@
 
     .drop-list .select-box {
         display: flex;
-        width: 115px;
-        height: 45px;
+        width: 155px;
+        height: 40px;
         align-items: center;
         border-radius: 5px;
         justify-content: center;
-        border: 1px solid #999;
         background: #fff;
         color: #000;
     }
 
-    .select-box img {
-        max-width: 21px;
-    }
-
     .select-box select {
         width: auto;
-        font-size: 16px;
+        font-size: 13px;
         background: none;
         margin: 0 -5px 0 5px;
         color: #000;
     }
 
         .select-box select::-webkit-scrollbar {
-            width: 8px;
+            width: 15px;
         }
 
         .select-box select::-webkit-scrollbar-track {
@@ -108,7 +103,6 @@
         .select-box select::-webkit-scrollbar-thumb {
             background: #888;
             border-radius: 8px;
-            border-right: 2px solid #ffffff;
         }
 
     .drop-list .icon {
@@ -153,7 +147,6 @@
                 <div class="from">
                     <p>From</p>
                     <div class="select-box">
-                        <img src="https://cdn-icons-png.freepik.com/256/3044/3044876.png" alt="flag">
                         <select required asp-for="Origin" asp-items="@(new SelectList(Model.LoggedUserAccounts,"Id","Id"))" class="form-select">
                         </select>
                     </div>
@@ -162,7 +155,6 @@
                 <div class="to">
                     <p>To</p>
                     <div class="select-box">
-                        <img src="https://cdn-icons-png.freepik.com/256/3044/3044876.png" alt="flag">
                         <select required asp-for="Destination" asp-items="@(new SelectList(Model.LoggedUserBeneficiaries,"BeneficiaryAccountNumber","BeneficiaryAccountNumber"))" class="form-select">
                         </select>
                     </div>
