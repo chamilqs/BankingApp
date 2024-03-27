@@ -139,7 +139,7 @@ namespace BankingApp.Core.Application.Services
 
 
             await _savingsAccountService.UpdateSavingsAccount(origin.Balance, origin.ClientId, origin.Id);
-            await _creditCardService.UpdateCreditCard(destination.Balance, destination.Debt, destination.Id, destination.ClientId);
+            await _creditCardService.UpdateCreditCard(destination.Balance, destination.Debt, origin.Id, origin.ClientId,);
 
 
 
@@ -197,7 +197,7 @@ namespace BankingApp.Core.Application.Services
 
 
             await _savingsAccountService.UpdateSavingsAccount(origin.Balance, origin.ClientId, origin.Id);
-            await _loanService.UpdateLoan(destination.Balance, destination.Amount, destination.Id, destination.ClientId);
+            await _loanService.UpdateLoan(destination.Balance, destination.Amount, origin.Id, origin.ClientId);
 
 
             var paymentRecord = new SaveTransactionViewModel

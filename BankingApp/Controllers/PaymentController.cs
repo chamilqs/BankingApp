@@ -61,7 +61,11 @@ namespace BankingApp.Controllers
         public async Task<IActionResult> ExpressPaymentConfirm(ExpressPaymentViewModel vm)
         {
             var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
+            var destinyClient = await _clientService.GetByAccountNumber(vm.Destination);
+            var destinyUser = await _accountService.FindByIdAsync(destinyClient.UserId);
 
+            vm.ClientName = destinyUser.Name;
+            vm.ClientLastName = destinyUser.LastName;
             return View("ExpressPaymentConfirm", vm);
         }
 
@@ -73,7 +77,7 @@ namespace BankingApp.Controllers
             {
                 var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
                 vm.LoggedUserAccounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
-                return View("ExpressPayment", vm);
+                return View("ExpressPaymentConfirm", vm);
             }
 
             await _paymentService.ExpressPayment(vm);
@@ -108,6 +112,11 @@ namespace BankingApp.Controllers
         public async Task<IActionResult> BeneficiaryPaymentConfirm(BeneficiaryPaymentViewModel vm)
         {
             var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
+            var destinyClient = await _clientService.GetByAccountNumber(vm.Destination);
+            var destinyUser = await _accountService.FindByIdAsync(destinyClient.UserId);
+
+            vm.BeneficiaryFirstName = destinyUser.Name;
+            vm.BeneficiaryLastName = destinyUser.LastName;
 
             return View("BeneficiaryPaymentConfirm", vm);
         }
