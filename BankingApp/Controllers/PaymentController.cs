@@ -58,9 +58,16 @@ namespace BankingApp.Controllers
             return View("ExpressPaymentConfirm", vm);
         }
 
+        public async Task<IActionResult> ExpressPaymentConfirm(ExpressPaymentViewModel vm)
+        {
+            var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
+
+            return View("ExpressPaymentConfirm", vm);
+        }
+
         [HttpPost]
 
-        public async Task<IActionResult> ExpressPaymentConfirm(ExpressPaymentViewModel vm)
+        public async Task<IActionResult> ExpressPaymentConfirmPost(ExpressPaymentViewModel vm)
         {
             if (!ModelState.IsValid)
             {
@@ -68,9 +75,6 @@ namespace BankingApp.Controllers
                 vm.LoggedUserAccounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
                 return View("ExpressPayment", vm);
             }
-
-            var destinyClient = await _clientService.GetByAccountNumber(vm.Destination);
-            ViewBag.DestinyUser = await _accountService.FindByIdAsync(destinyClient.UserId);
 
             await _paymentService.ExpressPayment(vm);
             return RedirectToRoute(new { controller = "Payment", action = "ExpressPayment" });
@@ -104,14 +108,7 @@ namespace BankingApp.Controllers
         public async Task<IActionResult> BeneficiaryPaymentConfirm(BeneficiaryPaymentViewModel vm)
         {
             var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
-            var destinyBeneficiary = await _beneficiaryService.GetBeneficiary(vm.Destination);
 
-            var beneficiaryList = await _beneficiaryService.GetAllByClientId(loggedClient.Id);
-
-
-            var show = beneficiaryList.Where(d => d.BeneficiaryAccountNumber == vm.Destination).FirstOrDefault();
-            vm.BeneficiaryFirstName = show.BeneficiaryName;
-            vm.BeneficiaryLastName = show.BeneficiaryLastName;
             return View("BeneficiaryPaymentConfirm", vm);
         }
 
