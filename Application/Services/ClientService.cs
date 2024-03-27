@@ -109,10 +109,9 @@ namespace BankingApp.Core.Application.Services
                         Balance = vm.AccountAmount.Value,
                         DateCreated = DateTime.UtcNow,
                         IsMainAccount = true
-
                     };
 
-                    await _savingsAccountService.UpdateProduct(savingsAccountVm, savingsAccountVm.Id);
+                    await _savingsAccountService.Add(savingsAccountVm);
                 }
                 else
                 {

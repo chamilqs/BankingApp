@@ -15,7 +15,6 @@ namespace BankingApp.Core.Application.Services
         {
             _transactionRepository = transactionRepository;
             _mapper = mapper;
-
         }
 
     }

@@ -30,6 +30,7 @@ namespace BankingApp.Controllers
             }
 
             vm.Id = await _productService.GenerateProductNumber();
+            vm.Balance = vm.Limit;
             await _creditCardService.Add(vm);
 
             var client = await _clientService.GetByIdSaveViewModel(vm.ClientId);
@@ -42,9 +43,14 @@ namespace BankingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
+            var creditCard = await _creditCardService.GetByAccountNumber(id);
+
             await _creditCardService.DeleteProduct(id);
 
-            return RedirectToRoute(new { controller = "Admin", action = "IndexProducts" });
+            var client = await _clientService.GetByIdSaveViewModel(creditCard.ClientId);
+
+            return RedirectToRoute(new { controller = "Admin", action = "IndexProducts", userId = client.UserId });
+
         }
         #endregion
     }

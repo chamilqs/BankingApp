@@ -2,6 +2,7 @@
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.Loan;
 using BankingApp.Core.Application.ViewModels.Transaction;
+using BankingApp.Core.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,9 +15,9 @@ namespace BankingApp.Controllers
         private readonly IProductService _productService;
         private readonly IClientService _clientService;
         private readonly ISavingsAccountService _savingsAccountService;
-        private readonly ITransfersService _transactionService;
+        private readonly ITransactionService _transactionService;
 
-        public LoanController(ILoanService loanService, IProductService productService, IClientService clientService, ITransfersService transactionService, ISavingsAccountService savingsAccountService)
+        public LoanController(ILoanService loanService, IProductService productService, IClientService clientService, ITransactionService transactionService, ISavingsAccountService savingsAccountService)
         {
             _loanService = loanService;
             _productService = productService;
@@ -40,18 +41,19 @@ namespace BankingApp.Controllers
 
             //Transfer
             var mainAccount = await _savingsAccountService.GetClientMainAccount(loan.ClientId);
-            SaveTransactionViewModel saveTransfer = new()
+            SaveTransactionViewModel saveTransaction = new()
             {
                 Origin = loan.Id,
                 Destination = mainAccount.Id,
-                TransactionTypeId = (int)TransactionType.AccountTransfer,
+                TransactionTypeId = (int)Core.Application.Enums.TransactionType.AccountTransfer,
                 Amount = loan.Balance.Value,
                 Concept = $"New loan: {loan.Id}"
             };
 
-            await _transactionService.Transfer(saveTransfer, TransactionType.AccountTransfer, false);
+            mainAccount.Balance += loan.Balance.Value;
+            await _transactionService.Add(saveTransaction);
+            await _savingsAccountService.UpdateSavingsAccount(mainAccount.Balance, vm.ClientId, mainAccount.Id);
 
-            await _loanService.UpdateProduct(loan, loan.Id);
             var client = await _clientService.GetByIdSaveViewModel(vm.ClientId);
 
             return RedirectToRoute(new { controller = "Admin", action = "IndexProducts", userId = client.UserId });
@@ -62,9 +64,13 @@ namespace BankingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
+            var loan = await _loanService.GetByAccountNumber(id);
+
             await _loanService.DeleteProduct(id);
 
-            return RedirectToRoute(new { controller = "Admin", action = "IndexProducts" });
+            var client = await _clientService.GetByIdSaveViewModel(loan.ClientId);
+
+            return RedirectToRoute(new { controller = "Admin", action = "IndexProducts", userId = client.UserId });
         }
         #endregion
     }
