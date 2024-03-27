@@ -182,7 +182,7 @@
                                                 <td>@creditCard.Debt</td>
                                                 <td>@creditCard.DateCreated</td>
                                                 <td>
-                                                    @if (creditCard.Balance == 0)
+                                                    @if (creditCard.Debt == 0)
                                                     {
                                                         <a asp-controller="Admin" asp-action="DeleteProduct" class="btn btn-danger" asp-route-id="@creditCard.Id" title="Delete">
                                                             <i class="ti ti-trash"></i>
