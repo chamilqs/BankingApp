@@ -73,6 +73,11 @@ namespace BankingApp.Core.Application.Services
 
             if(destinyAccount != null && originAccount != null)
             {
+                if (amount > destinyAccount.Balance)
+                {
+                    throw new Exception("You can't do this transaction, the amount is higher than the balance of the account.");
+                }
+
                 double destinyBalance = destinyAccount.Balance + amount;
                 double originBalance = originAccount.Balance - amount;
 
@@ -160,30 +165,6 @@ namespace BankingApp.Core.Application.Services
             }
         }
 
-        //try
-        //{
-        //    double interest = 0.0625;
-        //    double debt = vm.Amount + (vm.Amount * interest);
-        //    double balance = creditCard.Balance - vm.Amount;
-
-        //    await _creditCardService.UpdateCreditCard(balance, debt, creditCard.Id, client.Id);
-        //    vm.TransactionTypeId = (int)Enums.TransactionType.CashAdvance;
-
-        //    if (vm.Concept == null || vm.Concept.Length == 0)
-        //    {
-        //        vm.Concept = "Cash advance";
-        //    }
-        //    await Transfer(vm, Enums.TransactionType.CashAdvance, true);
-
-        //    return "Cash advance done successfully.";
-
-        //}
-        //catch (Exception ex)
-        //{
-        //    Console.WriteLine(ex.Message);
-        //}
-
-        //return "Cash advance done successfully.";
     }
 }
 
