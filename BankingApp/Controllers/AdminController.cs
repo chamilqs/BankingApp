@@ -14,23 +14,43 @@ namespace BankingApp.Controllers
     public class AdminController : Controller
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ITransactionService _transactionService;
         private readonly IUserService _userService;
         private readonly IClientService _clientService;
         private readonly IAdminService _adminService;
         private readonly AuthenticationResponse _authViewModel;
 
-        public AdminController(IHttpContextAccessor httpContextAccessor, IUserService userService, IClientService clientService, IAdminService adminService)
+        public AdminController(IHttpContextAccessor httpContextAccessor, IUserService userService, IClientService clientService, IAdminService adminService, ITransactionService transactionService)
         {
             _httpContextAccessor = httpContextAccessor;
             _authViewModel = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
             _userService = userService;
             _clientService = clientService;
             _adminService = adminService;
+            _transactionService = transactionService;
         }
 
         #region Dashboard
         public async Task<IActionResult> Dashboard()
         {
+
+            var payments = await _transactionService.GetAllViewModel();
+            var loan = payments.Where(t => t.TransactionTypeId == (int)TransactionType.LoanPayment).ToList();
+            var express = payments.Where(t => t.TransactionTypeId == (int)TransactionType.ExpressPayment).ToList();
+            var creditcard = payments.Where(t => t.TransactionTypeId == (int)TransactionType.CreditCardPayment).ToList();
+            var beneficiary = payments.Where(t => t.TransactionTypeId == (int)TransactionType.BeneficiaryPayment).ToList();
+
+            var totalPayments = loan.Count + express.Count + creditcard.Count + beneficiary.Count;
+            var totalTodayPayments = payments
+                                    .Where(x => x.DateCreated.Day == DateTime.Now.Day &&
+                                                (x.TransactionTypeId == (int)TransactionType.LoanPayment ||
+                                                 x.TransactionTypeId == (int)TransactionType.ExpressPayment ||
+                                                 x.TransactionTypeId == (int)TransactionType.CreditCardPayment ||
+                                                 x.TransactionTypeId == (int)TransactionType.BeneficiaryPayment))
+                                    .ToList()
+                                    .Count;
+
+
             AdminDataViewModel vm = new()
             {
 				TotalUsers = await _adminService.GetActiveUsersCount() + await _adminService.GetInactiveUsersCount(),
@@ -38,8 +58,8 @@ namespace BankingApp.Controllers
 				TotalInactiveUsers = await _adminService.GetInactiveUsersCount(),
 				TotalTransactions = await _adminService.GetTotalTransactionsCount(),
 				TotalTodayTransactions = await _adminService.GetTodayTotalTransactionsCount(),
-				TotalPayments = await _adminService.GetTotalPaymentsCount(),
-				TotalTodayPayments = await _adminService.GetTodayTotalPaymentsCount(),
+				TotalPayments = totalPayments,
+				TotalTodayPayments = totalTodayPayments,
 				TotalSavingsAccounts = await _adminService.GetTotalSavingsAccountsCount(),
 				TotalLoans = await _adminService.GetTotalLoansCount(),
 				TotalCreditCards = await _adminService.GetTotalCreditCardsCount()

@@ -9,8 +9,6 @@ namespace BankingApp.Core.Application.Interfaces.Services
         Task<GenericResponse> UpdateUserStatus(string userId);
 		Task<int> GetActiveUsersCount();
         Task<int> GetInactiveUsersCount();
-        Task<int> GetTotalPaymentsCount();
-        Task<int> GetTodayTotalPaymentsCount();
 		Task<int> GetTotalTransactionsCount();
         Task<int> GetTodayTotalTransactionsCount();
 		Task<int> GetTotalLoansCount();

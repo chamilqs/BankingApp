@@ -19,9 +19,9 @@ namespace BankingApp.Infrastucture.Persistence.Repositories
         {
             _dbContext = dbContext;
         }
-        public Task<Loan> GetByAccountNumber(string accountNumber)
+        public async Task<Loan> GetByAccountNumber(string accountNumber)
         {
-            var loan = _dbContext.Loans.FirstOrDefaultAsync(b => b.Id == accountNumber);
+            var loan = await _dbContext.Loans.FirstOrDefaultAsync(b => b.Id == accountNumber);
 
             if (loan == null)
             {
@@ -31,9 +31,9 @@ namespace BankingApp.Infrastucture.Persistence.Repositories
             return loan;
         }
 
-        public Task<Loan> GetByAccountNumberLoggedUser(string accountNumber, int clientId)
+        public async Task<Loan> GetByAccountNumberLoggedUser(string accountNumber, int clientId)
         {
-            var loan = _dbContext.Loans.FirstOrDefaultAsync(b => b.Id == accountNumber && b.ClientId == clientId);
+            var loan = await _dbContext.Loans.FirstOrDefaultAsync(b => b.Id == accountNumber && b.ClientId == clientId);
 
             if (loan == null)
             {

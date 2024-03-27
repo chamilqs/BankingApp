@@ -135,6 +135,14 @@
         }
 </style>
 
+@if (!String.IsNullOrWhiteSpace(ViewBag.Error))
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+        <p class="mb-0">@ViewBag.Error</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <div class="styles">
     <div class="wrapper">
         <header>Loan Payment </header>
@@ -155,7 +163,7 @@
                 <div class="to">
                     <p>To</p>
                     <div class="select-box">
-                        <select required asp-for="Origin" asp-items="@(new SelectList(Model.LoggedUserLoans,"Id","Id"))" class="form-select">
+                        <select required asp-for="Destination" asp-items="@(new SelectList(Model.LoggedUserLoans,"Id","Id"))" class="form-select">
                         </select>
                     </div>
                 </div>

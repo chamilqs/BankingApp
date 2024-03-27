@@ -96,6 +96,7 @@ namespace BankingApp.Core.Application.Services
                 Balance = balance,
                 Debt = debt,
                 Limit = creditCard.Limit
+
             };
 
             await base.UpdateProduct(vm, accountNumber);

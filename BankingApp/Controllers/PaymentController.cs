@@ -36,8 +36,15 @@ namespace BankingApp.Controllers
             user = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
         }
 
-        public async Task<IActionResult> ExpressPayment()
+        public async Task<IActionResult> ExpressPayment(string? errorMessage = null)
         {
+
+            ViewBag.Error = "";
+            if (errorMessage != null)
+            {
+                ViewBag.Error = errorMessage;
+            }
+
             var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
             ExpressPaymentViewModel vm = new();
 
@@ -48,24 +55,55 @@ namespace BankingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> ExpressPayment(ExpressPaymentViewModel vm)
         {
-            if (!ModelState.IsValid)
+            try
             {
+                if (vm.Destination.Length < 9 || vm.Destination.Length > 9 || vm.Destination == null)
+                {
+                    throw new Exception("Destination account does not exist");
+
+                }
+                if (!ModelState.IsValid)
+                {
+
+
+
+                    return RedirectToRoute(new { controller = "Client", action = "Dashboard" });
+
+                }
                 var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
-                vm.LoggedUserAccounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
-                return View("ExpressPayment", vm);
+                var destinyClient = await _clientService.GetByAccountNumber(vm.Destination);
+                var destinyUser = await _accountService.FindByIdAsync(destinyClient.UserId);
+
+                vm.ClientName = destinyUser.Name;
+                vm.ClientLastName = destinyUser.LastName;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return RedirectToRoute(new { controller = "Payment", action = "ExpressPayment", errorMessage = ex.Message.ToString() });
             }
 
             return View("ExpressPaymentConfirm", vm);
         }
 
-        public async Task<IActionResult> ExpressPaymentConfirm(ExpressPaymentViewModel vm)
+        public async Task<IActionResult> ExpressPaymentConfirm(ExpressPaymentViewModel vm, string? errorMessage = null)
         {
-            var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
-            var destinyClient = await _clientService.GetByAccountNumber(vm.Destination);
-            var destinyUser = await _accountService.FindByIdAsync(destinyClient.UserId);
 
-            vm.ClientName = destinyUser.Name;
-            vm.ClientLastName = destinyUser.LastName;
+            ViewBag.Error = "";
+            if (errorMessage != null)
+            {
+                ViewBag.Error = errorMessage;
+            }
+
+            if (!ModelState.IsValid)
+            {
+
+
+                return RedirectToRoute(new { controller = "Client", action = "Dashboard" });
+
+
+            }
+
             return View("ExpressPaymentConfirm", vm);
         }
 
@@ -79,13 +117,28 @@ namespace BankingApp.Controllers
                 vm.LoggedUserAccounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
                 return View("ExpressPaymentConfirm", vm);
             }
+            try
+            {
+                await _paymentService.ExpressPayment(vm);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToRoute(new { controller = "Client", action = "Dashboard", errorMessage = ex.Message.ToString() });
 
-            await _paymentService.ExpressPayment(vm);
-            return RedirectToRoute(new { controller = "Payment", action = "ExpressPayment" });
+            }
+
+
+            return RedirectToRoute(new { controller = "Client", action = "Dashboard" });
         }
 
-        public async Task<IActionResult> BeneficiaryPayment()
+        public async Task<IActionResult> BeneficiaryPayment(string? errorMessage = null)
         {
+            ViewBag.Error = "";
+            if (errorMessage != null)
+            {
+                ViewBag.Error = errorMessage;
+            }
+
             var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
             BeneficiaryPaymentViewModel vm = new();
             vm.LoggedUserAccounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
@@ -99,24 +152,35 @@ namespace BankingApp.Controllers
         {
             if (!ModelState.IsValid)
             {
+
+                return RedirectToRoute(new { controller = "Client", action = "Dashboard" });
+            }
+            try
+            {
                 var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
-                vm.LoggedUserAccounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
-                vm.LoggedUserBeneficiaries = await _beneficiaryService.GetAllByClientId(loggedClient.Id);
-                return View("BeneficiaryPayment", vm);
+                var destinyClient = await _clientService.GetByAccountNumber(vm.Destination);
+                var destinyUser = await _accountService.FindByIdAsync(destinyClient.UserId);
+
+                vm.BeneficiaryFirstName = destinyUser.Name;
+                vm.BeneficiaryLastName = destinyUser.LastName;
+            }
+            catch (Exception ex)
+            {
+                return RedirectToRoute(new { controller = "Client", action = "Dashboard" });
             }
 
 
             return View("BeneficiaryPaymentConfirm", vm);
         }
 
-        public async Task<IActionResult> BeneficiaryPaymentConfirm(BeneficiaryPaymentViewModel vm)
+        public async Task<IActionResult> BeneficiaryPaymentConfirm(BeneficiaryPaymentViewModel vm, string? errorMessage = null)
         {
-            var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
-            var destinyClient = await _clientService.GetByAccountNumber(vm.Destination);
-            var destinyUser = await _accountService.FindByIdAsync(destinyClient.UserId);
+            ViewBag.Error = "";
+            if (errorMessage != null)
+            {
+                ViewBag.Error = errorMessage;
+            }
 
-            vm.BeneficiaryFirstName = destinyUser.Name;
-            vm.BeneficiaryLastName = destinyUser.LastName;
 
             return View("BeneficiaryPaymentConfirm", vm);
         }
@@ -133,13 +197,25 @@ namespace BankingApp.Controllers
                 return View("BeneficiaryPaymentConfirm", vm);
             }
 
+            try
+            {
+                await _paymentService.BeneficiaryPayment(vm);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToRoute(new { controller = "Client", action = "Dashboard", errorMessage = ex.Message.ToString() });
+            }
 
-
-            await _paymentService.BeneficiaryPayment(vm);
-            return RedirectToRoute(new { controller = "Payment", action = "BeneficiaryPayment" });
+            return RedirectToRoute(new { controller = "Client", action = "Dashboard" });
         }
-        public async Task<IActionResult> LoanPayment()
+        public async Task<IActionResult> LoanPayment(string? errorMessage = null)
         {
+            ViewBag.Error = "";
+            if (errorMessage != null)
+            {
+                ViewBag.Error = errorMessage;
+            }
+
             var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
             LoanPaymentViewModel vm = new();
             vm.LoggedUserAccounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
@@ -157,16 +233,36 @@ namespace BankingApp.Controllers
                 vm.LoggedUserLoans = await _loanService.GetAllByClientId(loggedClient.Id);
                 return View("LoanPayment", vm);
             }
-            await _paymentService.LoanPayment(vm);
-            return RedirectToRoute(new { controller = "Payment", action = "LoanPayment" });
+            try
+            {
+                await _paymentService.LoanPayment(vm);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToRoute(new { controller = "Client", action = "Dashboard", errorMessage = ex.Message.ToString() });
+            }
+
+
+
+
+            return RedirectToRoute(new { controller = "Client", action = "Dashboard" });
         }
-        public async Task<IActionResult> CreditCardPayment()
+        public async Task<IActionResult> CreditCardPayment(string? errorMessage = null)
         {
+            ViewBag.Error = "";
+            if (errorMessage != null)
+            {
+                ViewBag.Error = errorMessage;
+            }
+
             var loggedClient = await _clientService.GetByUserIdViewModel(user.Id);
             CreditCardPaymentViewModel vm = new();
             vm.LoggedUserAccounts = await _savingsAccountService.GetAllByClientId(loggedClient.Id);
             vm.LoggedUserCreditCards = await _creditCardService.GetAllByClientId(loggedClient.Id);
             return View("CreditCardPayment", vm);
+
+
+
         }
 
         [HttpPost]
@@ -180,10 +276,20 @@ namespace BankingApp.Controllers
                 vm.LoggedUserCreditCards = await _creditCardService.GetAllByClientId(loggedClient.Id);
                 return View("CreditCardPayment", vm);
             }
+            try
+            {
 
 
+                await _paymentService.CreditCardPayment(vm);
 
-            return View("CreditCardConfirm", vm);
+
+            }
+            catch (Exception ex)
+            {
+                return RedirectToRoute(new { controller = "Client", action = "Dashboard", errorMessage = ex.Message.ToString() });
+
+            }
+            return RedirectToRoute(new { controller = "Client", action = "Dashboard" });
         }
 
     }
