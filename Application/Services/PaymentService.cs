@@ -39,6 +39,7 @@ namespace BankingApp.Core.Application.Services
 
         public async Task<ExpressPaymentViewModel> ExpressPayment(ExpressPaymentViewModel vm)
         {
+
             var destination = await _savingsAccountService.GetByAccountNumber(vm.Destination);
 
             if (destination == null)
@@ -124,17 +125,20 @@ namespace BankingApp.Core.Application.Services
                 throw new Exception("Insufficient balance ");
             }
 
+
             origin.Balance -= amount;
             destination.Debt -= amount;
 
             if (amount > destination.Debt)
             {
                 origin.Balance += amount - destination.Debt;
+                destination.Debt += amount;
             }
 
 
+            await _creditCardService.UpdateCreditCard(destination.Balance, destination.Debt, destination.Id, destination.ClientId);
             await _savingsAccountService.UpdateSavingsAccount(origin.Balance, origin.ClientId, origin.Id);
-            await _creditCardService.UpdateCreditCard(destination.Balance, destination.Debt, origin.Id, origin.ClientId,);
+
 
 
 
@@ -192,7 +196,7 @@ namespace BankingApp.Core.Application.Services
 
 
             await _savingsAccountService.UpdateSavingsAccount(origin.Balance, origin.ClientId, origin.Id);
-            await _loanService.UpdateLoan(destination.Balance, destination.Amount, origin.Id, origin.ClientId);
+            await _loanService.UpdateLoan(destination.Balance, destination.Amount, destination.Id, destination.ClientId);
 
 
             var paymentRecord = new SaveTransactionViewModel
