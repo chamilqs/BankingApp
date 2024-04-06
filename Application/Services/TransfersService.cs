@@ -31,6 +31,7 @@ namespace BankingApp.Core.Application.Services
             _creditCardService = creditCardService;
         }
 
+        #region SavingsAccount
         public async Task<SaveTransactionViewModel> Transfer(SaveTransactionViewModel vm, Enums.TransactionType transactionType, bool isCashAdvance)
         {
             vm.TransactionTypeId = (int)transactionType;
@@ -91,7 +92,9 @@ namespace BankingApp.Core.Application.Services
             }
 
         }
+        #endregion
 
+        #region CreditCard
         public async Task<bool> AddMoneyToAccountCreditCard(string accountNumberOrigin, string accountNumberDestination, double amount)
         {
             // Get products where the ClientId is the same as the logged user ClientId
@@ -164,6 +167,7 @@ namespace BankingApp.Core.Application.Services
                 }
             }
         }
+        #endregion
 
     }
 }

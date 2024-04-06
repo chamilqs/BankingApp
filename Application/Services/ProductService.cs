@@ -19,6 +19,7 @@ namespace BankingApp.Core.Application.Services
             _loanService = loanService;
         }
 
+        #region Product Number Generation
         public async Task<string> GenerateProductNumber()
         {
             string accNumber = "000000000";
@@ -59,6 +60,7 @@ namespace BankingApp.Core.Application.Services
 
             return false;
         }
+        #endregion
 
         #region GetAllProductsByClient
         public async Task<ProductViewModel> GetAllProductsByClient(int clientId)

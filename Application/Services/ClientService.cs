@@ -10,7 +10,6 @@ using BankingApp.Core.Application.ViewModels.SavingsAccount;
 using BankingApp.Core.Application.ViewModels.User;
 using BankingApp.Core.Domain.Entities;
 using Microsoft.AspNetCore.Http;
-using System.ComponentModel;
 
 namespace BankingApp.Core.Application.Services
 {
@@ -39,6 +38,8 @@ namespace BankingApp.Core.Application.Services
             _productService = productService;
         }
 
+        #region Get Methods
+
         #region GetByUserIdViewModel
         public async Task<ClientViewModel> GetByUserIdViewModel(string userId)
         {
@@ -48,6 +49,37 @@ namespace BankingApp.Core.Application.Services
 
             return client;
         }
+        #endregion
+
+        #region GetAllProduct
+        public async Task<ProductViewModel> GetAllProducts(string userId)
+        {
+            ClientViewModel clientVm = await GetByUserIdViewModel(userId);
+
+            if (clientVm == null)
+                throw new Exception();
+
+            ProductViewModel products = await _productService.GetAllProductsByClient(clientVm.Id);
+            var user = await _userService.GetById(userId);
+            products.Username = user.Username;
+
+            return products;
+        }
+        #endregion
+
+        #region GetByAccountNumber
+        public async Task<Client> GetByAccountNumber(string accountNumber)
+        {
+            var client = await _clientRepository.GetByAccountNumber(accountNumber);
+            if (client == null)
+            {
+                return null;
+            }
+
+            return client;
+        }
+        #endregion
+
         #endregion
 
         #region Register
@@ -145,33 +177,6 @@ namespace BankingApp.Core.Application.Services
         }
         #endregion
 
-        #region GetAllProduct
-        public async Task<ProductViewModel> GetAllProducts(string userId)
-        {
-            ClientViewModel clientVm = await GetByUserIdViewModel(userId);
 
-            if (clientVm == null)
-                throw new Exception();
-
-            ProductViewModel products = await _productService.GetAllProductsByClient(clientVm.Id);
-            var user = await _userService.GetById(userId);
-            products.Username = user.Username;
-
-            return products;
-        }
-        #endregion
-
-        #region GetByAccountNumber
-        public async Task<Client> GetByAccountNumber(string accountNumber)
-        {
-            var client = await _clientRepository.GetByAccountNumber(accountNumber);
-            if (client == null)
-            {
-                return null;
-            }
-
-            return client;
-        }
-        #endregion 
     }
 }

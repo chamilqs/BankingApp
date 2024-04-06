@@ -24,6 +24,7 @@ namespace BankingApp.Core.Application.Services
             _mapper = mapper;
         }
 
+        #region Dashboard Methods
         public async Task<int> GetActiveUsersCount()
         {
 			return await _accountService.GetActiveUsersCountAsync();
@@ -90,8 +91,7 @@ namespace BankingApp.Core.Application.Services
 			}
             return creditCards.Count;
 		}
-	
-
+        #endregion
 
         #region GetAllViewModel
         public async Task<List<UserViewModel>> GetAllViewModel()

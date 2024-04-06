@@ -28,6 +28,7 @@ namespace BankingApp.Core.Application.Services
             user = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
         }
 
+        #region Create
         public async Task<SaveBeneficiaryViewModel> AddBeneficiary(SaveBeneficiaryViewModel vm, string AccountNumber)
         {
             var userId = user.Id;
@@ -39,27 +40,17 @@ namespace BankingApp.Core.Application.Services
             return await base.Add(vm);
 
         }
+        #endregion
 
-        public async Task<SavingsAccount> GetByAccountNumber(string accountNumber)
-        {
-
-            var sa = await _beneficiaryRepository.GetByAccountNumber(accountNumber);
-            if (sa == null)
-
-            {
-                return null;
-            }
-
-            return sa;
-        }
-
+        #region Delete  
         public async Task DeleteBeneficiary(string accountNumber)
         {
             var beneficiary = await _beneficiaryRepository.GetBeneficiary(accountNumber);
             await base.Delete(beneficiary.Id);
         }
+        #endregion
 
-
+        #region Get Methods
         public async Task<List<BeneficiaryViewModel>> GetAllByClientId(int clientId)
         {
             var beneficiaries = await _beneficiaryRepository.GetAllAsync();
@@ -98,5 +89,20 @@ namespace BankingApp.Core.Application.Services
             return beneficiary;
 
         }
+
+        public async Task<SavingsAccount> GetByAccountNumber(string accountNumber)
+        {
+
+            var sa = await _beneficiaryRepository.GetByAccountNumber(accountNumber);
+            if (sa == null)
+
+            {
+                return null;
+            }
+
+            return sa;
+        }
+
+        #endregion
     }
 }

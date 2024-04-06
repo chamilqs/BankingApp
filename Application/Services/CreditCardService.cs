@@ -3,7 +3,6 @@ using BankingApp.Core.Application.DTOs.Account;
 using BankingApp.Core.Application.Helpers;
 using BankingApp.Core.Application.Interfaces.Repositories;
 using BankingApp.Core.Application.Interfaces.Services;
-using BankingApp.Core.Application.ViewModels.Beneficiary;
 using BankingApp.Core.Application.ViewModels.CreditCard;
 using BankingApp.Core.Domain.Entities;
 using Microsoft.AspNetCore.Http;
@@ -36,6 +35,7 @@ namespace BankingApp.Core.Application.Services
         }
         #endregion
 
+        #region Get Methods
         public async Task<CreditCard> GetByAccountNumber(string accountNumber)
         {
             var creditCard = await _creditCardRepository.GetByAccountNumber(accountNumber);
@@ -83,7 +83,9 @@ namespace BankingApp.Core.Application.Services
 
             return creditCard;
         }
+        #endregion
 
+        #region Update
         public async Task UpdateCreditCard(double balance, double debt, string accountNumber, int clientId)
         {
             var creditCard = await GetByAccountNumberLoggedUser(accountNumber, clientId);
@@ -101,6 +103,7 @@ namespace BankingApp.Core.Application.Services
 
             await base.UpdateProduct(vm, accountNumber);
         }
+        #endregion
 
     }
 }

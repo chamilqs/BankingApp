@@ -3,10 +3,6 @@ using BankingApp.Infrastructure.Persistence;
 using WebAdmin.BankingApp.Middlewares;
 using BankingApp.Infrastructure.Shared;
 using BankingApp.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity;
-using BankingApp.Infrastructure.Identity.Entities;
-using BankingApp.Infrastructure.Identity.Seeds;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +19,7 @@ builder.Services.AddTransient<ValidateUserSession, ValidateUserSession>();
 
 var app = builder.Build();
 
-await app.Services.AddIdentitySeeds();
+await app.Services.AddIdentitySeeds(); // Creating default roles and users
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -38,12 +34,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Siempre poner primero la autenticaci�n y luego la autorizaci�n
+// Always authentication first before authorization to prevent redirection loop
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=User}/{action=Index}/{id?}");
+    pattern: "{controller=User}/{action=Index}/{id?}"); // Default route (login)
 
 app.Run();

@@ -37,6 +37,7 @@ namespace BankingApp.Core.Application.Services
 
         }
 
+        #region ExpressPayment
         public async Task<ExpressPaymentViewModel> ExpressPayment(ExpressPaymentViewModel vm)
         {
 
@@ -97,7 +98,9 @@ namespace BankingApp.Core.Application.Services
 
             return vm;
         }
+        #endregion
 
+        #region CreditCardPayment
         public async Task<CreditCardPaymentViewModel> CreditCardPayment(CreditCardPaymentViewModel vm)
         {
             var destination = await _creditCardService.GetByAccountNumber(vm.Destination);
@@ -157,7 +160,9 @@ namespace BankingApp.Core.Application.Services
 
             return vm;
         }
+        #endregion
 
+        #region LoanPayment
         public async Task<LoanPaymentViewModel> LoanPayment(LoanPaymentViewModel vm)
         {
 
@@ -214,7 +219,9 @@ namespace BankingApp.Core.Application.Services
 
             return vm;
         }
+        #endregion
 
+        #region BeneficiaryPayment
         public async Task<BeneficiaryPaymentViewModel> BeneficiaryPayment(BeneficiaryPaymentViewModel vm)
         {
             var destination = await _savingsAccountService.GetByAccountNumber(vm.Destination);
@@ -272,7 +279,7 @@ namespace BankingApp.Core.Application.Services
 
             return vm;
         }
-
+        #endregion
 
     }
 }
