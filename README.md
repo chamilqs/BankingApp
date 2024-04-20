@@ -9,7 +9,7 @@
 - **Administrador**: Tendrá acceso a un panel de control con indicadores de transacciones, gestión de usuarios y la capacidad de activar/desactivar usuarios o editar su información.
 - **Cliente**: Podrá ver una lista de productos, gestionar beneficiarios, realizar pagos, avances de efectivo y transferencias de cuenta.
 
-## Tecnologías a utilizar
+## Tecnologías utilizadas
 
 - **ASP.NET Core MVC 7**: Para el desarrollo del backend de la aplicación.
 - **Entity Framework**: Para la gestión de la base de datos.
