@@ -18,7 +18,7 @@ namespace BankingApp.Infrastructure.Persistence.Contexts
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            foreach(var entry in ChangeTracker.Entries<AuditableBaseEntity>())
+            foreach (var entry in ChangeTracker.Entries<AuditableBaseEntity>())
             {
                 switch (entry.State)
                 {
@@ -255,7 +255,7 @@ namespace BankingApp.Infrastructure.Persistence.Contexts
 
             modelBuilder.Entity<Transaction>().
                 Property(ts => ts.Concept)
-                .HasMaxLength(30);
+                .HasMaxLength(50);
             #endregion
 
             #region TransactionType
@@ -264,6 +264,18 @@ namespace BankingApp.Infrastructure.Persistence.Contexts
                 .IsRequired();
 
             #endregion
+
+            #endregion
+
+            #region "Default Data"
+            modelBuilder.Entity<TransactionType>().HasData(
+                new TransactionType { Id = 1, Name = "Account Transfer" },
+                new TransactionType { Id = 2, Name = "Loan Payment" },
+                new TransactionType { Id = 3, Name = "Express Payment" },
+                new TransactionType { Id = 4, Name = "Credit Card Payment" },
+                new TransactionType { Id = 5, Name = "Cash Advance" },
+                new TransactionType { Id = 6, Name = "Beneficiary Payment" }
+            );
 
             #endregion
 

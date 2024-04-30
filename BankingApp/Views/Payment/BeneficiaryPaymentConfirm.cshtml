@@ -1,0 +1,38 @@
+﻿@using BankingApp.Core.Application.ViewModels.Payment
+@using BankingApp.Core.Application.ViewModels.Beneficiary
+@model BeneficiaryPaymentViewModel
+@{
+    ViewData["Title"] = "Complete Payment";
+    
+}
+
+
+@if (!String.IsNullOrWhiteSpace(ViewBag.Error))
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+        <p class="mb-0">@ViewBag.Error</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+    <div class="col-6 offset-3">
+        <div class="card shadow rounded">
+            <div class="card-header ">
+            <h4>Are you sure you would like to complete the payment to: @Model.BeneficiaryFirstName @Model.BeneficiaryLastName  </h4>
+                <h6>Account Number : @Model.Destination</h6>
+            </div>
+            <div class="card-body">
+
+                <form method="post" asp-controller="Payment" asp-action="BeneficiaryPaymentConfirmPost">
+
+                    <input type="hidden" asp-for="Amount" value="@Model.Amount" />
+                <input type="hidden" asp-for="Origin" value="@Model.Origin" />
+                <input type="hidden" asp-for="Destination" value="@Model.Destination" />
+                    <button type="submit" class="btn btn-danger">Confirm Payment</button>
+                <a asp-controller="Client" asp-action="Dashboard" class="btn btn-warning">Cancel Payment</a>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+

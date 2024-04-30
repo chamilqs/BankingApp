@@ -5,7 +5,5 @@ namespace BankingApp.Core.Application.Interfaces.Repositories
     public interface ITransactionRepository : IGenericRepository<Transaction>
     {
 
-
-
     }
 }

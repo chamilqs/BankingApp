@@ -15,16 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Views\Utilities\IconTabler.cshtml" />
-    <None Include="Views\Utilities\SamplePage.cshtml" />
-    <None Include="Views\Utilities\UIAlerts.cshtml" />
-    <None Include="Views\Utilities\UIButtons.cshtml" />
-    <None Include="Views\Utilities\UICard.cshtml" />
-    <None Include="Views\Utilities\UIForms.cshtml" />
-    <None Include="Views\Utilities\UITypography.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.11">
       <PrivateAssets>all</PrivateAssets>

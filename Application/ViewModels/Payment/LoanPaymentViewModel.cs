@@ -1,4 +1,5 @@
 ﻿using BankingApp.Core.Application.ViewModels.Loan;
+using BankingApp.Core.Application.ViewModels.SavingsAccount;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace BankingApp.Core.Application.ViewModels.Payment
         public double Amount { get; set; }
         public List<LoanViewModel>? LoggedUserLoans { get; set; }
 
+        public List<SavingsAccountViewModel>? LoggedUserAccounts { get; set; }
 
     }
 }

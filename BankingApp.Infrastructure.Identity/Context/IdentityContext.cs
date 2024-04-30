@@ -9,6 +9,7 @@ namespace BankingApp.Infrastructure.Identity.Context
     {
         public IdentityContext(DbContextOptions<IdentityContext> options) : base(options) { }
 
+        #region Context Configuration
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -35,6 +36,7 @@ namespace BankingApp.Infrastructure.Identity.Context
             });
 
         }
+        #endregion
 
     }
 }

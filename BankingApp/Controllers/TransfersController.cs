@@ -18,7 +18,7 @@ namespace BankingApp.Controllers
         private readonly AuthenticationResponse user;
 
         public TransfersController(ITransfersService transfersService, IHttpContextAccessor httpContextAccessor, 
-            ISavingsAccountService savingsAccountService, IClientService clientService, ICreditCardService creditCardService) 
+            ISavingsAccountService savingsAccountService, IClientService clientService, ICreditCardService creditCardService)
         { 
             _transfersService = transfersService;
             _savingsAccountService = savingsAccountService;
@@ -28,8 +28,15 @@ namespace BankingApp.Controllers
             user = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
         
         }
-        public async Task<IActionResult> TransferBetweenAccounts()
+        public async Task<IActionResult> TransferBetweenAccounts(string? errorMessage = null)
         {
+
+            ViewBag.Error = "";
+            if (errorMessage != null)
+            {
+                ViewBag.Error = errorMessage;
+            }
+
             var client = await _clientService.GetByUserIdViewModel(user.Id);
 
             var accounts = await _savingsAccountService.GetAllViewModel();
@@ -42,32 +49,33 @@ namespace BankingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> TransferBetweenAccounts(SaveTransactionViewModel vm)
         {
-            if (!ModelState.IsValid)
-            {
-                return View("TransferBetweenAccounts", vm);
-            }
-
             try
             {
                 var transfer = await _transfersService.Transfer(vm, Core.Application.Enums.TransactionType.AccountTransfer,false);
                 if(transfer == null)
                 {
-                    ModelState.AddModelError("Amount", "There was an error with the transaction");
-                    return View("TransferBetweenAccounts", vm);
-                }
+                    return RedirectToRoute(new { controller = "Transfers", action = "TransferBetweenAccounts", errorMessage = "There was an error during the transfer." });
+                }                
+
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("Error", ex.Message.ToString());
-                return View("TransferBetweenAccounts", vm);
+
+                return RedirectToRoute(new { controller = "Transfers", action = "TransferBetweenAccounts", errorMessage = ex.Message.ToString() });
 
             }
 
             return RedirectToRoute(new { controller = "Transfers", action = "TransferBetweenAccounts" });
         }
     
-        public async Task<IActionResult> CashAdvance()
+        public async Task<IActionResult> CashAdvance(string? errorMessage = null)
         {
+            ViewBag.Error = "";
+            if (errorMessage != null)
+            {
+                ViewBag.Error = errorMessage;
+            }
+
             var client = await _clientService.GetByUserIdViewModel(user.Id);
 
             var creditCards = await _creditCardService.GetAllViewModel();
@@ -87,21 +95,19 @@ namespace BankingApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View("CashAdvance", vm);
+                return RedirectToAction("CashAdvance");
             }
             try
             {
                 var transfer = await _transfersService.CashAdvance(vm);
                 if (!transfer)
                 {
-                    ModelState.AddModelError("Error", "There was an error with the transaction");
-                    return View("CashAdvance", vm);
+                    return RedirectToRoute(new { controller = "Transfers", action = "CashAdvance", errorMessage = "There was an error with the transaction" });
                 }
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("Destination", ex.Message.ToString());
-                return View("CashAdvance", vm);
+                return RedirectToRoute(new { controller = "Transfers", action = "CashAdvance", errorMessage = ex.Message.ToString() });
             }
 
             return RedirectToRoute(new { controller = "Transfers", action = "CashAdvance" });

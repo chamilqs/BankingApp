@@ -5,13 +5,11 @@ using BankingApp.Core.Application.Helpers;
 using BankingApp.Core.Application.Interfaces.Repositories;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.Client;
-using BankingApp.Core.Application.ViewModels.Loan;
 using BankingApp.Core.Application.ViewModels.Products;
 using BankingApp.Core.Application.ViewModels.SavingsAccount;
 using BankingApp.Core.Application.ViewModels.User;
 using BankingApp.Core.Domain.Entities;
 using Microsoft.AspNetCore.Http;
-using System.ComponentModel;
 
 namespace BankingApp.Core.Application.Services
 {
@@ -25,10 +23,10 @@ namespace BankingApp.Core.Application.Services
         private readonly AuthenticationResponse user;
         private readonly IMapper _mapper;
 
-        public ClientService(IClientRepository clientRepository, 
-            IHttpContextAccessor httpContextAccessor, 
+        public ClientService(IClientRepository clientRepository,
+            IHttpContextAccessor httpContextAccessor,
             IMapper mapper, IUserService userService, 
-            ISavingsAccountService savingsAccountService, 
+            ISavingsAccountService savingsAccountService,
             IProductService productService) : base(clientRepository, mapper)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -40,15 +38,48 @@ namespace BankingApp.Core.Application.Services
             _productService = productService;
         }
 
+        #region Get Methods
+
         #region GetByUserIdViewModel
         public async Task<ClientViewModel> GetByUserIdViewModel(string userId)
         {
             var clientList = await base.GetAllViewModel();
 
             ClientViewModel client = clientList.FirstOrDefault(client => client.UserId == userId);
-                
+
             return client;
         }
+        #endregion
+
+        #region GetAllProduct
+        public async Task<ProductViewModel> GetAllProducts(string userId)
+        {
+            ClientViewModel clientVm = await GetByUserIdViewModel(userId);
+
+            if (clientVm == null)
+                throw new Exception();
+
+            ProductViewModel products = await _productService.GetAllProductsByClient(clientVm.Id);
+            var user = await _userService.GetById(userId);
+            products.Username = user.Username;
+
+            return products;
+        }
+        #endregion
+
+        #region GetByAccountNumber
+        public async Task<Client> GetByAccountNumber(string accountNumber)
+        {
+            var client = await _clientRepository.GetByAccountNumber(accountNumber);
+            if (client == null)
+            {
+                return null;
+            }
+
+            return client;
+        }
+        #endregion
+
         #endregion
 
         #region Register
@@ -60,8 +91,8 @@ namespace BankingApp.Core.Application.Services
             {
                 var user = await _userService.GetByUsername(vm.Username);
 
-                SaveClientViewModel saveClientViewModel = new() 
-                { 
+                SaveClientViewModel saveClientViewModel = new()
+                {
                     UserId = user.Id,
                     DateCreated = DateTime.UtcNow,
                 };
@@ -93,27 +124,51 @@ namespace BankingApp.Core.Application.Services
             {
                 ClientViewModel client = await GetByUserIdViewModel(vm.Id);
 
-                var mainAccount = await _savingsAccountService.GetClientMainAccount(client.Id);
-
-                if (mainAccount != null)
+                if (client == null)
                 {
+                    SaveClientViewModel saveClientViewModel = new()
+                    {
+                        UserId = vm.Id,
+                        DateCreated = DateTime.UtcNow,
+                    };
+
+                    var clientAdded = await base.Add(saveClientViewModel);
+
                     SaveSavingsAccountViewModel savingsAccountVm = new()
                     {
-                        Id = mainAccount.Id,
-                        ClientId = mainAccount.ClientId,
-                        Balance = mainAccount.Balance + vm.AccountAmount.Value,
-                        DateCreated = mainAccount.DateCreated,
-                        IsMainAccount = mainAccount.IsMainAccount
-                        
+                        Id = await _productService.GenerateProductNumber(),
+                        ClientId = clientAdded.Id,
+                        Balance = vm.AccountAmount.Value,
+                        DateCreated = DateTime.UtcNow,
+                        IsMainAccount = true
                     };
-                    
-                    await _savingsAccountService.UpdateProduct(savingsAccountVm, savingsAccountVm.Id);
+
+                    await _savingsAccountService.Add(savingsAccountVm);
                 }
                 else
                 {
-                    response.HasError = true;
-                    response.Error = $"This user: {user.UserName} doesn't have a main account";
-                    return response;
+                    var mainAccount = await _savingsAccountService.GetClientMainAccount(client.Id);
+
+                    if (mainAccount != null)
+                    {
+                        SaveSavingsAccountViewModel savingsAccountVm = new()
+                        {
+                            Id = mainAccount.Id,
+                            ClientId = mainAccount.ClientId,
+                            Balance = mainAccount.Balance + vm.AccountAmount.Value,
+                            DateCreated = mainAccount.DateCreated,
+                            IsMainAccount = mainAccount.IsMainAccount
+
+                        };
+
+                        await _savingsAccountService.UpdateProduct(savingsAccountVm, savingsAccountVm.Id);
+                    }
+                    else
+                    {
+                        response.HasError = true;
+                        response.Error = $"This user: {vm.Username} doesn't have a main account";
+                        return response;
+                    }
                 }
 
             }
@@ -122,16 +177,6 @@ namespace BankingApp.Core.Application.Services
         }
         #endregion
 
-        #region GetAllProduct
-        public async Task<ProductViewModel> GetAllProducts(string userId)
-        {
-            ClientViewModel clientVm = await GetByUserIdViewModel(userId);
 
-            if (clientVm == null)
-                throw new Exception();
-
-            return await _productService.GetAllProductsByClient(clientVm.Id);
-        }
-        #endregion
     }
 }

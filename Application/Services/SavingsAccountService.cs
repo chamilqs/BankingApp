@@ -13,35 +13,55 @@ namespace BankingApp.Core.Application.Services
     {
         private readonly ISavingsAccountRepository _savingsAccountRepository;
         private readonly IMapper _mapper;
+        private readonly IAccountService _accountService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AuthenticationResponse user;
 
-        public SavingsAccountService(ISavingsAccountRepository savingsAccountRepository, IHttpContextAccessor httpContextAccessor, IMapper mapper) : base(savingsAccountRepository, mapper)
+        public SavingsAccountService(ISavingsAccountRepository savingsAccountRepository, IHttpContextAccessor httpContextAccessor, IMapper mapper,
+            IAccountService accountService) : base(savingsAccountRepository, mapper)
         {
             _savingsAccountRepository = savingsAccountRepository;
             _mapper = mapper;
+            _accountService = accountService;
             _httpContextAccessor = httpContextAccessor;
             user = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
         }
 
         #region Delete
+        public async Task Delete(string id)
+        {
+            var savingsAccount = await GetByAccountNumber(id);
+
+            await _savingsAccountRepository.DeleteAsync(savingsAccount);
+        }
         #endregion
 
+        #region Get Methods
         public async Task<List<SavingsAccountViewModel>> GetAllByClientId(int clientId)
         {
-            var savingsAccounts = await _savingsAccountRepository.GetAllAsync();
-            return savingsAccounts.Where(s => s.ClientId == clientId).Select(s => new SavingsAccountViewModel
+            var sas = await _savingsAccountRepository.GetAllAsync();
+
+            var saViewModels = new List<SavingsAccountViewModel>();
+
+            foreach (var sa in sas.Where(b => b.ClientId == clientId))
             {
-                Id = s.Id,
-                Balance = s.Balance,
-                ClientId = s.ClientId,
-                ClientName = user.Name,
-                DateCreated = s.DateCreated,
-                IsMainAccount = s.IsMainAccount
 
-            }).ToList();
+                var saViewModel = new SavingsAccountViewModel
+                {
+                    ClientId = sa.ClientId,
+                    Id = sa.Id,
+                    Balance = sa.Balance,
+                    DateCreated = sa.DateCreated,
+                    IsMainAccount = sa.IsMainAccount
 
 
+
+                };
+
+                saViewModels.Add(saViewModel);
+            }
+
+            return saViewModels;
         }
 
         public async Task<SavingsAccount> GetByAccountNumber(string accountNumber)
@@ -66,6 +86,20 @@ namespace BankingApp.Core.Application.Services
             return savingsAccount;
         }
 
+        #region GetClientMainAccount
+        public async Task<SavingsAccountViewModel> GetClientMainAccount(int clientId)
+        {
+            var savingsAccountList = await base.GetAllViewModel();
+
+            var savingsAccount = savingsAccountList.FirstOrDefault(sa => sa.ClientId == clientId && sa.IsMainAccount == true);
+
+            return savingsAccount;
+        }
+        #endregion
+
+        #endregion
+
+        #region Update
         public async Task UpdateSavingsAccount(double balance, int clientId, string id)
         {
             var savingsAccount = await GetByAccountNumberLoggedUser(id, clientId);
@@ -81,16 +115,7 @@ namespace BankingApp.Core.Application.Services
 
             await base.UpdateProduct(vm, id);
         }
-
-        #region GetClientMainAccount
-        public async Task<SavingsAccountViewModel> GetClientMainAccount(int clientId)
-        {
-            var savingsAccountList = await base.GetAllViewModel();
-
-            var savingsAccount = savingsAccountList.FirstOrDefault(sa => sa.ClientId == clientId && sa.IsMainAccount == true);
-
-            return savingsAccount;
-        }
         #endregion
+
     }
 }

@@ -3,10 +3,8 @@
 @model SaveUserViewModel;
 
 @{
-    //bool editMode = String.IsNullOrWhiteSpace(Model.Id) ? false : true;
-    bool editMode = false;
+    bool editMode = String.IsNullOrWhiteSpace(Model.Id) ? false : true;
     ViewData["Title"] = editMode ? "Edit User" : "New User";
-    ViewData["Title"] = "New User";
 }
 
 <div class="container-fluid">
@@ -126,7 +124,7 @@
 
                             </div>
                             <div class="col-6">
-                                <button type="submit" class="btn btn-success form-control">Create</button>
+                                <button type="submit" class="btn btn-success form-control">Save</button>
                             </div>
                         </div>
                     </form>

@@ -13,6 +13,7 @@ namespace BankingApp.Core.Application.ViewModels.Transaction
         [Required (ErrorMessage = "The amount is required")]
         public double Amount { get; set; }
         public string? Concept { get; set; }
+        public DateTime DateCreated { get; set; } 
 
     }
 }

@@ -5,11 +5,6 @@ using BankingApp.Core.Application.Interfaces.Repositories;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.Transaction;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Transactions;
 
 namespace BankingApp.Core.Application.Services
@@ -24,10 +19,11 @@ namespace BankingApp.Core.Application.Services
         private readonly AuthenticationResponse user;
         private readonly IMapper _mapper;
 
-        public TransfersService(ITransactionService transactionService, IMapper mapper, IClientService clientService,
+        public TransfersService(ITransactionService transactionService, ISavingsAccountService savingsAccountService, IMapper mapper, IClientService clientService,
         IHttpContextAccessor httpContextAccessor, ICreditCardService creditCardService) 
         {
             _transactionService = transactionService;
+            _savingsAccountService = savingsAccountService;
             _mapper = mapper;
             _clientService = clientService;
             _httpContextAccessor = httpContextAccessor;
@@ -35,9 +31,11 @@ namespace BankingApp.Core.Application.Services
             _creditCardService = creditCardService;
         }
 
+        #region SavingsAccount
         public async Task<SaveTransactionViewModel> Transfer(SaveTransactionViewModel vm, Enums.TransactionType transactionType, bool isCashAdvance)
         {
             vm.TransactionTypeId = (int)transactionType;
+            vm.DateCreated = DateTime.Now;
 
             if (isCashAdvance)
             {
@@ -50,7 +48,7 @@ namespace BankingApp.Core.Application.Services
             }
             else
             {
-                var addMoney = await AddMoneyToAccount(vm.Destination, vm.Origin, vm.Amount);
+                var addMoney = await AddMoneyToAccount(vm.Origin, vm.Destination, vm.Amount);
                 if(!addMoney)
                 {
                     return null;
@@ -58,7 +56,12 @@ namespace BankingApp.Core.Application.Services
 
             }
 
-            return await _transactionService.Add(vm);
+            if(vm.Concept == null || vm.Concept.Length == 0)
+            {
+                vm.Concept = "Transfer";                
+            }
+
+            return await _transactionService.Add(vm); 
         }
 
         public async Task<bool> AddMoneyToAccount(string accountNumberOrigin, string accountNumberDestination, double amount)
@@ -71,6 +74,11 @@ namespace BankingApp.Core.Application.Services
 
             if(destinyAccount != null && originAccount != null)
             {
+                if (amount > destinyAccount.Balance)
+                {
+                    throw new Exception("You can't do this transaction, the amount is higher than the balance of the account.");
+                }
+
                 double destinyBalance = destinyAccount.Balance + amount;
                 double originBalance = originAccount.Balance - amount;
 
@@ -84,7 +92,9 @@ namespace BankingApp.Core.Application.Services
             }
 
         }
+        #endregion
 
+        #region CreditCard
         public async Task<bool> AddMoneyToAccountCreditCard(string accountNumberOrigin, string accountNumberDestination, double amount)
         {
             // Get products where the ClientId is the same as the logged user ClientId
@@ -157,31 +167,8 @@ namespace BankingApp.Core.Application.Services
                 }
             }
         }
+        #endregion
 
-        //try
-        //{
-        //    double interest = 0.0625;
-        //    double debt = vm.Amount + (vm.Amount * interest);
-        //    double balance = creditCard.Balance - vm.Amount;
-
-        //    await _creditCardService.UpdateCreditCard(balance, debt, creditCard.Id, client.Id);
-        //    vm.TransactionTypeId = (int)Enums.TransactionType.CashAdvance;
-
-        //    if (vm.Concept == null || vm.Concept.Length == 0)
-        //    {
-        //        vm.Concept = "Cash advance";
-        //    }
-        //    await Transfer(vm, Enums.TransactionType.CashAdvance, true);
-
-        //    return "Cash advance done successfully.";
-
-        //}
-        //catch (Exception ex)
-        //{
-        //    Console.WriteLine(ex.Message);
-        //}
-
-        //return "Cash advance done successfully.";
     }
 }
 

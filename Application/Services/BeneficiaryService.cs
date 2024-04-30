@@ -4,7 +4,6 @@ using BankingApp.Core.Application.Helpers;
 using BankingApp.Core.Application.Interfaces.Repositories;
 using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.Beneficiary;
-using BankingApp.Core.Application.ViewModels.CreditCard;
 using BankingApp.Core.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
@@ -29,15 +28,65 @@ namespace BankingApp.Core.Application.Services
             user = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
         }
 
+        #region Create
         public async Task<SaveBeneficiaryViewModel> AddBeneficiary(SaveBeneficiaryViewModel vm, string AccountNumber)
         {
             var userId = user.Id;
             var client = await _clientService.GetByUserIdViewModel(userId);
 
             vm.ClientId = client.Id;
-            vm.AccountNumber = AccountNumber;
+            vm.SavingsAccountId = AccountNumber;
 
             return await base.Add(vm);
+
+        }
+        #endregion
+
+        #region Delete  
+        public async Task DeleteBeneficiary(string accountNumber)
+        {
+            var beneficiary = await _beneficiaryRepository.GetBeneficiary(accountNumber);
+            await base.Delete(beneficiary.Id);
+        }
+        #endregion
+
+        #region Get Methods
+        public async Task<List<BeneficiaryViewModel>> GetAllByClientId(int clientId)
+        {
+            var beneficiaries = await _beneficiaryRepository.GetAllAsync();
+
+            var beneficiaryViewModels = new List<BeneficiaryViewModel>();
+
+            foreach (var beneficiary in beneficiaries.Where(b => b.ClientId == clientId))
+            {
+                var account = await GetByAccountNumber(beneficiary.SavingsAccountId);
+                var client = await _clientService.GetByIdSaveViewModel(account.ClientId);
+                var clientUser = await _accountService.FindByIdAsync(client.UserId);
+
+                var beneficiaryViewModel = new BeneficiaryViewModel
+                {
+                    ClientId = beneficiary.ClientId,
+                    BeneficiaryAccountNumber = beneficiary.SavingsAccountId,
+                    BeneficiaryName = clientUser.Name,
+                    BeneficiaryLastName = clientUser.LastName
+                };
+
+                beneficiaryViewModels.Add(beneficiaryViewModel);
+            }
+
+            return beneficiaryViewModels;
+        }
+
+
+        public async Task<Beneficiary> GetBeneficiary(string accountNumber)
+        {
+            var beneficiary = await _beneficiaryRepository.GetBeneficiary(accountNumber);
+            if (beneficiary == null)
+            {
+                return null;
+            }
+
+            return beneficiary;
 
         }
 
@@ -54,40 +103,6 @@ namespace BankingApp.Core.Application.Services
             return sa;
         }
 
-        public async Task DeleteBeneficiary(string accountNumber)
-        {
-            var beneficiary = await _beneficiaryRepository.GetBeneficiary(accountNumber);
-            await base.Delete(beneficiary.Id);
-        }
-
-
-        public async Task<List<BeneficiaryViewModel>> GetAllByClientId(int clientId)
-        {
-            var beneficiaries = await _beneficiaryRepository.GetAllAsync();
-
-
-            var clientUser = await _accountService.FindByIdAsync(user.Id);
-            return beneficiaries.Where(b => b.ClientId == clientId).Select(b => new BeneficiaryViewModel
-            {
-                ClientId = b.ClientId,
-                BeneficiaryAccountNumber = b.SavingsAccountId,
-                BeneficiaryName = clientUser.Name,
-                BeneficiaryLastName = clientUser.LastName
-
-
-            }).ToList();
-        }
-
-        public async Task<Beneficiary> GetBeneficiary(string accountNumber)
-        {
-            var beneficiary = await _beneficiaryRepository.GetBeneficiary(accountNumber);
-            if (beneficiary == null)
-            {
-                return null;
-            }
-
-            return beneficiary;
-
-        }
+        #endregion
     }
 }

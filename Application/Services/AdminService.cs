@@ -8,7 +8,6 @@ namespace BankingApp.Core.Application.Services
     public class AdminService : IAdminService
     {
         private readonly IAccountService _accountService;
-        // private readonly PaymentService _paymentService;
         private readonly ITransactionService _transactionService;
         private readonly ILoanService _loanService;
         private readonly ISavingsAccountService _savingsAccountService;
@@ -18,7 +17,6 @@ namespace BankingApp.Core.Application.Services
         public AdminService(IAccountService accountService, ITransactionService transactionService, ILoanService loanService, ISavingsAccountService savingsAccountService, ICreditCardService creditCardService, IMapper mapper)
         {
             _accountService = accountService;
-            // _paymentService = paymentService;
             _transactionService = transactionService;
             _loanService = loanService;
             _savingsAccountService = savingsAccountService;
@@ -26,6 +24,7 @@ namespace BankingApp.Core.Application.Services
             _mapper = mapper;
         }
 
+        #region Dashboard Methods
         public async Task<int> GetActiveUsersCount()
         {
 			return await _accountService.GetActiveUsersCountAsync();
@@ -34,22 +33,6 @@ namespace BankingApp.Core.Application.Services
         public async Task<int> GetInactiveUsersCount()
         {
 			return await _accountService.GetInactiveUsersCountAsync();
-		}
-
-        public async Task<int> GetTotalPaymentsCount()
-        {
-            return 0;
-			// var payments = await _paymentsService.GetAllViewModel();
-            // return payments.Count;
-		}
-
-		public async Task<int> GetTodayTotalPaymentsCount()
-        {
-            return 0;
-			// var payments = await _paymentsService.GetAllViewModel();
-			// payments = payments.Where(x => x.DateCreated.Day == DateTime.Now.Day).ToList();
-
-            // return payments.Count;
 		}
 
 		public async Task<int> GetTotalTransactionsCount()
@@ -108,8 +91,7 @@ namespace BankingApp.Core.Application.Services
 			}
             return creditCards.Count;
 		}
-	
-
+        #endregion
 
         #region GetAllViewModel
         public async Task<List<UserViewModel>> GetAllViewModel()

@@ -43,7 +43,8 @@
                             </div>
                         </div>
                         <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
-                            <ul id="sidebarnav">
+                            <li id="sidebarnav">
+                                <ul>
                                 <li class="nav-small-cap">
                                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                                     <span class="hide-menu">Home</span>
@@ -58,7 +59,7 @@
                                 </li>
                                 <li class="nav-small-cap">
                                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                                    <span class="hide-menu">UI COMPONENTS</span>
+                                    <span class="hide-menu">FEATURES</span>
                                 </li>
                                 <li class="sidebar-item">
                                     <a class="sidebar-link" asp-controller="Beneficiary" asp-action="Index" aria-expanded="false">
@@ -84,6 +85,44 @@
                                         <span class="hide-menu">Cash Advance</span>
                                     </a>
                                 </li>
+
+                                <li class="nav-small-cap">
+                                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                                    <span class="hide-menu">PAYMENTS</span>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-controller="Payment" asp-action="ExpressPayment" aria-expanded="false">
+                                        <span>
+                                            <i class="ti ti-wallet"></i>
+                                        </span>
+                                        <span class="hide-menu">Express Payment </span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-controller="Payment" asp-action="CreditCardPayment" aria-expanded="false">
+                                        <span>
+                                            <i class="ti ti-wallet"></i>
+                                        </span>
+                                        <span class="hide-menu">Credit Card Payment </span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-controller="Payment" asp-action="LoanPayment" aria-expanded="false">
+                                        <span>
+                                            <i class="ti ti-wallet"></i>
+                                        </span>
+                                        <span class="hide-menu">Loan Payment </span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="sidebar-link" asp-controller="Payment" asp-action="BeneficiaryPayment" aria-expanded="false">
+                                        <span>
+                                            <i class="ti ti-wallet"></i>
+                                        </span>
+                                        <span class="hide-menu">Beneficiary Payment </span>
+                                    </a>
+
+                                </li>
                                 <li class="sidebar-item">
                                     <a class="sidebar-link" asp-controller="User" asp-action="LogOut" aria-expanded="false">
                                         <span>
@@ -92,7 +131,8 @@
                                         <span class="hide-menu">LogOut</span>
                                     </a>
                                 </li>
-                            </ul>
+                               </ul>
+                           
                         </nav>
 
                     </div>
@@ -156,7 +196,7 @@
                 {
                     <header class="app-header">
                         <div class="navbar-nav flex-row ms-auto align-items-center justify-content-end py-3">
-                            <p class="nav-item mb-0">@User.UserName</p>
+                            <p class="nav-item mb-0">@User.Username</p>
                         </div>
                     </header>
                 }
@@ -175,7 +215,6 @@
         </div>
     }
 
-
     <script src="~/assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/assets/js/sidebarmenu.js"></script>
@@ -184,17 +223,6 @@
     <script src="~/assets/libs/simplebar/dist/simplebar.js"></script>
     <script src="~/assets/js/dashboard.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
-    @* <script src="~/assets/libs/jquery/dist/jquery.min.js"></script>
-    <script src="~/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/assets/js/sidebarmenu.js"></script>
-    <script src="~/assets/js/app.min.js"></script>
-    <script src="~/assets/libs/apexcharts/dist/apexcharts.min.js"></script>
-    <script src="~/assets/libs/simplebar/dist/simplebar.js"></script>
-    <script src="~/assets/js/dashboard.js"></script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script> *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 

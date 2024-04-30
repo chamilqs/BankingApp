@@ -5,11 +5,6 @@ using BankingApp.Core.Application.Interfaces.Services;
 using BankingApp.Core.Application.ViewModels.Payment;
 using BankingApp.Core.Application.ViewModels.Transaction;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingApp.Core.Application.Services
 {
@@ -19,13 +14,15 @@ namespace BankingApp.Core.Application.Services
         private readonly ISavingsAccountService _savingsAccountService;
         private readonly ICreditCardService _creditCardService;
         private readonly ILoanService _loanService;
-
+        private readonly IAccountService _accountService;
+        private readonly IClientService _clientService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AuthenticationResponse user;
         private readonly IMapper _mapper;
 
         public PaymentService(IHttpContextAccessor httpContextAccessor, IMapper mapper, ITransactionService transactionService,
-            ISavingsAccountService savingsAccountService, ICreditCardService creditCardService, ILoanService loanService)
+            ISavingsAccountService savingsAccountService, ICreditCardService creditCardService,
+            IAccountService accountService, IClientService clientService, ILoanService loanService)
         {
 
             _httpContextAccessor = httpContextAccessor;
@@ -35,11 +32,15 @@ namespace BankingApp.Core.Application.Services
             _savingsAccountService = savingsAccountService;
             _creditCardService = creditCardService;
             _loanService = loanService;
+            _accountService = accountService;
+            _clientService = clientService;
 
         }
 
+        #region ExpressPayment
         public async Task<ExpressPaymentViewModel> ExpressPayment(ExpressPaymentViewModel vm)
         {
+
             var destination = await _savingsAccountService.GetByAccountNumber(vm.Destination);
 
             if (destination == null)
@@ -74,21 +75,32 @@ namespace BankingApp.Core.Application.Services
             await _savingsAccountService.UpdateSavingsAccount(destination.Balance, destination.ClientId, destination.Id);
 
 
+            var receptorClient = await _clientService.GetByAccountNumber(destination.Id);
+            var receptorUser = await _accountService.FindByIdAsync(receptorClient.UserId);
+            vm.ClientLastName = receptorUser.LastName;
+            vm.ClientName = receptorUser.Name;
+
 
             var paymentRecord = new SaveTransactionViewModel
             {
                 Origin = origin.Id,
                 Destination = destination.Id,
                 Amount = amount,
-                TransactionTypeId = 3
+                TransactionTypeId = 3,
+                Concept = $"{origin.Id} to {destination.Id}",
+                DateCreated = DateTime.Now,
+
 
             };
+
 
             await _transactionService.Add(paymentRecord);
 
             return vm;
         }
+        #endregion
 
+        #region CreditCardPayment
         public async Task<CreditCardPaymentViewModel> CreditCardPayment(CreditCardPaymentViewModel vm)
         {
             var destination = await _creditCardService.GetByAccountNumber(vm.Destination);
@@ -116,17 +128,20 @@ namespace BankingApp.Core.Application.Services
                 throw new Exception("Insufficient balance ");
             }
 
+
             origin.Balance -= amount;
             destination.Debt -= amount;
 
             if (amount > destination.Debt)
             {
                 origin.Balance += amount - destination.Debt;
+                destination.Debt += amount;
             }
 
 
+            await _creditCardService.UpdateCreditCard(destination.Balance, destination.Debt, destination.Id, destination.ClientId);
             await _savingsAccountService.UpdateSavingsAccount(origin.Balance, origin.ClientId, origin.Id);
-            await _savingsAccountService.UpdateSavingsAccount(destination.Balance, destination.ClientId, destination.Id);
+
 
 
 
@@ -135,7 +150,9 @@ namespace BankingApp.Core.Application.Services
                 Origin = origin.Id,
                 Destination = destination.Id,
                 Amount = amount,
-                TransactionTypeId = 4
+                TransactionTypeId = 4,
+                Concept = $"{origin.Id} to {destination.Id}",
+                DateCreated = DateTime.Now,
 
             };
 
@@ -143,7 +160,9 @@ namespace BankingApp.Core.Application.Services
 
             return vm;
         }
+        #endregion
 
+        #region LoanPayment
         public async Task<LoanPaymentViewModel> LoanPayment(LoanPaymentViewModel vm)
         {
 
@@ -182,23 +201,27 @@ namespace BankingApp.Core.Application.Services
 
 
             await _savingsAccountService.UpdateSavingsAccount(origin.Balance, origin.ClientId, origin.Id);
-            await _savingsAccountService.UpdateSavingsAccount(destination.Balance, destination.ClientId, destination.Id);
+            await _loanService.UpdateLoan(destination.Balance, destination.Amount, destination.Id, destination.ClientId);
 
 
             var paymentRecord = new SaveTransactionViewModel
             {
+
                 Origin = origin.Id,
                 Destination = destination.Id,
                 Amount = amount,
-                TransactionTypeId = 2
-
+                TransactionTypeId = 2,
+                Concept = $"{origin.Id} to {destination.Id}",
+                DateCreated = DateTime.Now,
             };
 
             await _transactionService.Add(paymentRecord);
 
             return vm;
         }
+        #endregion
 
+        #region BeneficiaryPayment
         public async Task<BeneficiaryPaymentViewModel> BeneficiaryPayment(BeneficiaryPaymentViewModel vm)
         {
             var destination = await _savingsAccountService.GetByAccountNumber(vm.Destination);
@@ -234,6 +257,11 @@ namespace BankingApp.Core.Application.Services
             await _savingsAccountService.UpdateSavingsAccount(origin.Balance, origin.ClientId, origin.Id);
             await _savingsAccountService.UpdateSavingsAccount(destination.Balance, destination.ClientId, destination.Id);
 
+            var receptorClient = await _clientService.GetByAccountNumber(destination.Id);
+            var receptorUser = await _accountService.FindByIdAsync(receptorClient.UserId);
+            vm.BeneficiaryLastName = receptorUser.LastName;
+            vm.BeneficiaryFirstName = receptorUser.Name;
+
 
 
             var paymentRecord = new SaveTransactionViewModel
@@ -241,7 +269,9 @@ namespace BankingApp.Core.Application.Services
                 Origin = origin.Id,
                 Destination = destination.Id,
                 Amount = amount,
-                TransactionTypeId = 6
+                TransactionTypeId = 6,
+                Concept = $"{origin.Id} to {destination.Id}",
+                DateCreated = DateTime.UtcNow,
 
             };
 
@@ -249,7 +279,7 @@ namespace BankingApp.Core.Application.Services
 
             return vm;
         }
-
+        #endregion
 
     }
 }

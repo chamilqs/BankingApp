@@ -7,6 +7,7 @@ namespace BankingApp.Core.Application.ViewModels.Products
     public class ProductViewModel
     {
         public int ClientId { get; set; }
+        public string Username { get; internal set; }
         public List<SavingsAccountViewModel> SavingsAccounts { get; set; }
         public List<LoanViewModel> Loans { get; set; }
         public List<CreditCardViewModel> CreditCards { get; set; }

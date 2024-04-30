@@ -8,7 +8,7 @@ namespace BankingApp.Core.Application.ViewModels.Beneficiary
         [Required(ErrorMessage = "The client Id is required.")]
         public int ClientId { get; set; }
         [Required(ErrorMessage = "The account number is required.")]
-        public string AccountNumber { get; set; } 
+        public string SavingsAccountId { get; set; } 
 
     }
 }
